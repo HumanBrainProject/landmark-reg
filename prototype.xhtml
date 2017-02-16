@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <title>Partial volume registration prototype</title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="layout.css" />
+</head>
+
+<body>
+  <div id="template_viewer">
+    <div id="template_view_coronal" class="coronal">
+      <p class="placeholder">Coronal view of the template</p>
+    </div>
+    <div id="template_view_sagittal" class="sagittal">
+      <p class="placeholder">Sagittal view of the template</p>
+    </div>
+    <div id="template_view_axial" class="axial">
+      <p class="placeholder">Axial view of the template</p>
+    </div>
+    <div id="template_control_panel" class="control_panel">
+      <p>Atlas: <span id="atlas_name"></span></p>
+      <hr />
+      <p>Template cursor: <span id="altas_cursor_coords"></span></p>
+      <p>Incoming volume cursor: <span id="incoming_cursor_coords"></span></p>
+      <hr />
+      <h3>Landmark pairs
+        <input type="button" id="new_landmark" style="float: right;"
+               value="Add at cursor" />
+      </h3>
+      <table id="landmarks_table">
+      </table>
+      <input type="button" id="load_landmarks" value="Load…" />
+      <input type="button" id="save_landmarks" value="Save…" />
+    </div>
+  </div>
+  <div id="incoming_viewer">
+    <div id="incoming_view_coronal" class="coronal"><p class="placeholder">Coronal view of the incoming volume</p></div>
+    <div id="incoming_view_sagittal" class="sagittal"><p class="placeholder">Sagittal view of the incoming volume</p></div>
+    <div id="incoming_view_axial" class="axial"><p class="placeholder">Axial view of the incoming volume</p></div>
+    <div id="incoming_control_panel" class="control_panel">
+      <h3>Incoming image</h3>
+      <p>Voxel size: <span id="incoming_voxel_size"></span><input type="button" id="edit_voxel_size" class="edit_button" value="Edit…" /></p>
+      <p>Synchronize views <input type="checkbox" id="synchronize_views" disabled="disabled" /></p>
+      <hr />
+      <h3>Registration control</h3>
+      <p>Transformation type:
+        <select id="transformation_type">
+          <option value="rigid" selected="selected">Rigid</option>
+          <option value="rigid+scaling">Rigid + Scaling</option>
+          <option value="affine">Affine</option>
+        </select>
+      </p>
+      <h3>Estimated transformation matrix</h3>
+      <table id="transformation_matrix">
+        <tr><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+        <tr><td>0</td><td>1</td><td>0</td><td>0</td></tr>
+        <tr><td>0</td><td>0</td><td>1</td><td>0</td></tr>
+        <tr><td>0</td><td>0</td><td>0</td><td>1</td></tr>
+      </table>
+      <input type="button" id="download_transformation" value="Download" />
+      <input type="button" id="save_transformation"
+             value="Save to KnowledgeGraph" disabled="disabled" />
+    </div>
+  </div>
+</body>
+</html>
