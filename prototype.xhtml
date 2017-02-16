@@ -1,10 +1,15 @@
 <!DOCTYPE html>
-<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      data-ng-app="landmarkRegApp">
 
 <head>
   <title>Partial volume registration prototype</title>
   <meta charset="utf-8" />
   <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="bower_components/hbp-collaboratory-theme/dist/css/bootstrap.min.css" />
+  <script src="bower_components/angular/angular.js" />
+  <script src="bower_components/angular-bootstrap/ui-bootstrap.js" />
+  <script src="app.js"></script>
 </head>
 
 <body>
@@ -24,14 +29,20 @@
       <p>Template cursor: <span id="altas_cursor_coords"></span></p>
       <p>Incoming volume cursor: <span id="incoming_cursor_coords"></span></p>
       <hr />
-      <h3>Landmark pairs
-        <input type="button" id="new_landmark" style="float: right;"
-               value="Add at cursor" />
-      </h3>
-      <table id="landmarks_table">
-      </table>
-      <input type="button" id="load_landmarks" value="Load…" />
-      <input type="button" id="save_landmarks" value="Save…" />
+      <div data-ng-controller="LandmarkListController">
+        <h3>
+          Landmark pairs
+          <input type="button" id="new_landmark" value="Add at cursor" />
+        </h3>
+        <table id="landmarks_table">
+          <tr data-ng-repeat="pair in landmark_pairs">
+            <td>{{pair.atlas_point}} → {{pair.incoming_point}}</td>
+            <td><a data-ng-click="delete">✖</a></td>
+          </tr>
+        </table>
+        <input type="button" id="load_landmarks" value="Load…" />
+        <input type="button" id="save_landmarks" value="Save…" />
+      </div>
     </div>
   </div>
   <div id="incoming_viewer">
