@@ -9,7 +9,9 @@
   <link rel="stylesheet" href="bower_components/hbp-collaboratory-theme/dist/css/bootstrap.min.css"/>
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
-  <script src="app.js"></script>
+  <script src="app.module.js"></script>
+  <script src="landmark-list/landmark-list.module.js"></script>
+  <script src="landmark-list/landmark-list.component.js"></script>
 </head>
 
 <body>
@@ -29,44 +31,8 @@
       <p>Template cursor: <span id="altas_cursor_coords"></span></p>
       <p>Incoming volume cursor: <span id="incoming_cursor_coords"></span></p>
       <hr/>
-      <div data-ng-controller="LandmarkListController">
-        <h4>Landmark pairs</h4>
-        <table class="table table-condensed table-hover">
-          <tbody>
-            <tr data-ng-repeat="pair in landmark_pairs">
-              <td>{{pair.label}}</td>
-              <td>{{pair.atlas_point}}</td>
-              <td>→</td>
-              <td>{{pair.incoming_point}}</td>
-              <td>
-                <button title="Display" class="btn btn-xs btn-default">
-                  <span class="glyphicon glyphicon-eye-open"></span>
-                </button>
-                <button title="Remove" class="btn btn-xs btn-danger">
-                  <span class="glyphicon glyphicon-remove"></span>
-                </button>
-              </td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colspan="5">
-                <button id="new_landmark" class="btn btn-primary">
-                  Add landmark pair
-                </button>
-              </td>
-            </tr>
-          </tfoot>
-        </table>
-        <p class="text-center">
-          <button id="load_landmarks" class="btn btn-default btn-sm">
-            <span class="glyphicon glyphicon-open"></span> Load…
-          </button>
-          <button id="save_landmarks" class="btn btn-default btn-sm">
-            <span class="glyphicon glyphicon-save"></span> Save…
-          </button>
-        </p>
-      </div>
+      <h4>Landmark pairs</h4>
+      <landmark-list></landmark-list>
     </div>
   </div>
   <div id="incoming_viewer">
