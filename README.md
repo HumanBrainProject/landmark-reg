@@ -1,6 +1,6 @@
 # landmark-reg
 
-Interactive landmark-based tool for spatial alignment of 3D images
+Interactive tool for landmark-based spatial alignment of volumetric images
 
 # Developement set-up
 
