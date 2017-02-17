@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"
       data-ng-app="landmarkRegApp">
-
 <head>
-  <title>Partial volume registration prototype</title>
-  <meta charset="utf-8" />
-  <link rel="stylesheet" href="layout.css" />
-  <link rel="stylesheet" href="bower_components/hbp-collaboratory-theme/dist/css/bootstrap.min.css" />
-  <script src="bower_components/angular/angular.js" />
-  <script src="bower_components/angular-bootstrap/ui-bootstrap.js" />
+  <meta charset="utf-8"/>
+  <title>Interactive Spatial Alignment prototype app</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" href="layout.css"/>
+  <link rel="stylesheet" href="bower_components/hbp-collaboratory-theme/dist/css/bootstrap.min.css"/>
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
   <script src="app.js"></script>
 </head>
 
@@ -25,53 +25,124 @@
     </div>
     <div id="template_control_panel" class="control_panel">
       <p>Atlas: <span id="atlas_name"></span></p>
-      <hr />
+      <hr/>
       <p>Template cursor: <span id="altas_cursor_coords"></span></p>
       <p>Incoming volume cursor: <span id="incoming_cursor_coords"></span></p>
-      <hr />
+      <hr/>
       <div data-ng-controller="LandmarkListController">
-        <h3>
-          Landmark pairs
-          <input type="button" id="new_landmark" value="Add at cursor" />
-        </h3>
-        <table id="landmarks_table">
-          <tr data-ng-repeat="pair in landmark_pairs">
-            <td>{{pair.atlas_point}} → {{pair.incoming_point}}</td>
-            <td><a data-ng-click="delete">✖</a></td>
-          </tr>
+        <h4>Landmark pairs</h4>
+        <table class="table table-condensed table-hover">
+          <tbody>
+            <tr data-ng-repeat="pair in landmark_pairs">
+              <td>{{pair.label}}</td>
+              <td>{{pair.atlas_point}}</td>
+              <td>→</td>
+              <td>{{pair.incoming_point}}</td>
+              <td>
+                <button title="Display" class="btn btn-xs btn-default">
+                  <span class="glyphicon glyphicon-eye-open"></span>
+                </button>
+                <button title="Remove" class="btn btn-xs btn-danger">
+                  <span class="glyphicon glyphicon-remove"></span>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="5">
+                <button id="new_landmark" class="btn btn-primary">
+                  Add landmark pair
+                </button>
+              </td>
+            </tr>
+          </tfoot>
         </table>
-        <input type="button" id="load_landmarks" value="Load…" />
-        <input type="button" id="save_landmarks" value="Save…" />
+        <p class="text-center">
+          <button id="load_landmarks" class="btn btn-default btn-sm">
+            <span class="glyphicon glyphicon-open"></span> Load…
+          </button>
+          <button id="save_landmarks" class="btn btn-default btn-sm">
+            <span class="glyphicon glyphicon-save"></span> Save…
+          </button>
+        </p>
       </div>
     </div>
   </div>
   <div id="incoming_viewer">
-    <div id="incoming_view_coronal" class="coronal"><p class="placeholder">Coronal view of the incoming volume</p></div>
-    <div id="incoming_view_sagittal" class="sagittal"><p class="placeholder">Sagittal view of the incoming volume</p></div>
-    <div id="incoming_view_axial" class="axial"><p class="placeholder">Axial view of the incoming volume</p></div>
+    <div id="incoming_view_coronal" class="coronal">
+      <p class="placeholder">Coronal view of the incoming volume</p>
+    </div>
+    <div id="incoming_view_sagittal" class="sagittal">
+      <p class="placeholder">Sagittal view of the incoming volume</p>
+    </div>
+    <div id="incoming_view_axial" class="axial">
+      <p class="placeholder">Axial view of the incoming volume</p>
+    </div>
     <div id="incoming_control_panel" class="control_panel">
-      <h3>Incoming image</h3>
-      <p>Voxel size: <span id="incoming_voxel_size"></span><input type="button" id="edit_voxel_size" class="edit_button" value="Edit…" /></p>
-      <p>Synchronize views <input type="checkbox" id="synchronize_views" disabled="disabled" /></p>
-      <hr />
-      <h3>Registration control</h3>
-      <p>Transformation type:
-        <select id="transformation_type">
-          <option value="rigid" selected="selected">Rigid</option>
-          <option value="rigid+scaling">Rigid + Scaling</option>
-          <option value="affine">Affine</option>
-        </select>
+      <h4>Incoming image</h4>
+      <!-- TODO insert here a reference to the incoming image's metadata
+           (e.g. link to dataset page) -->
+      <label for="incoming_voxel_size"> Voxel size:</label>
+      <div class="input-group input-group-sm">
+        <input id="incoming_voxel_size" class="form-control" type="text"
+               readonly="readonly"/>
+        <span class="input-group-btn">
+          <button id="modify_voxel_size" class="btn btn-default">
+            Modify…
+          </button>
+        </span>
+      </div>
+      <hr/>
+      <p>
+        Display referential:
+        <label>
+          <input type="radio" name="incoming_display" value="native"
+                 checked="checked"/>
+          Native
+        </label>
+        <label>
+          <input type="radio" name="incoming_display" value="transformed"
+                 disabled="disabled"/>
+          Transformed
+        </label>
       </p>
-      <h3>Estimated transformation matrix</h3>
-      <table id="transformation_matrix">
+      <label>
+        <input type="checkbox" id="synchronize_cursors" disabled="disabled"/>
+        Synchronize cursors
+      </label>
+      <hr/>
+      <h4>Registration control</h4>
+      <div class="form-inline">
+        <div class="form-group">
+          <label>
+            Transformation type
+            <select id="transformation_type" class="form-control">
+              <option value="rigid" selected="selected">Rigid</option>
+              <option value="rigid+scaling">Rigid + Scaling</option>
+              <option value="affine">Affine</option>
+            </select>
+          </label>
+        </div>
+        <button class="btn btn-primary btn-block" disabled="disabled">
+          Compute transformation
+        </button>
+      </div>
+      <p>Estimated transformation matrix</p>
+      <table id="transformation_matrix" class="text-muted">
         <tr><td>1</td><td>0</td><td>0</td><td>0</td></tr>
         <tr><td>0</td><td>1</td><td>0</td><td>0</td></tr>
         <tr><td>0</td><td>0</td><td>1</td><td>0</td></tr>
         <tr><td>0</td><td>0</td><td>0</td><td>1</td></tr>
       </table>
-      <input type="button" id="download_transformation" value="Download" />
-      <input type="button" id="save_transformation"
-             value="Save to KnowledgeGraph" disabled="disabled" />
+      <button id="download_transformation" class="btn btn-default"
+              disabled="disabled">
+        Download
+      </button>
+      <button id="save_transformation" class="btn btn-warning"
+              disabled="disabled">
+        Save to KnowledgeGraph
+      </button>
     </div>
   </div>
 </body>
