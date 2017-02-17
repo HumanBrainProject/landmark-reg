@@ -1,0 +1,21 @@
+{
+  "name": "landmark-reg",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Interactive tool for landmark-based spatial alignment of volumetric images",
+  "repository": "https://github.com/HumanBrainProject/landmark-reg",
+  "license": "private",
+  "devDependencies": {
+    "bower": "^1.7.7",
+    "http-server": "^0.9.0"
+  },
+  "scripts": {
+    "postinstall": "bower install",
+
+    "update-deps": "npm update",
+    "postupdate-deps": "bower update",
+
+    "prestart": "npm install",
+    "start": "http-server -a localhost -p 8000 -c-1 -e xhtml ./app"
+  }
+}
