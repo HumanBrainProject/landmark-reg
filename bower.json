@@ -18,5 +18,8 @@
   ],
   "dependencies": {
     "angular-hbp-collaboratory": "^0.5.0"
+  },
+  "resolutions": {
+    "angular": "^1.5.6"
   }
 }
