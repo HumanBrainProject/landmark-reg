@@ -4,7 +4,6 @@
     "Yann Leprince <y.leprince@fz-juelich.de>"
   ],
   "description": "Interactive tool for cross-scale spatial alignment of volumetric images",
-  "main": "prototype.html layout.css",
   "license": "private",
   "homepage": "",
   "private": true,
