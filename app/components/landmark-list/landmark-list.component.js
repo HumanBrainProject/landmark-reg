@@ -1,7 +1,7 @@
 angular.
   module("landmarkList").
   component("landmarkList", {
-    templateUrl: "landmark-list/landmark-list.template.xhtml",
+    templateUrl: "components/landmark-list/landmark-list.template.xhtml",
     controller: function LandmarkListController() {
       this.landmark_pairs = [
         // Demo data
