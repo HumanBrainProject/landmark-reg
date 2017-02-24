@@ -12,12 +12,15 @@
   <script src="app.module.js"></script>
   <script src="components/landmark-list/landmark-list.module.js"></script>
   <script src="components/landmark-list/landmark-list.component.js"></script>
+  <script src="components/viewer-3d-mockup/viewer-3d-mockup.module.js"></script>
+  <script src="components/viewer-3d-mockup/viewer-3d-mockup.component.js"></script>
 </head>
 
 <body>
   <div id="template_viewer">
     <div id="template_view_coronal" class="coronal">
       <p class="placeholder">Coronal view of the template</p>
+      <viewer-3d-mockup></viewer-3d-mockup>
     </div>
     <div id="template_view_sagittal" class="sagittal">
       <p class="placeholder">Sagittal view of the template</p>
@@ -38,6 +41,7 @@
   <div id="incoming_viewer">
     <div id="incoming_view_coronal" class="coronal">
       <p class="placeholder">Coronal view of the incoming volume</p>
+      <viewer-3d-mockup></viewer-3d-mockup>
     </div>
     <div id="incoming_view_sagittal" class="sagittal">
       <p class="placeholder">Sagittal view of the incoming volume</p>
