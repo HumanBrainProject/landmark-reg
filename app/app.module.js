@@ -1,6 +1,8 @@
-'use strict';
-
-angular.module('landmarkRegApp',
-               ['landmarkList',
-                'viewer3dMockup',
-                'ui.bootstrap']);
+angular
+  .module("landmarkRegApp", [
+    /* App-specific modules */
+    "landmarkReg.landmarks",
+    "landmarkReg.viewer",
+    /* 3rd-party modules */
+    "ui.bootstrap"
+  ]);

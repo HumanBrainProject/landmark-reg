@@ -8,9 +8,9 @@ module.exports = function(config) {
       "bower_components/angular/angular.js",
       'bower_components/angular-mocks/angular-mocks.js',
       "bower_components/angular-bootstrap/ui-bootstrap.js",
-      "components/**/*.module.js",
-      "components/**/*!(.module|.spec).js",
-      "components/**/*.spec.js"
+      "!(bower_components)/**.module.js",
+      "!(bower_components)/**!(.module|.spec).js",
+      "!(bower_components)/**.spec.js"
     ],
 
     autoWatch: true,
