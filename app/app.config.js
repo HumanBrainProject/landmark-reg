@@ -1,6 +1,6 @@
 (function() { /* IIFE */
   angular
-    .module("landmarkReg")
+    .module("landmarkRegApp")
     .config(configure);
 
   configure.$inject = [];
