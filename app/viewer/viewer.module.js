@@ -1,3 +1,3 @@
 angular
-  .module("landmarkReg.viewer", [
+  .module("landmarkRegApp.viewer", [
   ]);

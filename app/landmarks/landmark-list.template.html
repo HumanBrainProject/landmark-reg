@@ -1,35 +1,24 @@
 <table class="table table-condensed table-hover">
   <tbody>
-    <tr data-ng-repeat="pair in $ctrl.landmark_pairs">
+    <tr ng-repeat="pair in $ctrl.landmark_pairs">
       <td>{{pair.label}}</td>
-      <td>{{pair.atlas_point}}</td>
-      <td>→</td>
-      <td>{{pair.incoming_point}}</td>
+      <td>{{pair.target_point}}</td>
+      <td>←</td>
+      <td>{{pair.source_point}}</td>
       <td>
-        <button title="Display" class="btn btn-xs btn-default">
+        <button title="Show" class="btn btn-xs btn-default"
+                ng-click="$ctrl.onShow({pair: pair})">
           <span class="glyphicon glyphicon-eye-open"></span>
         </button>
-        <button title="Remove" class="btn btn-xs btn-danger">
+        <button title="Reset" class="btn btn-xs btn-default"
+                ng-click="$ctrl.onReset({pair: pair})">
+          <span class="glyphicon glyphicon-move"></span>
+        </button>
+        <button title="Delete" class="btn btn-xs btn-danger"
+                ng-click="$ctrl.onDelete({pair: pair})">
           <span class="glyphicon glyphicon-remove"></span>
         </button>
       </td>
     </tr>
   </tbody>
-  <tfoot>
-    <tr>
-      <td colspan="5">
-        <button id="new_landmark" class="btn btn-primary">
-          Add landmark pair
-        </button>
-      </td>
-    </tr>
-  </tfoot>
 </table>
-<p class="text-center">
-  <button id="load_landmarks" class="btn btn-default btn-sm">
-    <span class="glyphicon glyphicon-open"></span> Load…
-  </button>
-  <button id="save_landmarks" class="btn btn-default btn-sm">
-    <span class="glyphicon glyphicon-save"></span> Save…
-  </button>
-</p>

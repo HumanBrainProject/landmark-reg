@@ -2,7 +2,7 @@
   "use strict";
 
   angular
-    .module("landmarkReg.viewer")
+    .module("landmarkRegApp.viewer")
     .component("viewer3dMockup", {
       templateUrl: "viewer/viewer-3d-mockup.template.html",
       controller: Viewer3dMockupController,

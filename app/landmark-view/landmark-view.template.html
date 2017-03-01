@@ -17,7 +17,23 @@
     <p>Incoming image cursor: {{$ctrl.incoming_cursor}}</p>
     <hr/>
     <h4>Landmark pairs</h4>
-    <landmark-list/>
+    <landmark-list landmark-pairs="$ctrl.landmark_pairs"
+                   on-delete="$ctrl.deleteLandmarkPair(pair)"
+                   on-reset="$ctrl.resetLandmarkPair(pair)"
+                   on-show="$ctrl.showLandmarkPair(pair)"/>
+    <button id="new_landmark" class="btn btn-primary"
+            ng-click="$ctrl.addLandmarkPair()">
+      Add landmark pair
+    </button>
+    <p class="text-center">
+      <button id="load_landmarks" class="btn btn-default btn-sm">
+        <span class="glyphicon glyphicon-open"></span> Load…
+      </button>
+      <button id="save_landmarks" class="btn btn-default btn-sm">
+        <span class="glyphicon glyphicon-save"></span> Save…
+      </button>
+    </p>
+
   </div>
 </div>
 <div id="incoming_viewer">

@@ -2,15 +2,14 @@
   "use strict";
 
   angular
-    .module("landmarkReg.landmarks")
+    .module("landmarkRegApp.landmarks")
     .component("landmarkList", {
       templateUrl: "landmarks/landmark-list.template.html",
-      controller: LandmarkListController
+      bindings: {
+        landmark_pairs: "<landmarkPairs",
+        onDelete: "&",
+        onReset: "&",
+        onShow: "&"
+      }
     });
-
-  function LandmarkListController() {
-    var vm = this;
-    vm.landmark_pairs = [];
-  }
-
 })(); /* IIFE */
