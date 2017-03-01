@@ -1,0 +1,100 @@
+<div id="template_viewer">
+  <div id="template_view_coronal" class="coronal">
+    <p class="placeholder">Coronal view of the template</p>
+    <viewer-3d-mockup
+      on-cursor-update="$ctrl.updateTemplateCursor(coords)"/>
+  </div>
+  <div id="template_view_sagittal" class="sagittal">
+    <p class="placeholder">Sagittal view of the template</p>
+  </div>
+  <div id="template_view_axial" class="axial">
+    <p class="placeholder">Axial view of the template</p>
+  </div>
+  <div class="control_panel">
+    <p>Template: {{$ctrl.template_description}}</p>
+    <hr/>
+    <p>Template image cursor: {{$ctrl.template_cursor}}</p>
+    <p>Incoming image cursor: {{$ctrl.incoming_cursor}}</p>
+    <hr/>
+    <h4>Landmark pairs</h4>
+    <landmark-list/>
+  </div>
+</div>
+<div id="incoming_viewer">
+  <div id="incoming_view_coronal" class="coronal">
+    <p class="placeholder">Coronal view of the incoming volume</p>
+    <viewer-3d-mockup
+      on-cursor-update="$ctrl.updateIncomingCursor(coords)"/>
+  </div>
+  <div id="incoming_view_sagittal" class="sagittal">
+    <p class="placeholder">Sagittal view of the incoming volume</p>
+  </div>
+  <div id="incoming_view_axial" class="axial">
+    <p class="placeholder">Axial view of the incoming volume</p>
+  </div>
+  <div class="control_panel">
+    <h4>Incoming image</h4>
+    <!-- TODO insert here a reference to the incoming image's metadata
+         (e.g. link to dataset page) -->
+    <label for="incoming_voxel_size"> Voxel size:</label>
+    <div class="input-group input-group-sm">
+      <input id="incoming_voxel_size" class="form-control" type="text"
+             readonly="readonly"/>
+      <span class="input-group-btn">
+        <button id="modify_voxel_size" class="btn btn-default">
+          Modify…
+        </button>
+      </span>
+    </div>
+    <hr/>
+    <p>
+      Display referential:
+      <label>
+        <input type="radio" name="incoming_display" value="native"
+               checked="checked"/>
+        Native
+      </label>
+      <label>
+        <input type="radio" name="incoming_display" value="transformed"
+               disabled="disabled"/>
+        Transformed
+      </label>
+    </p>
+    <label>
+      <input type="checkbox" id="synchronize_cursors" disabled="disabled"/>
+      Synchronize cursors
+    </label>
+    <hr/>
+    <h4>Registration control</h4>
+    <div class="form-inline">
+      <div class="form-group">
+        <label>
+          Transformation type
+          <select id="transformation_type" class="form-control">
+            <option value="rigid" selected="selected">Rigid</option>
+            <option value="rigid+scaling">Rigid + Scaling</option>
+            <option value="affine">Affine</option>
+          </select>
+        </label>
+      </div>
+      <button class="btn btn-primary btn-block" disabled="disabled">
+        Compute transformation
+      </button>
+    </div>
+    <p>Estimated transformation matrix</p>
+    <table id="transformation_matrix" class="text-muted">
+      <tr><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>0</td><td>1</td><td>0</td><td>0</td></tr>
+      <tr><td>0</td><td>0</td><td>1</td><td>0</td></tr>
+      <tr><td>0</td><td>0</td><td>0</td><td>1</td></tr>
+    </table>
+    <button id="download_transformation" class="btn btn-default"
+            disabled="disabled">
+      Download
+    </button>
+    <button id="save_transformation" class="btn btn-warning"
+            disabled="disabled">
+      Save to KnowledgeGraph
+    </button>
+  </div>
+</div>

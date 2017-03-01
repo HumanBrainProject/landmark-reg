@@ -1,3 +1,4 @@
-<p>Cursor X = <input ng-model="$ctrl.cursor_X" /></p>
-<p>Cursor Y = <input ng-model="$ctrl.cursor_Y" /></p>
-<p>Cursor Z = <input ng-model="$ctrl.cursor_Z" /></p>
+<p>Cursor X = <input type="number" ng-model="$ctrl.cursor_X" /></p>
+<p>Cursor Y = <input type="number" ng-model="$ctrl.cursor_Y" /></p>
+<p>Cursor Z = <input type="number" ng-model="$ctrl.cursor_Z" /></p>
+<button ng-click="$ctrl.sendCursorUpdate()">Update cursor</button>

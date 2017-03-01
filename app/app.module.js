@@ -1,8 +1,7 @@
 angular
   .module("landmarkRegApp", [
     /* App-specific modules */
-    "landmarkReg.landmarks",
-    "landmarkReg.viewer",
+    "landmarkRegApp.landmarkView",
     /* 3rd-party modules */
     "ui.bootstrap"
   ]);
