@@ -6,7 +6,7 @@
     .component("landmarkList", {
       templateUrl: "landmarks/landmark-list.template.html",
       bindings: {
-        landmark_pairs: "=landmarkPairs",
+        onUpdate: "&",
         goToLandmarkPair: "&",
         incoming_cursor: "<incomingCursor",
         template_cursor: "<templateCursor"
@@ -30,6 +30,7 @@
       vm.landmark_pairs.push(
         {target_point: vm.template_cursor,
          source_point: vm.incoming_cursor});
+      vm.onUpdate({landmark_pairs: vm.landmark_pairs});
     }
 
     function deleteLandmarkPair(pair) {
@@ -39,6 +40,7 @@
       } else {
         $log.error("deleteLandmarkPair cannot find the requested pair")
       }
+      vm.onUpdate({landmark_pairs: vm.landmark_pairs});
     }
 
     function resetLandmarkPair(pair) {
@@ -50,6 +52,7 @@
       } else {
         $log.error("deleteLandmarkPair cannot find the requested pair")
       }
+      vm.onUpdate({landmark_pairs: vm.landmark_pairs});
     }
   }
 })(); /* IIFE */

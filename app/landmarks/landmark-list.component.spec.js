@@ -13,6 +13,9 @@ describe("landmarkRegApp.landmarks module", function() {
     it("should insert, delete, reset landmark pairs with the required attributes",
        inject(function($componentController) {
          var ctrl = $componentController("landmarkList");
+
+         ctrl.onUpdate = jasmine.createSpy();
+
          ctrl.incoming_cursor = [1, 2, 3];
          ctrl.template_cursor = [4, 5, 6];
 
@@ -41,6 +44,8 @@ describe("landmarkRegApp.landmarks module", function() {
          ctrl.deleteLandmarkPair(ctrl.landmark_pairs[0]);
 
          expect(ctrl.landmark_pairs.length).toBe(1);
+
+         expect(ctrl.onUpdate).toHaveBeenCalledTimes(4);
        }));
   });
 });

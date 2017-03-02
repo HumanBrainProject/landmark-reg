@@ -17,7 +17,7 @@
     <p>Incoming image cursor: {{$ctrl.incoming_cursor}}</p>
     <hr/>
     <h4>Landmark pairs</h4>
-    <landmark-list landmark-pairs="$ctrl.landmark_pairs"
+    <landmark-list on-update="$ctrl.landmark_pairs = landmark_pairs"
                    incoming-cursor="$ctrl.incoming_cursor"
                    template-cursor="$ctrl.template_cursor"
                    go-to-landmark-pair="$ctrl.goToLandmarkPair(pair)"/>

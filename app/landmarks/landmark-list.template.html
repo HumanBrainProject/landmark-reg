@@ -1,7 +1,6 @@
 <table class="table table-condensed table-hover">
   <tbody>
     <tr ng-repeat="pair in $ctrl.landmark_pairs">
-      <td>{{pair.label}}</td>
       <td>{{pair.target_point}}</td>
       <td>←</td>
       <td>{{pair.source_point}}</td>
@@ -21,16 +20,18 @@
       </td>
     </tr>
   </tbody>
+</table>
+<p class="text-center">
   <button id="new_landmark" class="btn btn-primary"
           ng-click="$ctrl.addLandmarkPair()">
     Add landmark pair
   </button>
-  <p class="text-center">
-    <button id="load_landmarks" class="btn btn-default btn-sm">
-      <span class="glyphicon glyphicon-open"></span> Load…
-    </button>
-    <button id="save_landmarks" class="btn btn-default btn-sm">
-      <span class="glyphicon glyphicon-save"></span> Save…
-    </button>
-  </p>
-</table>
+</p>
+<p class="text-center">
+  <button id="load_landmarks" class="btn btn-default btn-sm">
+    <span class="glyphicon glyphicon-open"></span> Load…
+  </button>
+  <button id="save_landmarks" class="btn btn-default btn-sm">
+    <span class="glyphicon glyphicon-save"></span> Save…
+  </button>
+</p>
