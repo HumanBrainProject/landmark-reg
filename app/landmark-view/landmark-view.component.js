@@ -17,39 +17,14 @@
     vm.template_description = "dummy template";
     vm.landmark_pairs = [];
 
-    vm.addLandmarkPair = addLandmarkPair;
-    vm.deleteLandmarkPair = deleteLandmarkPair;
-    vm.resetLandmarkPair = resetLandmarkPair;
-    vm.showLandmarkPair = showLandmarkPair;
+    vm.goToLandmarkPair = goToLandmarkPair;
     vm.updateIncomingCursor = updateIncomingCursor;
     vm.updateTemplateCursor = updateTemplateCursor;
 
     ////////////
 
-    function addLandmarkPair() {
-      vm.landmark_pairs.push(
-        {target_point: vm.incoming_cursor,
-         source_point: vm.template_cursor});
-    }
-
-    function deleteLandmarkPair(pair) {
-      var index = vm.landmark_pairs.indexOf(pair);
-      if(index >= 0) {
-        vm.landmark_pairs.splice(index, 1);
-      }
-    }
-
-    function resetLandmarkPair(pair) {
-      var index = vm.landmark_pairs.indexOf(pair);
-      if(index >= 0) {
-        vm.landmark_pairs[index] =
-          {target_point: vm.incoming_cursor,
-           source_point: vm.template_cursor};
-      }
-    }
-
-    function showLandmarkPair(pair) {
-      $log.warn("showLandmarkPair: not implemented yet");
+    function goToLandmarkPair(pair) {
+      $log.warn("goToLandmarkPair: not implemented yet");
     }
 
     function updateIncomingCursor(coords) {
@@ -59,5 +34,5 @@
     function updateTemplateCursor(coords) {
       vm.template_cursor = coords;
     }
-}
+  }
 })(); /* IIFE */

@@ -7,18 +7,30 @@
       <td>{{pair.source_point}}</td>
       <td>
         <button title="Show" class="btn btn-xs btn-default"
-                ng-click="$ctrl.onShow({pair: pair})">
+                ng-click="$ctrl.goToLandmarkPair({pair: pair})">
           <span class="glyphicon glyphicon-eye-open"></span>
         </button>
         <button title="Reset" class="btn btn-xs btn-default"
-                ng-click="$ctrl.onReset({pair: pair})">
+                ng-click="$ctrl.resetLandmarkPair(pair)">
           <span class="glyphicon glyphicon-move"></span>
         </button>
         <button title="Delete" class="btn btn-xs btn-danger"
-                ng-click="$ctrl.onDelete({pair: pair})">
+                ng-click="$ctrl.deleteLandmarkPair(pair)">
           <span class="glyphicon glyphicon-remove"></span>
         </button>
       </td>
     </tr>
   </tbody>
+  <button id="new_landmark" class="btn btn-primary"
+          ng-click="$ctrl.addLandmarkPair()">
+    Add landmark pair
+  </button>
+  <p class="text-center">
+    <button id="load_landmarks" class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-open"></span> Load…
+    </button>
+    <button id="save_landmarks" class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-save"></span> Save…
+    </button>
+  </p>
 </table>
