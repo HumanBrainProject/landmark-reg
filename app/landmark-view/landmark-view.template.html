@@ -42,62 +42,65 @@
          (e.g. link to dataset page) -->
     <label for="incoming_voxel_size"> Voxel size:</label>
     <div class="input-group input-group-sm">
-      <input id="incoming_voxel_size" class="form-control" type="text"
-             readonly="readonly"/>
+      <input class="form-control" type="text" readonly="readonly"/>
       <span class="input-group-btn">
-        <button id="modify_voxel_size" class="btn btn-default">
-          Modify…
+        <button class="btn btn-default">
+          Edit…
         </button>
       </span>
     </div>
-    <hr/>
-    <p>
-      Display referential:
-      <label>
-        <input type="radio" name="incoming_display" value="native"
-               checked="checked"/>
-        Native
-      </label>
-      <label>
-        <input type="radio" name="incoming_display" value="transformed"
-               disabled="disabled"/>
-        Transformed
-      </label>
-    </p>
-    <label>
-      <input type="checkbox" id="synchronize_cursors" disabled="disabled"/>
-      Synchronize cursors
-    </label>
     <hr/>
     <h4>Registration control</h4>
     <div class="form-inline">
       <div class="form-group">
         <label>
           Transformation type
-          <select id="transformation_type" class="form-control">
-            <option value="rigid" selected="selected">Rigid</option>
+          <select ng-model="$ctrl.transformation_type" class="form-control">
+            <option value="rigid">Rigid</option>
             <option value="rigid+scaling">Rigid + Scaling</option>
             <option value="affine">Affine</option>
           </select>
         </label>
       </div>
-      <button class="btn btn-primary btn-block" disabled="disabled">
+      <button ng-click="$ctrl.performRegistration()"
+              class="btn btn-primary btn-block"
+              ng-disabled="!$ctrl.readyToTransform()">
         Compute transformation
       </button>
     </div>
-    <p>Estimated transformation matrix</p>
-    <table id="transformation_matrix" class="text-muted">
-      <tr><td>1</td><td>0</td><td>0</td><td>0</td></tr>
-      <tr><td>0</td><td>1</td><td>0</td><td>0</td></tr>
-      <tr><td>0</td><td>0</td><td>1</td><td>0</td></tr>
-      <tr><td>0</td><td>0</td><td>0</td><td>1</td></tr>
-    </table>
-    <button id="download_transformation" class="btn btn-default"
-            disabled="disabled">
+    <hr/>
+    <div ng-show="$ctrl.transformationAvailable()">
+      <p>Estimated transformation matrix</p>
+      <table>
+        <tr><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+        <tr><td>0</td><td>1</td><td>0</td><td>0</td></tr>
+        <tr><td>0</td><td>0</td><td>1</td><td>0</td></tr>
+        <tr><td>0</td><td>0</td><td>0</td><td>1</td></tr>
+      </table>
+    </div>
+    <p>
+      Display referential:
+      <label>
+        <input ng-model="$ctrl.incoming_display_referential"
+               type="radio" value="native"/>
+        Native
+      </label>
+      <label>
+        <input ng-model="$ctrl.incoming_display_referential"
+               type="radio" value="transformed"
+               ng-disabled="!$ctrl.transformationAvailable()"/>
+        Transformed
+      </label>
+    </p>
+    <label>
+      <input ng-model="$ctrl.synchronize_cursors" type="checkbox"
+             ng-disabled="!$ctrl.transformationAvailable()"/>
+      Synchronize cursors
+    </label>
+    <button class="btn btn-default" ng-disabled="!$ctrl.transformationAvailable()">
       Download
     </button>
-    <button id="save_transformation" class="btn btn-warning"
-            disabled="disabled">
+    <button class="btn btn-warning" ng-disabled="!$ctrl.transformationAvailable()">
       Save to KnowledgeGraph
     </button>
   </div>
