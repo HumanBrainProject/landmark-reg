@@ -14,7 +14,6 @@
       controller: LandmarkListController
     });
 
-  LandmarkListController.$inject = ["$log"];
   function LandmarkListController($log) {
     var vm = this;
 

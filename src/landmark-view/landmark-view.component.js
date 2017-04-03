@@ -8,7 +8,6 @@
       controller: LandmarkViewController
     });
 
-  LandmarkViewController.$inject = ["AlignmentTask", "$log"];
   function LandmarkViewController(AlignmentTask, $log) {
     var vm = this;
 
