@@ -1,3 +1,7 @@
+/app/bundle.js
+/app/bundle.js.map
+/app/templates.js
+
 logs/*
 !.gitkeep
 node_modules/

@@ -8,8 +8,7 @@
       controller: LandmarkViewController
     });
 
-  LandmarkViewController.$inject = ["$log"];
-  function LandmarkViewController($log) {
+  function LandmarkViewController(AlignmentTask, $log) {
     var vm = this;
 
     vm.incoming_cursor = [0, 0, 0];
@@ -20,6 +19,7 @@
     vm.transformation = null;
     vm.transformation_type = "rigid";
     vm.landmark_pairs = [];
+    vm.current_alignment_task = null;
 
     vm.goToLandmarkPair = goToLandmarkPair;
     vm.performRegistration = performRegistration;
@@ -35,7 +35,13 @@
     }
 
     function performRegistration() {
-      $log.warn("performRegistration: not implemented yet");
+      var alignment_task_description = {
+        source_image: "URI of source image",
+        target_image: "URI of target image",
+        landmark_pairs: vm.landmark_pairs
+      };
+      vm.current_alignment_task
+        = AlignmentTask.create(alignment_task_description);
     }
 
     function readyToTransform() {
