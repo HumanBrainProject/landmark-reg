@@ -1,17 +1,16 @@
 //jshint strict: false
 module.exports = function(config) {
   config.set({
-
-    basePath: "./app",
-
     files: [
-      "bower_components/angular/angular.js",
-      'bower_components/angular-resource/angular-resource.js',
-      'bower_components/angular-mocks/angular-mocks.js',
-      "bower_components/angular-bootstrap/ui-bootstrap.js",
-      "!(bower_components)/**.module.js",
-      "!(bower_components)/**!(.module|.spec).js",
-      "!(bower_components)/**.spec.js"
+      "app/bower_components/angular/angular.js",
+      "app/bower_components/angular-resource/angular-resource.js",
+      "app/bower_components/angular-mocks/angular-mocks.js",
+      "app/bower_components/angular-bootstrap/ui-bootstrap.js",
+      "src/*.module.js",
+      "src/*!(.module|.spec).js",
+      "src/**/*.module.js",
+      "src/**/*!(.module|.spec).js",
+      "src/**/*.spec.js"
     ],
 
     autoWatch: true,
