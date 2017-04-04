@@ -23,7 +23,7 @@ gulp.task("js", function () {
       .pipe(ngAnnotate({single_quotes: false}))
       // .pipe(uglify())
     .pipe(sourcemaps.write("."))
-    .pipe(gulp.dest("app"));
+    .pipe(gulp.dest("frontend"));
 });
 
 gulp.task("template-cache", function () {
@@ -33,5 +33,5 @@ gulp.task("template-cache", function () {
                           standalone: true,
                           module: "landmarkRegApp.templates"
                         }))
-    .pipe(gulp.dest("app"));
+    .pipe(gulp.dest("frontend"));
 });

@@ -1,7 +1,7 @@
 # Generated files
-/app/bundle.js
-/app/bundle.js.map
-/app/templates.js
+/frontend/bundle.js
+/frontend/bundle.js.map
+/frontend/templates.js
 
 # From angular-seed
 logs/*

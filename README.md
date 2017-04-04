@@ -22,12 +22,12 @@ the front-end, and start the backend in debug mode.
     . venv/bin/activate
     npm start
 
-The app should then be served on http://localhost:5000/ .
+The app should be accessible on http://localhost:5000/ .
 
 If you make changes to the front-end you may want to use `npm run test:watch`
 to automatically run tests on every change, and `npm run build:watch` to
 automatically re-build the JavaScript bundle that is served to the browser
-(`app/bundle`).
+(`frontend/bundle`).
 
 
 # Tests
