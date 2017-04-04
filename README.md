@@ -4,7 +4,42 @@ Interactive tool for landmark-based spatial alignment of volumetric images
 
 # Developement set-up
 
-For now the project contains only the front-end (client-side HTML5 app).
+Prerequisites:
+* Python version 3.4 or later;
+* Nodejs and the NPM package manager.
 
-1. Install the dependencies by running `npm install`
-2. Start a test server by running `npm start`, then visit http://localhost:8000/
+First, set up a virtual environment for the back-end under `venv/`, and install
+the dependencies there:
+
+    python3 -m venv venv
+    . venv/bin/activate
+    python -m pip install -r requirements.txt
+
+
+Once this is done, you can use `npm start` to install the dependencies, build
+the front-end, and start the backend in debug mode.
+
+    . venv/bin/activate
+    npm start
+
+The app should then be served on http://localhost:5000/ .
+
+If you make changes to the front-end you may want to use `npm run test:watch`
+to automatically run tests on every change, and `npm run build:watch` to
+automatically re-build the JavaScript bundle that is served to the browser
+(`app/bundle`).
+
+
+# Tests
+
+## Unit-tests for the frontend
+
+    npm run test
+
+## Unit-tests for the backend
+
+TODO
+
+## End-to-end tests
+
+TODO

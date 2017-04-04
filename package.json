@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "description": "Interactive tool for landmark-based spatial alignment of volumetric images",
   "repository": "https://github.com/HumanBrainProject/landmark-reg",
-  "license": "private",
+  "license": "UNLICENSED",
   "devDependencies": {
     "bower": "^1.7.7",
     "gulp": "^3.9.1",
@@ -13,7 +13,6 @@
     "gulp-ng-annotate": "^2.0.0",
     "gulp-sourcemaps": "^2.5.0",
     "gulp-uglify": "^2.1.2",
-    "http-server": "^0.9.0",
     "jasmine-core": "^2.4.1",
     "karma": "^0.13.22",
     "karma-chrome-launcher": "^0.2.3",
@@ -27,11 +26,15 @@
     "update-deps": "npm update",
     "postupdate-deps": "bower update",
 
-    "prestart": "npm install",
-    "start": "http-server -a localhost -p 8000 -c-1 -e xhtml ./app",
+    "prebuild": "npm install",
+    "build": "gulp",
+    "build:watch": "gulp watch",
 
-    "pretest": "npm install",
-    "test": "karma start karma.conf.js",
-    "test-single-run": "karma start karma.conf.js --single-run"
+    "prestart": "npm run build",
+    "start": "PYTHONPATH=. FLASK_APP=backend flask run",
+
+    "pretest": "npm run build",
+    "test": "karma start karma.conf.js --single-run",
+    "test:watch": "karma start karma.conf.js --no-single-run"
   }
 }

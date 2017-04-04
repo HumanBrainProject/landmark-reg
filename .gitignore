@@ -1,7 +1,9 @@
+# Generated files
 /app/bundle.js
 /app/bundle.js.map
 /app/templates.js
 
+# From angular-seed
 logs/*
 !.gitkeep
 node_modules/
@@ -9,3 +11,22 @@ bower_components/
 tmp
 .DS_Store
 .idea
+
+# NodeJS logs
+logs
+*.log
+npm-debug.log*
+
+# Optional npm cache directory
+.npm
+
+# Python byte-compiled files
+__pycache__/
+*.py[cod]
+
+# Flask
+instance/
+.webassets-cache
+
+# virtualenv
+venv/
