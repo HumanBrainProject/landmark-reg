@@ -27,9 +27,10 @@
 
     function addLandmarkPair() {
       vm.landmark_pairs.push(
-        {target_point: vm.template_cursor,
-         source_point: vm.incoming_cursor});
-      vm.onUpdate({landmark_pairs: vm.landmark_pairs});
+        {target_point: vm.template_cursor.slice(),
+         source_point: vm.incoming_cursor.slice()});
+      if(vm.onUpdate)
+        vm.onUpdate({landmark_pairs: vm.landmark_pairs});
     }
 
     function deleteLandmarkPair(pair) {
@@ -39,19 +40,21 @@
       } else {
         $log.error("deleteLandmarkPair cannot find the requested pair")
       }
-      vm.onUpdate({landmark_pairs: vm.landmark_pairs});
+      if(vm.onUpdate)
+        vm.onUpdate({landmark_pairs: vm.landmark_pairs});
     }
 
     function resetLandmarkPair(pair) {
       var index = vm.landmark_pairs.indexOf(pair);
       if(index >= 0) {
         vm.landmark_pairs[index] =
-          {target_point: vm.template_cursor,
-           source_point: vm.incoming_cursor};
+          {target_point: vm.template_cursor.slice(),
+           source_point: vm.incoming_cursor.slice()};
       } else {
         $log.error("deleteLandmarkPair cannot find the requested pair")
       }
-      vm.onUpdate({landmark_pairs: vm.landmark_pairs});
+      if(vm.onUpdate)
+        vm.onUpdate({landmark_pairs: vm.landmark_pairs});
     }
   }
 })(); /* IIFE */

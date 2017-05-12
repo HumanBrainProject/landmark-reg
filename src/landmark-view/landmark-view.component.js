@@ -31,7 +31,8 @@
     ////////////
 
     function goToLandmarkPair(pair) {
-      $log.warn("goToLandmarkPair: not implemented yet");
+      vm.template_cursor = pair.target_point.slice();
+      vm.incoming_cursor = pair.source_point.slice();
     }
 
     function performRegistration() {
