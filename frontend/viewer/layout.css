@@ -1,0 +1,43 @@
+.coronal {
+    position: absolute;
+    height: 50%;
+    top: 0;
+    bottom: 50%;
+    width: 50%;
+    left: 0;
+    right: 50%;
+    background: #ccccff;
+}
+
+.sagittal {
+    position: absolute;
+    height: 50%;
+    top: 0;
+    bottom: 50%;
+    width: 50%;
+    left: 50%;
+    right: 100%;
+    background: #ccffcc;
+}
+
+.axial {
+    position: absolute;
+    height: 50%;
+    top: 50%;
+    bottom: 100%;
+    width: 50%;
+    left: 0;
+    right: 50%;
+    background: #ffcccc;
+}
+
+div.control_panel {
+    position: absolute;
+    height: 50%;
+    top: 50%;
+    bottom: 100%;
+    width: 50%;
+    left: 50%;
+    right: 100%;
+    overflow: auto; /* scroll bars if contents overflow */
+}
