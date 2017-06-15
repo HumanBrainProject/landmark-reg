@@ -2,6 +2,10 @@ body {
     overflow: hidden;  /* no scroll bar */
 }
 
+canvas {
+    cursor: crosshair;
+}
+
 div#template_viewer {
     position: fixed;
     height: 100%;

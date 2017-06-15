@@ -12,6 +12,19 @@
   <script src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
   <script src="templates.js"></script>
   <script src="bundle.js"></script>
+  <script src="cache.js"></script>
+  <script src="zoomer.js"></script>
+  <script>
+    // for reduced-resolution dataset
+    var xdim=(((6572+1)>>1)+1)>>1;
+    var zdim=(((7404+1)>>1)+1)>>1;
+    var ydim=(((5711+1)>>1)+1)>>1;
+    var cut={
+        x:xdim/2,
+        y:ydim/2,
+        z:zdim/2
+    };
+  </script>      
 </head>
 
 <body>
