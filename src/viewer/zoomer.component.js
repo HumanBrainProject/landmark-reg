@@ -28,19 +28,19 @@
 
     function $postLink() {
       $log.debug("$postLink called");
-      var tlcv = $element.find("canvas.coronal")[0];
-      var trcv = $element.find("canvas.sagittal")[0];
-      var blcv = $element.find("canvas.axial")[0];
 
+      var corcv = $element.find("canvas.coronal")[0];
+      var sagcv = $element.find("canvas.sagittal")[0];
+      var axlcv = $element.find("canvas.axial")[0];
       // TODO handle resize?
-      tlcv.height = tlcv.offsetHeight;
-      tlcv.width = tlcv.offsetWidth;
-      trcv.width = trcv.offsetWidth;
-      trcv.height = trcv.offsetHeight;
-      blcv.width = blcv.offsetWidth;
-      blcv.height = blcv.offsetHeight;
+      corcv.height = corcv.offsetHeight;
+      corcv.width = corcv.offsetWidth;
+      sagcv.width = sagcv.offsetWidth;
+      sagcv.height = sagcv.offsetHeight;
+      axlcv.width = axlcv.offsetWidth;
+      axlcv.height = axlcv.offsetHeight;
 
-      // Globals from Gergely's index.html. TODO: get rid of them!
+      // for reduced-resolution dataset. TODO: make it configurable
       var xdim=(((6572+1)>>1)+1)>>1;
       var zdim=(((7404+1)>>1)+1)>>1;
       var ydim=(((5711+1)>>1)+1)>>1;
@@ -71,15 +71,15 @@
         ctx.stroke();
       }
 
-      var tlz=new Zoomer(tlcv,{
+      var corz=new Zoomer(corcv,{
         Width:xdim,Height:ydim,TileSize:256,MaxLevel:5-2, // coronal x-y
-        url:function(level,x,y){
+        Key:function(level,x,y){
           var z=cut.z;
           for(var i=0;i<level;i++)
             z=(z+1)>>1;
-          return "http://www.nesys.uio.no/CDPTest/GetPNG.php?x="+x+"&y="+y+"&z="+z+"&level="+level+"&stack=z";
+          return "http://www.nesys.uio.no/CDPTest/data/"+(level+2)+"/z/"+("0000"+z).substr(-4,4)+"/y"+("00"+y).substr(-2,2)+"_x"+("00"+x).substr(-2,2)+".png";
         },
-        load:function(url,x,y,next){
+        Load:function(url,x,y,next){
           var img=document.createElement("img");
           img.onload=function(){tilecomplete(img,next);};
           img.onerror=function(){
@@ -88,34 +88,33 @@
           };
           img.src=url;
         },
-        dispatchmidzoom:function(x,y,zoom){
-          trz.setmidzoom(trz.getmidx(),y,zoom);
-          blz.setmidzoom(x,blz.getmidy(),zoom);
-        },
-        overlay:function(ctx,cw,ch,x,y,w,h){
+        Overlay:function(ctx,cw,ch,x,y,w,h){
           cross(cut.x,cut.y,ctx,cw,ch,x,y,w,h);
         },
-        click:function(x,y,cnvw,cnvh,cutx,cuty,cutw,cuth){
-          cut.x=cutx+x*cutw/cnvw;
-          cut.y=cuty+y*cuth/cnvh;
+        Click:function(event,cnvw,cnvh,cutx,cuty,cutw,cuth){
+          cut.x=cutx+event.offsetX*cutw/cnvw;
+          cut.y=cuty+event.offsetY*cuth/cnvh;
           cursorUpdatedByZoomer(cut);
-          tlz.redraw();
-          trz.redraw();
-          blz.redraw();
+          corz.redraw();
+          sagz.redraw();
+          axlz.redraw();
+        },
+        Dispatch:function(){
+          sagz.setmidzoom(sagz.getmidx(),corz.getmidy(),corz.getzoom());
+          axlz.setmidzoom(corz.getmidx(),axlz.getmidy(),corz.getzoom());
         }
       });
-      tlz.fullscreen();
-      //                tlz.setmidzoom(xdim/2,ydim/2,8);
+      corz.fullcanvas();
 
-      var trz=new Zoomer(trcv,{
+      var sagz=new Zoomer(sagcv,{
         Width:zdim,Height:ydim,TileSize:256,MaxLevel:5-2, // sagittal y-z
-        url:function(level,y,z){
+        Key:function(level,y,z){
           var x=cut.x;
           for(var i=0;i<level;i++)
             x=(x+1)>>1;
-          return "http://www.nesys.uio.no/CDPTest/GetPNG.php?x="+x+"&y="+z+"&z="+y+"&level="+level+"&stack=x";
+          return "http://www.nesys.uio.no/CDPTest/data/"+(level+2)+"/x/"+("0000"+x).substr(-4,4)+"/y"+("00"+z).substr(-2,2)+"_z"+("00"+y).substr(-2,2)+".png";
         },
-        load:function(url,x,y,next){
+        Load:function(url,x,y,next){
           var img=document.createElement("img");
           img.onload=function(){tilecomplete(img,next);};
           img.onerror=function(){
@@ -124,34 +123,33 @@
           };
           img.src=url;
         },
-        dispatchmidzoom:function(x,y,zoom){
-          tlz.setmidzoom(tlz.getmidx(),y,zoom);
-          blz.setmidzoom(blz.getmidx(),x,zoom);
-        },
-        overlay:function(ctx,cw,ch,x,y,w,h){
+        Overlay:function(ctx,cw,ch,x,y,w,h){
           cross(cut.z,cut.y,ctx,cw,ch,x,y,w,h);
         },
-        click:function(x,y,cnvw,cnvh,cutx,cuty,cutw,cuth){
-          cut.z=cutx+x*cutw/cnvw;
-          cut.y=cuty+y*cuth/cnvh;
+        Click:function(event,cnvw,cnvh,cutx,cuty,cutw,cuth){
+          cut.z=cutx+event.offsetX*cutw/cnvw;
+          cut.y=cuty+event.offsetY*cuth/cnvh;
           cursorUpdatedByZoomer(cut);
-          tlz.redraw();
-          trz.redraw();
-          blz.redraw();
+          corz.redraw();
+          sagz.redraw();
+          axlz.redraw();
+        },
+        Dispatch:function(){
+          corz.setmidzoom(corz.getmidx(),sagz.getmidy(),sagz.getzoom());
+          axlz.setmidzoom(axlz.getmidx(),sagz.getmidx(),sagz.getzoom());
         }
       });
-      trz.fullscreen();
-      //                trz.setmidzoom(zdim/2,ydim/2,8);
+      sagz.fullcanvas();
 
-      var blz=new Zoomer(blcv,{
+      var axlz=new Zoomer(axlcv,{
         Width:xdim,Height:zdim,TileSize:256,MaxLevel:5-2, // horizontal x-z
-        url:function(level,x,z){
+        Key:function(level,x,z){
           var y=cut.y;
           for(var i=0;i<level;i++)
             y=(y+1)>>1;
-          return "http://www.nesys.uio.no/CDPTest/GetPNG.php?x="+x+"&y="+y+"&z="+z+"&level="+level+"&stack=y";
+          return "http://www.nesys.uio.no/CDPTest/data/"+(level+2)+"/y/"+("0000"+y).substr(-4,4)+"/z"+("00"+z).substr(-2,2)+"_x"+("00"+x).substr(-2,2)+".png";
         },
-        load:function(url,x,y,next){
+        Load:function(url,x,y,next){
           var img=document.createElement("img");
           img.onload=function(){tilecomplete(img,next);};
           img.onerror=function(){
@@ -160,23 +158,23 @@
           };
           img.src=url;
         },
-        dispatchmidzoom:function(x,y,zoom){
-          tlz.setmidzoom(x,tlz.getmidy(),zoom);
-          trz.setmidzoom(y,trz.getmidy(),zoom);
-        },
-        overlay:function(ctx,cw,ch,x,y,w,h){
+        Overlay:function(ctx,cw,ch,x,y,w,h){
           cross(cut.x,cut.z,ctx,cw,ch,x,y,w,h);
         },
-        click:function(x,y,cnvw,cnvh,cutx,cuty,cutw,cuth){
-          cut.x=cutx+x*cutw/cnvw;
-          cut.z=cuty+y*cuth/cnvh;
+        Click:function(event,cnvw,cnvh,cutx,cuty,cutw,cuth){
+          cut.x=cutx+event.offsetX*cutw/cnvw;
+          cut.z=cuty+event.offsetY*cuth/cnvh;
           cursorUpdatedByZoomer(cut);
-          tlz.redraw();
-          trz.redraw();
-          blz.redraw();
+          corz.redraw();
+          sagz.redraw();
+          axlz.redraw();
+        },
+        Dispatch:function(){
+          corz.setmidzoom(axlz.getmidx(),corz.getmidy(),axlz.getzoom());
+          sagz.setmidzoom(axlz.getmidy(),sagz.getmidy(),axlz.getzoom());
         }
       });
-      blz.fullscreen();
+      axlz.fullcanvas();
 
       // Synchronize the views when the cursor is updated externally (e.g. Go
       // To Landmark). The $onChanges lifecycle hook cannot be used because
@@ -189,9 +187,9 @@
           cut.x = vm.cursor[0];
           cut.y = vm.cursor[1];
           cut.z = vm.cursor[2];
-          tlz.redraw();
-          trz.redraw();
-          blz.redraw();
+          corz.redraw();
+          sagz.redraw();
+          axlz.redraw();
         });
     }
 
