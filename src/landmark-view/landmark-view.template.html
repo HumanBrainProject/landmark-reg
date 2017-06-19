@@ -4,8 +4,8 @@
   <div class="control_panel"> <!-- TODO decide in which CSS this class should go -->
     <p>Template: {{$ctrl.template_description}}</p>
     <hr/>
-    <p>Template image cursor: {{$ctrl.template_cursor}}</p>
-    <p>Incoming image cursor: {{$ctrl.incoming_cursor}}</p>
+    <p>Template image cursor: <coordinates coords="$ctrl.template_cursor"/></p>
+    <p>Incoming image cursor: <coordinates coords="$ctrl.incoming_cursor"/></p>
     <hr/>
     <h4>Landmark pairs</h4>
     <landmark-list on-update="$ctrl.landmark_pairs = landmark_pairs"
