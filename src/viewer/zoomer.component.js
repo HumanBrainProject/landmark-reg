@@ -77,6 +77,7 @@
           var z=cut.z;
           for(var i=0;i<level;i++)
             z=(z+1)>>1;
+          z = Math.round(z);
           return "http://www.nesys.uio.no/CDPTest/data/"+(level+2)+"/z/"+("0000"+z).substr(-4,4)+"/y"+("00"+y).substr(-2,2)+"_x"+("00"+x).substr(-2,2)+".png";
         },
         Load:function(url,x,y,next){
@@ -112,6 +113,7 @@
           var x=cut.x;
           for(var i=0;i<level;i++)
             x=(x+1)>>1;
+          x = Math.round(x);
           return "http://www.nesys.uio.no/CDPTest/data/"+(level+2)+"/x/"+("0000"+x).substr(-4,4)+"/y"+("00"+z).substr(-2,2)+"_z"+("00"+y).substr(-2,2)+".png";
         },
         Load:function(url,x,y,next){
@@ -147,6 +149,7 @@
           var y=cut.y;
           for(var i=0;i<level;i++)
             y=(y+1)>>1;
+          y = Math.round(y);
           return "http://www.nesys.uio.no/CDPTest/data/"+(level+2)+"/y/"+("0000"+y).substr(-4,4)+"/z"+("00"+z).substr(-2,2)+"_x"+("00"+x).substr(-2,2)+".png";
         },
         Load:function(url,x,y,next){
