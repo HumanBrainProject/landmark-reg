@@ -14,17 +14,7 @@
   </div>
 </div>
 <div id="incoming_viewer">
-  <div id="incoming_view_coronal" class="coronal">
-    <p class="placeholder">Coronal view of the incoming volume</p>
-    <viewer-3d-mockup cursor="$ctrl.incoming_cursor"/>
-  </div>
-  <div id="incoming_view_sagittal" class="sagittal">
-    <p class="placeholder">Sagittal view of the incoming volume</p>
-    <p>{{$ctrl.landmark_pairs | json: 0 }}</p>
-  </div>
-  <div id="incoming_view_axial" class="axial">
-    <p class="placeholder">Axial view of the incoming volume</p>
-  </div>
+  <zoomer cursor="$ctrl.incoming_cursor"/>
   <div class="control_panel">
     <h4>Incoming image</h4>
     <!-- TODO insert here a reference to the incoming image's metadata
