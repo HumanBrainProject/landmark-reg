@@ -7,18 +7,21 @@
       templateUrl: "viewer/zoomer.template.html",
       controller: ZoomerController,
       bindings: {
-        cursor: "="
+        cursor: "<",
+        onCursorUpdate: "&"
       }
     });
 
   function ZoomerController($element, $scope, $log) {
     var vm = this;
 
-    vm.cursor = [0, 0, 0];
-
     vm.$onInit = $onInit;
+    vm.$onChanges = $onChanges;
     vm.$postLink = $postLink;
     vm.$onDestroy = $onDestroy;
+
+    // Local variable used by Zoomer to store the current cursor position
+    var cut={x: 0, y: 0, z:0};
 
     ////////////
 
@@ -45,11 +48,12 @@
       var zdim=(((7404+1)>>1)+1)>>1;
       var ydim=(((5711+1)>>1)+1)>>1;
 
-      var cut={
+      cut = {
         x:xdim/2,
         y:ydim/2,
         z:zdim/2
       };
+      vm.onCursorUpdate({cursor: [cut.x, cut.y, cut.z]});
 
       function tilecomplete(tile,next){
         var canvas=document.createElement("canvas");
@@ -179,21 +183,27 @@
       });
       axlz.fullcanvas();
 
-      // Synchronize the views when the cursor is updated externally (e.g. Go
-      // To Landmark). The $onChanges lifecycle hook cannot be used because
-      // cursor uses two-way binding.
-      $scope.$watch(
-        function(){
-          return vm.cursor;
-        },
-        function(newValue, oldValue){
-          cut.x = vm.cursor[0];
-          cut.y = vm.cursor[1];
-          cut.z = vm.cursor[2];
-          corz.redraw();
-          sagz.redraw();
-          axlz.redraw();
-        });
+      vm.corz = corz;
+      vm.sagz = sagz;
+      vm.axlz = axlz;
+    }
+
+    // Synchronize the views when the cursor is updated externally (e.g. Go
+    // To Landmark).
+    function $onChanges(changes) {
+      if(changes.cursor) {
+        var current_value = changes.cursor.currentValue;
+        if(current_value[0] != cut.x
+           || current_value[1] != cut.y
+           || current_value[2] != cut.z) {
+          cut.x = current_value[0];
+          cut.y = current_value[1];
+          cut.z = current_value[2];
+          vm.corz.redraw();
+          vm.sagz.redraw();
+          vm.axlz.redraw();
+        }
+      }
     }
 
     function $onDestroy() {
@@ -202,7 +212,7 @@
 
     function cursorUpdatedByZoomer(cut) {
       $scope.$apply(function() {
-        vm.cursor = [cut.x, cut.y, cut.z];
+        vm.onCursorUpdate({cursor: [cut.x, cut.y, cut.z]});
       });
     }
   }

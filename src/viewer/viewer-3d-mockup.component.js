@@ -7,16 +7,27 @@
       templateUrl: "viewer/viewer-3d-mockup.template.html",
       controller: Viewer3dMockupController,
       bindings: {
-        cursor: "="
+        cursor: "<",
+        onCursorUpdate: "&"
       }
     });
 
   function Viewer3dMockupController($log) {
     var vm = this;
 
-    vm.cursor = [0, 0, 0];
+    vm.cursorUpdate = cursorUpdate;
 
     ////////////
+
+    function cursorUpdate() {
+      vm.onCursorUpdate({cursor: vm.cursor});
+    }
+
+    function $onChanges(changes) {
+      if(changes.cursor) {
+        vm.cursor = changes.cursor.current_value.slice();
+      }
+    }
 
   }
 
