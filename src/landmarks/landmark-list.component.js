@@ -38,7 +38,7 @@
       if(index >= 0) {
         vm.landmark_pairs.splice(index, 1);
       } else {
-        $log.error("deleteLandmarkPair cannot find the requested pair")
+        $log.error("deleteLandmarkPair cannot find the requested pair");
       }
       if(vm.onUpdate)
         vm.onUpdate({landmark_pairs: vm.landmark_pairs});
@@ -51,7 +51,7 @@
           {target_point: vm.template_cursor.slice(),
            source_point: vm.incoming_cursor.slice()};
       } else {
-        $log.error("deleteLandmarkPair cannot find the requested pair")
+        $log.error("deleteLandmarkPair cannot find the requested pair");
       }
       if(vm.onUpdate)
         vm.onUpdate({landmark_pairs: vm.landmark_pairs});

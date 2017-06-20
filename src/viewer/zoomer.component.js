@@ -193,9 +193,9 @@
     function $onChanges(changes) {
       if(changes.cursor) {
         var current_value = changes.cursor.currentValue;
-        if(current_value[0] != cut.x
-           || current_value[1] != cut.y
-           || current_value[2] != cut.z) {
+        if(current_value[0] != cut.x ||
+           current_value[1] != cut.y ||
+           current_value[2] != cut.z) {
           cut.x = current_value[0];
           cut.y = current_value[1];
           cut.z = current_value[2];

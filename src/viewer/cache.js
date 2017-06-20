@@ -1,3 +1,5 @@
+"use strict";
+
 function LRUCache(capacity){
     this.map={};
     this.head={next:null};

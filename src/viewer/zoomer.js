@@ -1,4 +1,5 @@
 function Zoomer(canvas,cfg){
+    "use strict";
     var cache=new LRUCache(300);
 
     var canvaswidth=0;

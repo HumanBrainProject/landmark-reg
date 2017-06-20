@@ -41,8 +41,8 @@
         target_image: "URI of target image",
         landmark_pairs: vm.landmark_pairs
       };
-      vm.current_alignment_task
-        = AlignmentTask.create(alignment_task_description);
+      vm.current_alignment_task =
+        AlignmentTask.create(alignment_task_description);
     }
 
     function readyToTransform() {

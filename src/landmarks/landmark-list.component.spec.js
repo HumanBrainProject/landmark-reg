@@ -22,8 +22,8 @@ describe("landmarkRegApp.landmarks module", function() {
          ctrl.addLandmarkPair();
 
          expect(ctrl.landmark_pairs.length).toBe(1);
-         expect(ctrl.landmark_pairs[0]["target_point"]).toEqual(ctrl.template_cursor);
-         expect(ctrl.landmark_pairs[0]["source_point"]).toEqual(ctrl.incoming_cursor);
+         expect(ctrl.landmark_pairs[0].target_point).toEqual(ctrl.template_cursor);
+         expect(ctrl.landmark_pairs[0].source_point).toEqual(ctrl.incoming_cursor);
 
          ctrl.incoming_cursor = [10, 20, 30];
          ctrl.template_cursor = [40, 50, 60];
@@ -38,8 +38,8 @@ describe("landmarkRegApp.landmarks module", function() {
          ctrl.resetLandmarkPair(ctrl.landmark_pairs[0]);
 
          expect(ctrl.landmark_pairs.length).toBe(2);
-         expect(ctrl.landmark_pairs[0]["target_point"]).toEqual(ctrl.template_cursor);
-         expect(ctrl.landmark_pairs[0]["source_point"]).toEqual(ctrl.incoming_cursor);
+         expect(ctrl.landmark_pairs[0].target_point).toEqual(ctrl.template_cursor);
+         expect(ctrl.landmark_pairs[0].source_point).toEqual(ctrl.incoming_cursor);
 
          ctrl.deleteLandmarkPair(ctrl.landmark_pairs[0]);
 
@@ -55,12 +55,12 @@ describe("landmarkRegApp.landmarks module", function() {
          ctrl.template_cursor = [4, 5, 6];
 
          ctrl.addLandmarkPair();
-         expect(ctrl.landmark_pairs[0]["target_point"]).not.toBe(ctrl.template_cursor);
-         expect(ctrl.landmark_pairs[0]["source_point"]).not.toBe(ctrl.incoming_cursor);
+         expect(ctrl.landmark_pairs[0].target_point).not.toBe(ctrl.template_cursor);
+         expect(ctrl.landmark_pairs[0].source_point).not.toBe(ctrl.incoming_cursor);
 
          ctrl.resetLandmarkPair(ctrl.landmark_pairs[0]);
-         expect(ctrl.landmark_pairs[0]["target_point"]).not.toBe(ctrl.template_cursor);
-         expect(ctrl.landmark_pairs[0]["source_point"]).not.toBe(ctrl.incoming_cursor);
+         expect(ctrl.landmark_pairs[0].target_point).not.toBe(ctrl.template_cursor);
+         expect(ctrl.landmark_pairs[0].source_point).not.toBe(ctrl.incoming_cursor);
        }));
   });
 });
