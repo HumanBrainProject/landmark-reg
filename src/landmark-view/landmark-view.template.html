@@ -61,29 +61,14 @@
       </table>
     </div>
     <p>
-      Display referential:
       <label>
-        <input ng-model="$ctrl.incoming_display_referential"
-               type="radio" value="native"/>
-        Native
-      </label>
-      <label>
-        <input ng-model="$ctrl.incoming_display_referential"
-               type="radio" value="transformed"
+        <input ng-model="$ctrl.synchronize_cursors" type="checkbox"
                ng-disabled="!$ctrl.transformationAvailable()"/>
-        Transformed
+        Synchronize cursors
       </label>
     </p>
-    <label>
-      <input ng-model="$ctrl.synchronize_cursors" type="checkbox"
-             ng-disabled="!$ctrl.transformationAvailable()"/>
-      Synchronize cursors
-    </label>
-    <button class="btn btn-default" ng-disabled="!$ctrl.transformationAvailable()">
-      Download
-    </button>
-    <button class="btn btn-warning" ng-disabled="!$ctrl.transformationAvailable()">
-      Save to KnowledgeGraph
+    <button class="btn btn-primary" ng-disabled="!$ctrl.transformationAvailable()">
+      Display result
     </button>
   </div>
 </div>
