@@ -8,7 +8,7 @@
       controller: LandmarkViewController
     });
 
-  function LandmarkViewController(AlignmentTask, $log) {
+  function LandmarkViewController(LeastSquares, $log) {
     var vm = this;
 
     vm.incoming_cursor = [0, 0, 0];
@@ -16,10 +16,9 @@
     vm.synchronize_cursors = false;
     vm.template_cursor = [0, 0, 0];
     vm.template_description = "dummy template";
-    vm.transformation = null;
     vm.transformation_type = "rigid";
     vm.landmark_pairs = [];
-    vm.current_alignment_task = null;
+    vm.registration_result = {};
 
     vm.goToLandmarkPair = goToLandmarkPair;
     vm.performRegistration = performRegistration;
@@ -39,16 +38,19 @@
       var alignment_task_description = {
         source_image: "URI of source image",
         target_image: "URI of target image",
+        transformation_type: vm.transformation_type,
         landmark_pairs: vm.landmark_pairs
       };
-      vm.current_alignment_task =
-        AlignmentTask.create(alignment_task_description);
+      vm.registration_result = LeastSquares.compute(alignment_task_description);
     }
 
     function readyToTransform() {
       switch(vm.transformation_type) {
+      case "translation":
+        return vm.landmark_pairs.length >= 1;
       case "rigid":
-      case "rigid+scaling":
+        return vm.landmark_pairs.length >= 2;
+      case "similarity":
       case "affine":
         return vm.landmark_pairs.length >= 3;
       default:
@@ -58,7 +60,7 @@
     }
 
     function transformationAvailable() {
-      return vm.transformation !== null;
+      return "transformation_matrix" in vm.registration_result;
     }
 
     function updateIncomingCursor(coords) {

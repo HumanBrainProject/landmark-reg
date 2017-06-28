@@ -2,7 +2,7 @@
   "use strict";
 
   angular
-    .module("landmarkRegApp.alignmentTask")
+    .module("landmarkRegApp.alignment")
     .factory("AlignmentTask", AlignmentTask);
 
   function AlignmentTask($resource) {

@@ -37,28 +37,27 @@
         <label>
           Transformation type
           <select ng-model="$ctrl.transformation_type" class="form-control">
+            <option value="translation">Translation</option>
             <option value="rigid">Rigid</option>
-            <option value="rigid+scaling">Rigid + Scaling</option>
+            <option value="similarity">Similarity</option>
             <option value="affine">Affine</option>
           </select>
         </label>
       </div>
-      <button ng-click="$ctrl.performRegistration()"
+      <button type="button" ng-click="$ctrl.performRegistration()"
               class="btn btn-primary btn-block"
-              ng-disabled="!$ctrl.readyToTransform()">
+              ng-show="$ctrl.readyToTransform()">
+        <!--FIXME: replace ng-show by ng-disabled (the latter does not work at the moment)-->
         Compute transformation
       </button>
-      <p>{{$ctrl.current_alignment_task}}</p>
     </div>
     <hr/>
+    <div class="bg-danger" ng-show="$ctrl.registration_result.error">
+      <p>Error: {{$ctrl.registration_result.error}}</p>
+    </div>
     <div ng-show="$ctrl.transformationAvailable()">
       <p>Estimated transformation matrix</p>
-      <table>
-        <tr><td>1</td><td>0</td><td>0</td><td>0</td></tr>
-        <tr><td>0</td><td>1</td><td>0</td><td>0</td></tr>
-        <tr><td>0</td><td>0</td><td>1</td><td>0</td></tr>
-        <tr><td>0</td><td>0</td><td>0</td><td>1</td></tr>
-      </table>
+      <transformation-matrix matrix="$ctrl.registration_result.transformation_matrix"/>
     </div>
     <p>
       <label>

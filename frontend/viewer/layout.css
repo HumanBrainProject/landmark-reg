@@ -41,7 +41,3 @@ div.control_panel {
     right: 100%;
     overflow: auto; /* scroll bars if contents overflow */
 }
-
-canvas {
-    cursor: crosshair;
-}

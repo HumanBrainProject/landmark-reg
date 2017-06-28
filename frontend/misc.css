@@ -1,0 +1,11 @@
+/* TODO: split this file according to the relevant components */
+
+.matrix td {
+    text-align: left;
+    padding-left: 0.5ex;
+    padding-right: 0.5ex;
+}
+
+canvas {
+    cursor: crosshair;
+}

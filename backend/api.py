@@ -5,6 +5,51 @@ import pprint
 import flask_restful
 from flask_restful import request, url_for
 
+import numpy as np
+
+from . import leastsquares
+
+
+# Standard codes
+HTTP_200_OK = 200
+HTTP_501_NOT_IMPLEMENTED = 501
+
+
+def np_matrix_to_json(np_matrix):
+    return [list(row) for row in np_matrix]
+
+
+class LeastSquaresAPI(flask_restful.Resource):
+    def post(self):
+        pprint.pprint(request.json)
+        transformation_type = request.json["transformation_type"]
+        source_points = np.array([pair["source_point"]
+                                  for pair in request.json["landmark_pairs"]])
+        target_points = np.array([pair["target_point"]
+                                  for pair in request.json["landmark_pairs"]])
+
+        if transformation_type == "translation":
+            return {"error": "not implemented yet"}, HTTP_200_OK
+        elif transformation_type == "rigid":
+            mat = leastsquares.umeyama(source_points, target_points, False)
+        elif transformation_type == "similarity":
+            mat = leastsquares.umeyama(source_points, target_points, True)
+        elif transformation_type == "affine":
+            return {"error": "not implemented yet"}, HTTP_200_OK
+        else:
+            return ({"error": "unrecognized transformation_type"},
+                    HTTP_501_NOT_IMPLEMENTED)
+
+        if np.all(np.isfinite(mat)):
+            transformation_matrix = np_matrix_to_json(mat)
+            print("Returning transformation matrix")
+            print(transformation_matrix)
+            return ({"transformation_matrix": transformation_matrix},
+                    HTTP_200_OK)
+        else:
+            return {"error": "cannot compute least-squares solution "
+                    "(singular matrix?)"}, HTTP_200_OK
+
 
 class CreateAlignmentTaskAPI(flask_restful.Resource):
     def post(self):
@@ -20,6 +65,7 @@ class AlignmentTaskAPI(flask_restful.Resource):
 
 def register_api(app, *args, **kwargs):
     api = flask_restful.Api(app, *args, **kwargs)
+    api.add_resource(LeastSquaresAPI, "/least-squares")
     api.add_resource(CreateAlignmentTaskAPI, "/alignment-task")
     api.add_resource(AlignmentTaskAPI, "/alignment-task/<int:id>",
                      endpoint="alignment-task")
