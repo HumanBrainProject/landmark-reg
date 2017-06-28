@@ -9,3 +9,14 @@
 canvas {
     cursor: crosshair;
 }
+
+.js .no-js-warning {
+    display: none !important;
+}
+
+.no-js .no-js-warning {
+    margin: 0.2em 0;
+    background: #ccc;
+    color: #000;
+    padding: 0.2em 0;
+}
