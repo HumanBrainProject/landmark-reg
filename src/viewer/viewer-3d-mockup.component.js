@@ -15,11 +15,12 @@
   function Viewer3dMockupController($log) {
     var vm = this;
 
-    vm.cursorUpdate = cursorUpdate;
+    vm.sendCursorUpdate = sendCursorUpdate;
+    vm.$onChanges = $onChanges;
 
     ////////////
 
-    function cursorUpdate() {
+    function sendCursorUpdate() {
       vm.onCursorUpdate({cursor: vm.cursor});
     }
 
