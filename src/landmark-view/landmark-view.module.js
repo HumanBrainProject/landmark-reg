@@ -5,6 +5,4 @@ angular
     "landmarkRegApp.landmarks",
     "landmarkRegApp.matrix",
     "landmarkRegApp.viewer",
-    /* 3rd-party modules */
-    "ui.bootstrap"
   ]);
