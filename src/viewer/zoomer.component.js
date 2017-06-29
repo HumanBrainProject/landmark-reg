@@ -36,12 +36,12 @@
       var sagcv = $element.find("canvas.sagittal")[0];
       var axlcv = $element.find("canvas.axial")[0];
       // TODO handle resize?
-      corcv.height = corcv.offsetHeight;
-      corcv.width = corcv.offsetWidth;
-      sagcv.width = sagcv.offsetWidth;
-      sagcv.height = sagcv.offsetHeight;
-      axlcv.width = axlcv.offsetWidth;
-      axlcv.height = axlcv.offsetHeight;
+      corcv.height = corcv.clientHeight;
+      corcv.width = corcv.clientWidth;
+      sagcv.width = sagcv.clientWidth;
+      sagcv.height = sagcv.clientHeight;
+      axlcv.width = axlcv.clientWidth;
+      axlcv.height = axlcv.clientHeight;
 
       // for reduced-resolution dataset. TODO: make it configurable
       var xdim=(((6572+1)>>1)+1)>>1;
