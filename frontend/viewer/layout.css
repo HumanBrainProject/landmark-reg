@@ -1,3 +1,9 @@
+canvas {
+  display : inline-block;
+  margin : 0;
+  padding : 0;
+}
+
 .coronal {
     position: absolute;
     height: 50%;
@@ -7,6 +13,9 @@
     left: 0;
     right: 50%;
     background: #ccccff;
+    border-style: solid;
+    border-color: #ccc;
+    border-width: 0 1px 1px 0;
 }
 
 .sagittal {
@@ -18,6 +27,9 @@
     left: 50%;
     right: 100%;
     background: #ccffcc;
+    border-style: solid;
+    border-color: #ccc;
+    border-width: 0 0 1px 1px;
 }
 
 .axial {
@@ -29,6 +41,9 @@
     left: 0;
     right: 50%;
     background: #ffcccc;
+    border-style: solid;
+    border-color: #ccc;
+    border-width: 1px 1px 0 0;
 }
 
 div.control_panel {
@@ -39,5 +54,9 @@ div.control_panel {
     width: 50%;
     left: 50%;
     right: 100%;
+    padding: 1ex;
     overflow: auto; /* scroll bars if contents overflow */
+    border-style: solid;
+    border-color: #ccc;
+    border-width: 1px 0 0 1px;
 }

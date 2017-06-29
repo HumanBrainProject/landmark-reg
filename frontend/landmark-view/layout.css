@@ -10,6 +10,11 @@ div#template_viewer {
     width: 50%;
     left: 0;
     right: 50%;
+    margin: 0;
+    padding: 0;
+    border-style: solid;
+    border-color: #777;
+    border-width: 0 1px 0 0;
 }
 
 div#incoming_viewer {
@@ -20,9 +25,9 @@ div#incoming_viewer {
     width: 50%;
     left: 50%;
     right: 100%;
-}
-
-.placeholder {
-    text-align: center;
-    vertical-align: middle; /* does not work */
+    margin: 0;
+    padding: 0;
+    border-style: solid;
+    border-color: #777;
+    border-width: 0 0 0 1px;
 }
