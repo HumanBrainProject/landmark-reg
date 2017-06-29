@@ -183,6 +183,13 @@
       });
       axlz.fullcanvas();
 
+      // Synchronize the zoom level for all views, because fullcanvas sets it
+      // individually.
+      var zoom = Math.max(corz.getzoom(), sagz.getzoom(), axlz.getzoom());
+      corz.setmidzoom(cut.x,cut.y,zoom);
+      sagz.setmidzoom(cut.z,cut.y,zoom);
+      axlz.setmidzoom(cut.x,cut.z,zoom);
+
       vm.corz = corz;
       vm.sagz = sagz;
       vm.axlz = axlz;
