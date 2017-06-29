@@ -26,12 +26,10 @@
     ////////////
 
     function $onInit() {
-      $log.debug("$onInit called");
+      // TODO properties that do not need DOM manipulation should be set here
     }
 
     function $postLink() {
-      $log.debug("$postLink called");
-
       var corcv = $element.find("canvas.coronal")[0];
       var sagcv = $element.find("canvas.sagittal")[0];
       var axlcv = $element.find("canvas.axial")[0];
