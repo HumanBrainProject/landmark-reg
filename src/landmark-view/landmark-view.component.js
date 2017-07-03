@@ -63,12 +63,43 @@
       return "transformation_matrix" in vm.registration_result;
     }
 
+    function matrix_4_4_dot_vec4(mat, vec) {
+      return [mat[0][0] * vec[0]
+              + mat[0][1] * vec[1]
+              + mat[0][2] * vec[2]
+              + mat[0][3] * vec[3],
+              mat[1][0] * vec[0]
+              + mat[1][1] * vec[1]
+              + mat[1][2] * vec[2]
+              + mat[1][3] * vec[3],
+              mat[2][0] * vec[0]
+              + mat[2][1] * vec[1]
+              + mat[2][2] * vec[2]
+              + mat[2][3] * vec[3],
+              mat[3][0] * vec[0]
+              + mat[3][1] * vec[1]
+              + mat[3][2] * vec[2]
+              + mat[3][3] * vec[3]];
+    }
+
     function updateIncomingCursor(coords) {
       vm.incoming_cursor = coords;
+      if(vm.synchronize_cursors) {
+        var homogeneous_coords = [coords[0], coords[1], coords[2], 1];
+        var homogeneous_result = matrix_4_4_dot_vec4(vm.registration_result.transformation_matrix,
+                                                     homogeneous_coords);
+        vm.template_cursor = homogeneous_result.slice(0, 3);
+      }
     }
 
     function updateTemplateCursor(coords) {
       vm.template_cursor = coords;
+      if(vm.synchronize_cursors) {
+        var homogeneous_coords = [coords[0], coords[1], coords[2], 1];
+        var homogeneous_result = matrix_4_4_dot_vec4(vm.registration_result.inverse_matrix,
+                                                     homogeneous_coords);
+        vm.incoming_cursor = homogeneous_result.slice(0, 3);
+      }
     }
   }
 })(); /* IIFE */
