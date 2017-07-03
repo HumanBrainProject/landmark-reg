@@ -40,11 +40,12 @@ class LeastSquaresAPI(flask_restful.Resource):
             return ({"error": "unrecognized transformation_type"},
                     HTTP_501_NOT_IMPLEMENTED)
 
-        if np.all(np.isfinite(mat)):
+        inv_mat = np.linalg.inv(mat)
+        if np.all(np.isfinite(mat)) and np.all(np.isfinite(inv_mat)):
             transformation_matrix = np_matrix_to_json(mat)
-            print("Returning transformation matrix")
-            print(transformation_matrix)
-            return ({"transformation_matrix": transformation_matrix},
+            inverse_matrix = np_matrix_to_json(inv_mat)
+            return ({"transformation_matrix": transformation_matrix,
+                     "inverse_matrix": inverse_matrix},
                     HTTP_200_OK)
         else:
             return {"error": "cannot compute least-squares solution "
