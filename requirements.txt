@@ -5,6 +5,7 @@ Flask-RESTful==0.3.5
 itsdangerous==0.24
 Jinja2==2.9.6
 MarkupSafe==1.0
+numpy==1.13.0
 python-dateutil==2.6.0
 pytz==2017.2
 six==1.10.0
