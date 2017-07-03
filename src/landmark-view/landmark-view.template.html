@@ -21,8 +21,10 @@
           on-cursor-update="$ctrl.updateTemplateCursor(cursor);"/>
 
   <div class="control_panel"> <!-- TODO decide in which CSS this class should go -->
+    <!-- TODO: un-hide when this is functional
     <p>Template: {{$ctrl.template_description}}</p>
     <hr/>
+    -->
     <p>Template image cursor: <coordinates coords="$ctrl.template_cursor"/></p>
     <p>Incoming image cursor: <coordinates coords="$ctrl.incoming_cursor"/></p>
     <hr/>
@@ -44,9 +46,10 @@
           on-cursor-update="$ctrl.updateIncomingCursor(cursor);"/>
 
   <div class="control_panel">
+    <!-- TODO: un-hide when this is functional
     <h4>Incoming image</h4>
     <!-- TODO insert here a reference to the incoming image's metadata
-         (e.g. link to dataset page) -->
+         (e.g. link to dataset page) ->
     <label for="incoming_voxel_size"> Voxel size:</label>
     <div class="input-group input-group-sm">
       <input class="form-control" type="text" readonly="readonly"/>
@@ -57,6 +60,7 @@
       </span>
     </div>
     <hr/>
+    -->
     <h4>Registration control</h4>
     <div class="form-inline">
       <div class="form-group">
