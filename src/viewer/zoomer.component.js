@@ -8,6 +8,12 @@
       controller: ZoomerController,
       bindings: {
         cursor: "<",
+        baseUrl: "@",
+        size: "<",
+        levelOffset: "<",
+        maxLevel: "<",
+        tileSize: "<",
+        voxelSize: "<",
         onCursorUpdate: "&"
       }
     });
@@ -30,6 +36,14 @@
     }
 
     function $postLink() {
+      var data_base_url = vm.baseUrl;
+      var xdim = vm.size[0];
+      var ydim = vm.size[1];
+      var zdim = vm.size[2];
+      var level_offset = vm.levelOffset;
+      var max_level = vm.maxLevel;
+      var tile_size= vm.tileSize;
+
       var corcv = $element.find("canvas.coronal")[0];
       var sagcv = $element.find("canvas.sagittal")[0];
       var axlcv = $element.find("canvas.axial")[0];
@@ -41,22 +55,19 @@
       axlcv.width = axlcv.clientWidth;
       axlcv.height = axlcv.clientHeight;
 
-      // for reduced-resolution dataset. TODO: make it configurable
-      var xdim=(((6572+1)>>1)+1)>>1;
-      var zdim=(((7404+1)>>1)+1)>>1;
-      var ydim=(((5711+1)>>1)+1)>>1;
-
       cut = {
         x:xdim/2,
         y:ydim/2,
         z:zdim/2
       };
-      vm.onCursorUpdate({cursor: [cut.x, cut.y, cut.z]});
+      vm.onCursorUpdate({cursor: [cut.x * vm.voxelSize[0],
+                                  cut.y * vm.voxelSize[1],
+                                  cut.z * vm.voxelSize[2]]});
 
       function tilecomplete(tile,next){
         var canvas=document.createElement("canvas");
-        canvas.width=256;
-        canvas.height=256;
+        canvas.width=tile_size;
+        canvas.height=tile_size;
         if(tile!==null)canvas.getContext("2d").drawImage(tile,0,0);
         next(canvas);
       }
@@ -74,13 +85,13 @@
       }
 
       var corz=new Zoomer(corcv,{
-        Width:xdim,Height:ydim,TileSize:256,MaxLevel:5-2, // coronal x-y
+        Width:xdim,Height:ydim,TileSize:tile_size,MaxLevel:max_level, // coronal x-y
         Key:function(level,x,y){
           var z=cut.z;
           for(var i=0;i<level;i++)
             z=(z+1)>>1;
           z = Math.round(z);
-          return "http://www.nesys.uio.no/CDPTest/data/"+(level+2)+"/z/"+("0000"+z).substr(-4,4)+"/y"+("00"+y).substr(-2,2)+"_x"+("00"+x).substr(-2,2)+".png";
+          return data_base_url+"/"+(level+level_offset)+"/z/"+("0000"+z).substr(-4,4)+"/y"+("00"+y).substr(-2,2)+"_x"+("00"+x).substr(-2,2)+".png";
         },
         Load:function(url,x,y,next){
           var img=document.createElement("img");
@@ -110,13 +121,13 @@
       corz.fullcanvas();
 
       var sagz=new Zoomer(sagcv,{
-        Width:zdim,Height:ydim,TileSize:256,MaxLevel:5-2, // sagittal y-z
+        Width:zdim,Height:ydim,TileSize:tile_size,MaxLevel:max_level, // sagittal y-z
         Key:function(level,y,z){
           var x=cut.x;
           for(var i=0;i<level;i++)
             x=(x+1)>>1;
           x = Math.round(x);
-          return "http://www.nesys.uio.no/CDPTest/data/"+(level+2)+"/x/"+("0000"+x).substr(-4,4)+"/y"+("00"+z).substr(-2,2)+"_z"+("00"+y).substr(-2,2)+".png";
+          return data_base_url+"/"+(level+level_offset)+"/x/"+("0000"+x).substr(-4,4)+"/y"+("00"+z).substr(-2,2)+"_z"+("00"+y).substr(-2,2)+".png";
         },
         Load:function(url,x,y,next){
           var img=document.createElement("img");
@@ -146,13 +157,13 @@
       sagz.fullcanvas();
 
       var axlz=new Zoomer(axlcv,{
-        Width:xdim,Height:zdim,TileSize:256,MaxLevel:5-2, // horizontal x-z
+        Width:xdim,Height:zdim,TileSize:tile_size,MaxLevel:max_level, // horizontal x-z
         Key:function(level,x,z){
           var y=cut.y;
           for(var i=0;i<level;i++)
             y=(y+1)>>1;
           y = Math.round(y);
-          return "http://www.nesys.uio.no/CDPTest/data/"+(level+2)+"/y/"+("0000"+y).substr(-4,4)+"/z"+("00"+z).substr(-2,2)+"_x"+("00"+x).substr(-2,2)+".png";
+          return data_base_url+"/"+(level+level_offset)+"/y/"+("0000"+y).substr(-4,4)+"/z"+("00"+z).substr(-2,2)+"_x"+("00"+x).substr(-2,2)+".png";
         },
         Load:function(url,x,y,next){
           var img=document.createElement("img");
@@ -198,15 +209,20 @@
     function $onChanges(changes) {
       if(changes.cursor) {
         var current_value = changes.cursor.currentValue;
-        if(current_value[0] != cut.x ||
-           current_value[1] != cut.y ||
-           current_value[2] != cut.z) {
-          cut.x = current_value[0];
-          cut.y = current_value[1];
-          cut.z = current_value[2];
-          vm.corz.redraw();
-          vm.sagz.redraw();
-          vm.axlz.redraw();
+        var new_cut = [Math.round(current_value[0] / vm.voxelSize[0]),
+                       Math.round(current_value[1] / vm.voxelSize[1]),
+                       Math.round(current_value[2] / vm.voxelSize[2])];
+        if(cut.x != new_cut[0] ||
+           cut.y != new_cut[1] ||
+           cut.z != new_cut[2]) {
+          cut.x = new_cut[0];
+          cut.y = new_cut[1];
+          cut.z = new_cut[2];
+          if(vm.axlz && vm.sagz && vm.corz) {
+            vm.corz.redraw();
+            vm.sagz.redraw();
+            vm.axlz.redraw();
+          }
         }
       }
     }
@@ -217,7 +233,9 @@
 
     function cursorUpdatedByZoomer(cut) {
       $scope.$apply(function() {
-        vm.onCursorUpdate({cursor: [cut.x, cut.y, cut.z]});
+        vm.onCursorUpdate({cursor: [cut.x * vm.voxelSize[0],
+                                    cut.y * vm.voxelSize[1],
+                                    cut.z * vm.voxelSize[2]]});
       });
     }
   }

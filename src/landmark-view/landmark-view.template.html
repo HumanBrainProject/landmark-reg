@@ -1,6 +1,25 @@
 <div id="template_viewer">
+  <!--
+  // for reduced-resolution dataset. TODO: get them from a service
+      var xdim=(((6572+1)>>1)+1)>>1;
+      var zdim=(((7404+1)>>1)+1)>>1;
+      var ydim=(((5711+1)>>1)+1)>>1;
+
+      Oslo-hosted BigBrain:
+          base-url="http://www.nesys.uio.no/CDPTest/data"
+          size="[1643, 1428, 1851]"
+          level-offset="2"
+          max-level="3"
+    -->
   <zoomer cursor="$ctrl.template_cursor"
+          base-url="/data/BigBrain-160um"
+          size="[822, 926, 714]"
+          voxel-size="[0.17333333333333333, 0.17333333333333333, 0.160]"
+          level-offset="0"
+          max-level="2"
+          tile-size="256"
           on-cursor-update="$ctrl.updateTemplateCursor(cursor);"/>
+
   <div class="control_panel"> <!-- TODO decide in which CSS this class should go -->
     <p>Template: {{$ctrl.template_description}}</p>
     <hr/>
@@ -16,7 +35,14 @@
 </div>
 <div id="incoming_viewer">
   <zoomer cursor="$ctrl.incoming_cursor"
+          base-url="/data/colin"
+          size="[151, 188, 154]"
+          voxel-size="[1, 1, 1]"
+          level-offset="0"
+          max-level="1"
+          tile-size="256"
           on-cursor-update="$ctrl.updateIncomingCursor(cursor);"/>
+
   <div class="control_panel">
     <h4>Incoming image</h4>
     <!-- TODO insert here a reference to the incoming image's metadata
@@ -65,8 +91,10 @@
         Synchronize cursors
       </label>
     </p>
-    <button class="btn btn-primary" ng-disabled="!$ctrl.transformationAvailable()">
+    <a class="btn btn-primary" ng-disabled="!$ctrl.transformationAvailable()"
+       target="_blank"
+       href="http://localhost:8080/#!{%27layers%27:{%27BigBrain-160um%27:{%27type%27:%27image%27_%27source%27:%27precomputed://http://localhost:8080/precomputed/BigBrainRelease.2015/8bit%27}_%27colin%27:{%27type%27:%27image%27_%27source%27:%27precomputed://http://localhost:8080/precomputed/JuBrain/colin%27_%27shader%27:%27void%20main()%20{\n%20%20emitRGB(vec3(0.,%20toNormalized(getDataValue()),%200.));\n}\n%27_%27transform%27:[[{{$ctrl.registration_result.transformation_matrix[0][0]}}_{{$ctrl.registration_result.transformation_matrix[0][1]}}_{{$ctrl.registration_result.transformation_matrix[0][2]}}_{{$ctrl.registration_result.transformation_matrix[0][3] * 1e6}}]_[{{$ctrl.registration_result.transformation_matrix[1][0]}}_{{$ctrl.registration_result.transformation_matrix[1][1]}}_{{$ctrl.registration_result.transformation_matrix[1][2]}}_{{$ctrl.registration_result.transformation_matrix[1][3] * 1e6}}]_[{{$ctrl.registration_result.transformation_matrix[2][0]}}_{{$ctrl.registration_result.transformation_matrix[2][1]}}_{{$ctrl.registration_result.transformation_matrix[2][2]}}_{{$ctrl.registration_result.transformation_matrix[2][3] * 1e6}}]_[{{$ctrl.registration_result.transformation_matrix[3][0]}}_{{$ctrl.registration_result.transformation_matrix[3][1]}}_{{$ctrl.registration_result.transformation_matrix[3][2]}}_{{$ctrl.registration_result.transformation_matrix[3][3]}}]]}}}">
       Display result
-    </button>
+    </a>
   </div>
 </div>

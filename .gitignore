@@ -3,6 +3,9 @@
 /frontend/bundle.js.map
 /frontend/templates.js
 
+# Large files which should not be committed to git
+/frontend/data
+
 # From angular-seed
 logs/*
 !.gitkeep
