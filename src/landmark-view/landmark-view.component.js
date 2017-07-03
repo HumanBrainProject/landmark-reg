@@ -86,8 +86,9 @@
       vm.incoming_cursor = coords;
       if(vm.synchronize_cursors) {
         var homogeneous_coords = [coords[0], coords[1], coords[2], 1];
-        var homogeneous_result = matrix_4_4_dot_vec4(vm.registration_result.transformation_matrix,
-                                                     homogeneous_coords);
+        var homogeneous_result = matrix_4_4_dot_vec4(
+          vm.registration_result.transformation_matrix,
+          homogeneous_coords);
         vm.template_cursor = homogeneous_result.slice(0, 3);
       }
     }
@@ -96,8 +97,9 @@
       vm.template_cursor = coords;
       if(vm.synchronize_cursors) {
         var homogeneous_coords = [coords[0], coords[1], coords[2], 1];
-        var homogeneous_result = matrix_4_4_dot_vec4(vm.registration_result.inverse_matrix,
-                                                     homogeneous_coords);
+        var homogeneous_result = matrix_4_4_dot_vec4(
+          vm.registration_result.inverse_matrix,
+          homogeneous_coords);
         vm.incoming_cursor = homogeneous_result.slice(0, 3);
       }
     }
