@@ -261,6 +261,7 @@
         if(cut.x != new_cut[0] ||
            cut.y != new_cut[1] ||
            cut.z != new_cut[2]) {
+          // TODO handle out-of-bounds
           cut.x = new_cut[0];
           cut.y = new_cut[1];
           cut.z = new_cut[2];

@@ -43,10 +43,11 @@
         <label>
           Transformation type
           <select ng-model="$ctrl.transformation_type" class="form-control">
-            <option value="translation">Translation</option>
+            <!-- TODO un-hide transformation types when they are functional -->
+            <!--<option value="translation">Translation</option>-->
             <option value="rigid">Rigid</option>
             <option value="similarity">Similarity</option>
-            <option value="affine">Affine</option>
+            <!--<option value="affine">Affine</option>-->
           </select>
         </label>
       </div>
@@ -62,9 +63,9 @@
     </div>
     <div ng-show="$ctrl.transformationAvailable()"
          ng-class="$ctrl.resultUpToDate() ? '' : 'text-muted'">
-      <p>Estimated transformation matrix</p>
+      <p>Estimated transformation matrix:</p>
       <transformation-matrix matrix="$ctrl.registration_result.transformation_matrix"/>
-      <p>Determinant: {{$ctrl.matrix_det($ctrl.registration_result.transformation_matrix) | number: 4}} (inverse {{$ctrl.matrix_det($ctrl.registration_result.inverse_matrix) | number: 4}})</p>
+      <p>Determinant: {{$ctrl.matrix_det($ctrl.registration_result.transformation_matrix) | number: 4}}</p>
     </div>
     <p>
       <label>
