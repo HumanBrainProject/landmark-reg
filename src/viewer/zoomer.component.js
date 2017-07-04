@@ -130,8 +130,8 @@
           cut.z += slices;
           if(cut.z < 0)
             cut.z = 0;
-          else if(cut.z >= xdim)
-            cut.z = xdim;
+          else if(cut.z >= zdim)
+            cut.z = zdim;
           cursorUpdatedByZoomer(cut);
           corz.redraw();
           sagz.redraw();
@@ -224,8 +224,8 @@
           cut.y += slices;
           if(cut.y < 0)
             cut.y = 0;
-          else if(cut.y >= xdim)
-            cut.y = xdim;
+          else if(cut.y >= ydim)
+            cut.y = ydim;
           cursorUpdatedByZoomer(cut);
           corz.redraw();
           sagz.redraw();
