@@ -93,17 +93,21 @@
         ctx.stroke();
       }
 
-      function url_for_tile(level,
-                            slice_axis, slice_number,
-                            vertical_axis, vertical_idx,
-                            horizontal_axis, horizontal_idx)
+      var inplane_axes_for_slice_axis = {
+        "x": ["y", "z"],
+        "y": ["z", "x"],
+        "z": ["y", "x"]
+      };
+
+      function url_for_tile(level, slice_axis, slice_number,
+                            vertical_idx, horizontal_idx)
       {
         return image_url
           + "/" + (level + level_offset)
           + "/" + slice_axis
           + "/" + ("0000" + slice_number).substr(-4, 4)
-          + "/" + vertical_axis + ("00" + vertical_idx).substr(-2, 2)
-          + "_" + horizontal_axis + ("00" + horizontal_idx).substr(-2, 2)
+          + "/" + inplane_axes_for_slice_axis[slice_axis][0] + ("00" + vertical_idx).substr(-2, 2)
+          + "_" + inplane_axes_for_slice_axis[slice_axis][1] + ("00" + horizontal_idx).substr(-2, 2)
           + ".png";
       }
 
@@ -114,7 +118,7 @@
           for(var i=0;i<level;i++)
             z=(z+1)>>1;
           z = Math.round(z);
-          return url_for_tile(level, "z", z, "y", y, "x", x);
+          return url_for_tile(level, "z", z, y, x);
         },
         Load:function(url,x,y,next){
           var img=document.createElement("img");
@@ -165,7 +169,7 @@
           for(var i=0;i<level;i++)
             x=(x+1)>>1;
           x = Math.round(x);
-          return url_for_tile(level, "x", x, "y", y, "z", z);
+          return url_for_tile(level, "x", x, y, z);
         },
         Load:function(url,x,y,next){
           var img=document.createElement("img");
@@ -216,7 +220,7 @@
           for(var i=0;i<level;i++)
             y=(y+1)>>1;
           y = Math.round(y);
-          return url_for_tile(level, "y", y, "z", z, "x", x);
+          return url_for_tile(level, "y", y, z, x);
         },
         Load:function(url,x,y,next){
           var img=document.createElement("img");
