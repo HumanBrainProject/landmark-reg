@@ -1,30 +1,11 @@
 <div id="template_viewer">
-  <!--
-  // for reduced-resolution dataset. TODO: get them from a service
-      var xdim=(((6572+1)>>1)+1)>>1;
-      var zdim=(((7404+1)>>1)+1)>>1;
-      var ydim=(((5711+1)>>1)+1)>>1;
-
-      Oslo-hosted BigBrain:
-          base-url="http://www.nesys.uio.no/CDPTest/data"
-          size="[1643, 1428, 1851]"
-          level-offset="2"
-          max-level="3"
-    -->
   <zoomer cursor="$ctrl.template_cursor"
-          base-url="/data/BigBrain-160um"
-          size="[822, 926, 714]"
-          voxel-size="[0.16933333333333334, 0.160, 0.16933333333333334]"
-          level-offset="0"
-          max-level="2"
-          tile-size="256"
+          image-url="{{$ctrl.template_image_url}}"
           on-cursor-update="$ctrl.updateTemplateCursor(cursor);"/>
 
   <div class="control_panel"> <!-- TODO decide in which CSS this class should go -->
-    <!-- TODO: un-hide when this is functional
-    <p>Template: {{$ctrl.template_description}}</p>
+    <p>Template: {{$ctrl.template_image_url}}</p>
     <hr/>
-    -->
     <p>Template image cursor: <coordinates coords="$ctrl.template_cursor"/></p>
     <p>Incoming image cursor: <coordinates coords="$ctrl.incoming_cursor"/></p>
     <hr/>
@@ -37,17 +18,12 @@
 </div>
 <div id="incoming_viewer">
   <zoomer cursor="$ctrl.incoming_cursor"
-          base-url="/data/B20_stn_l"
-          size="[1002, 820, 489]"
-          voxel-size="[0.016, 0.016, 0.020]"
-          level-offset="0"
-          max-level="3"
-          tile-size="256"
+          image-url="{{$ctrl.incoming_image_url}}"
           on-cursor-update="$ctrl.updateIncomingCursor(cursor);"/>
 
   <div class="control_panel">
+    <p>Incoming image: {{$ctrl.incoming_image_url}}</p>
     <!-- TODO: un-hide when this is functional
-    <h4>Incoming image</h4>
     <!-- TODO insert here a reference to the incoming image's metadata
          (e.g. link to dataset page) ->
     <label for="incoming_voxel_size"> Voxel size:</label>

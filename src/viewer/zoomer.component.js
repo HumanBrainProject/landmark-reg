@@ -8,17 +8,12 @@
       controller: ZoomerController,
       bindings: {
         cursor: "<",
-        baseUrl: "@",
-        size: "<",
-        levelOffset: "<",
-        maxLevel: "<",
-        tileSize: "<",
-        voxelSize: "<",
+        imageUrl: "@",
         onCursorUpdate: "&"
       }
     });
 
-  function ZoomerController($element, $scope, $log) {
+  function ZoomerController(ZoomerMetadata, $element, $scope, $log) {
     var vm = this;
 
     vm.$onInit = $onInit;
@@ -32,17 +27,27 @@
     ////////////
 
     function $onInit() {
-      // TODO properties that do not need DOM manipulation should be set here
+      vm.image_info = ZoomerMetadata.get_metadata(vm.imageUrl);
+      vm.image_info.url = vm.imageUrl;
     }
 
     function $postLink() {
-      var data_base_url = vm.baseUrl;
-      var xdim = vm.size[0];
-      var ydim = vm.size[1];
-      var zdim = vm.size[2];
-      var level_offset = vm.levelOffset;
-      var max_level = vm.maxLevel;
-      var tile_size= vm.tileSize;
+      if(!vm.image_info) {
+        $log.error("no available image metadata for " + vm.imageUrl);
+        return;
+      }
+
+      var image_url = vm.image_info.url;
+      var xdim = vm.image_info.size[0];
+      var ydim = vm.image_info.size[1];
+      var zdim = vm.image_info.size[2];
+      var level_offset;
+      if(vm.image_info.level_offset)
+        level_offset = vm.image_info.level_offset;
+      else
+        level_offset = 0;
+      var max_level = vm.image_info.max_level;
+      var tile_size= vm.image_info.tile_size;
 
       var corcv = $element.find("canvas.coronal")[0];
       var sagcv = $element.find("canvas.sagittal")[0];
@@ -60,9 +65,13 @@
         y:ydim/2,
         z:zdim/2
       };
-      vm.onCursorUpdate({cursor: [cut.x * vm.voxelSize[0],
-                                  cut.y * vm.voxelSize[1],
-                                  cut.z * vm.voxelSize[2]]});
+      vm.onCursorUpdate({
+        cursor: [
+          cut.x * vm.image_info.voxel_size[0],
+          cut.y * vm.image_info.voxel_size[1],
+          cut.z * vm.image_info.voxel_size[2]
+        ]
+      });
 
       function tilecomplete(tile,next){
         var canvas=document.createElement("canvas");
@@ -91,7 +100,7 @@
           for(var i=0;i<level;i++)
             z=(z+1)>>1;
           z = Math.round(z);
-          return data_base_url+"/"+(level+level_offset)+"/z/"+("0000"+z).substr(-4,4)+"/y"+("00"+y).substr(-2,2)+"_x"+("00"+x).substr(-2,2)+".png";
+          return image_url+"/"+(level+level_offset)+"/z/"+("0000"+z).substr(-4,4)+"/y"+("00"+y).substr(-2,2)+"_x"+("00"+x).substr(-2,2)+".png";
         },
         Load:function(url,x,y,next){
           var img=document.createElement("img");
@@ -127,7 +136,7 @@
           for(var i=0;i<level;i++)
             x=(x+1)>>1;
           x = Math.round(x);
-          return data_base_url+"/"+(level+level_offset)+"/x/"+("0000"+x).substr(-4,4)+"/y"+("00"+z).substr(-2,2)+"_z"+("00"+y).substr(-2,2)+".png";
+          return image_url+"/"+(level+level_offset)+"/x/"+("0000"+x).substr(-4,4)+"/y"+("00"+z).substr(-2,2)+"_z"+("00"+y).substr(-2,2)+".png";
         },
         Load:function(url,x,y,next){
           var img=document.createElement("img");
@@ -163,7 +172,7 @@
           for(var i=0;i<level;i++)
             y=(y+1)>>1;
           y = Math.round(y);
-          return data_base_url+"/"+(level+level_offset)+"/y/"+("0000"+y).substr(-4,4)+"/z"+("00"+z).substr(-2,2)+"_x"+("00"+x).substr(-2,2)+".png";
+          return image_url+"/"+(level+level_offset)+"/y/"+("0000"+y).substr(-4,4)+"/z"+("00"+z).substr(-2,2)+"_x"+("00"+x).substr(-2,2)+".png";
         },
         Load:function(url,x,y,next){
           var img=document.createElement("img");
@@ -207,11 +216,15 @@
     // Synchronize the views when the cursor is updated externally (e.g. Go
     // To Landmark).
     function $onChanges(changes) {
+      if(!vm.image_info)
+        return;
+
       if(changes.cursor) {
         var current_value = changes.cursor.currentValue;
-        var new_cut = [Math.round(current_value[0] / vm.voxelSize[0]),
-                       Math.round(current_value[1] / vm.voxelSize[1]),
-                       Math.round(current_value[2] / vm.voxelSize[2])];
+        var new_cut = [
+          Math.round(current_value[0] / vm.image_info.voxel_size[0]),
+          Math.round(current_value[1] / vm.image_info.voxel_size[1]),
+          Math.round(current_value[2] / vm.image_info.voxel_size[2])];
         if(cut.x != new_cut[0] ||
            cut.y != new_cut[1] ||
            cut.z != new_cut[2]) {
@@ -225,6 +238,9 @@
           }
         }
       }
+      if(changes.imageUrl) {
+        $log.error("dynamically changing the image shown by Zoomer is not supported");
+      }
     }
 
     function $onDestroy() {
@@ -233,9 +249,13 @@
 
     function cursorUpdatedByZoomer(cut) {
       $scope.$apply(function() {
-        vm.onCursorUpdate({cursor: [cut.x * vm.voxelSize[0],
-                                    cut.y * vm.voxelSize[1],
-                                    cut.z * vm.voxelSize[2]]});
+        vm.onCursorUpdate({
+          cursor: [
+            cut.x * vm.image_info.voxel_size[0],
+            cut.y * vm.image_info.voxel_size[1],
+            cut.z * vm.image_info.voxel_size[2]
+          ]
+        });
       });
     }
   }

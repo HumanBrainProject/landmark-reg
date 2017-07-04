@@ -12,13 +12,16 @@
     var vm = this;
 
     vm.incoming_cursor = [0, 0, 0];
-    vm.incoming_display_referential = "native";
-    vm.synchronize_cursors = false;
+    vm.incoming_image_url = "/data/B20_stn_l";
+
     vm.template_cursor = [0, 0, 0];
-    vm.template_description = "dummy template";
-    vm.transformation_type = "rigid";
+    vm.template_image_url = "/data/BigBrain-160um";
+    //vm.template_image_url = "http://www.nesys.uio.no/CDPTest/data";
+
     vm.landmark_pairs = [];
+    vm.transformation_type = "rigid";
     vm.registration_result = {};
+    vm.synchronize_cursors = false;
 
     vm.goToLandmarkPair = goToLandmarkPair;
     vm.matrix_det = matrix_det;
@@ -38,8 +41,8 @@
 
     function alignmentTask() {
       return {
-        source_image: "URI of source image",
-        target_image: "URI of target image",
+        source_image: vm.incoming_image_url,
+        target_image: vm.template_image_url,
         transformation_type: vm.transformation_type,
         landmark_pairs: vm.landmark_pairs
       };
