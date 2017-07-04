@@ -22,7 +22,7 @@
     vm.$onDestroy = $onDestroy;
 
     // Local variable used by Zoomer to store the current cursor position
-    var cut={x: 0, y: 0, z:0};
+    var cut={X: 0, Y: 0, Z:0};
 
     ////////////
 
@@ -37,10 +37,26 @@
         return;
       }
 
+      // Data axes (x, y, z) are written in lowercase. Display axes (X, Y, Z)
+      // are fixed relative to the layout, they are written in uppercase.
+      vm.display_to_data_axis = {"X": "x", "Y": "z", "Z": "y"};
+
+      var axis_name_to_index = {"x": 0, "y": 1, "z": 2};
+      vm.display_to_data_axis_idx = {
+        "X": axis_name_to_index[vm.display_to_data_axis.X],
+        "Y": axis_name_to_index[vm.display_to_data_axis.Y],
+        "Z": axis_name_to_index[vm.display_to_data_axis.Z]
+      };
+      // Inverse the mapping
+      vm.data_to_display_axis = {};
+      for(var axis in vm.display_to_data_axis_idx) {
+        vm.data_to_display_axis[vm.display_to_data_axis_idx[axis]] = axis;
+      }
+
       var image_url = vm.image_info.url;
-      var xdim = vm.image_info.size[0];
-      var ydim = vm.image_info.size[1];
-      var zdim = vm.image_info.size[2];
+      var Xdim = vm.image_info.size[vm.display_to_data_axis_idx.X];
+      var Ydim = vm.image_info.size[vm.display_to_data_axis_idx.Y];
+      var Zdim = vm.image_info.size[vm.display_to_data_axis_idx.Z];
       var level_offset;
       if(vm.image_info.level_offset)
         level_offset = vm.image_info.level_offset;
@@ -61,23 +77,30 @@
       bottom_left_canvas.height = bottom_left_canvas.clientHeight;
 
       cut = {
-        x:xdim/2,
-        y:ydim/2,
-        z:zdim/2
+        X: Xdim / 2,
+        Y: Ydim / 2,
+        Z: Zdim / 2
       };
       vm.onCursorUpdate({
         cursor: [
-          cut.x * vm.image_info.voxel_size[0],
-          cut.y * vm.image_info.voxel_size[1],
-          cut.z * vm.image_info.voxel_size[2]
+          cut[vm.data_to_display_axis[0]] * vm.image_info.voxel_size[0],
+          cut[vm.data_to_display_axis[1]] * vm.image_info.voxel_size[1],
+          cut[vm.data_to_display_axis[2]] * vm.image_info.voxel_size[2]
         ]
       });
 
-      function tilecomplete(tile,next){
+      function tilecomplete(tile,swap_axes,next){
         var canvas=document.createElement("canvas");
         canvas.width=tile_size;
         canvas.height=tile_size;
-        if(tile!==null)canvas.getContext("2d").drawImage(tile,0,0);
+        if(tile !== null) {
+          var ctx = canvas.getContext("2d")
+          if(swap_axes)
+            ctx.setTransform(0, 1, 1, 0, 0, 0);
+          else
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+          ctx.drawImage(tile,0,0);
+        }
         next(canvas);
       }
       function cross(x,y,ctx,cnvw,cnvh,cutx,cuty,cutw,cuth){
@@ -93,15 +116,34 @@
         ctx.stroke();
       }
 
+      // The following objects are constant, they describe the filename lay-out
+      // of Zoomer tiles. TODO: move this to a service, make it modular to
+      // support DZI.
       var inplane_axes_for_slice_axis = {
         "x": ["y", "z"],
         "y": ["z", "x"],
         "z": ["y", "x"]
       };
+      var axis_swap_needed = {
+        "yz": false,
+        "zy": true,
+        "zx": false,
+        "xz": true,
+        "yx": false,
+        "xy": true
+      };
 
       function url_for_tile(level, slice_axis, slice_number,
-                            vertical_idx, horizontal_idx)
+                            axis1, idx1, axis2, idx2)
       {
+        var vertical_idx, horizontal_idx;
+        if(axis_swap_needed[axis1 + axis2]) {
+          horizontal_idx = idx1;
+          vertical_idx = idx2;
+        } else {
+          vertical_idx = idx1;
+          horizontal_idx = idx2;
+        }
         return image_url
           + "/" + (level + level_offset)
           + "/" + slice_axis
@@ -112,29 +154,31 @@
       }
 
       var top_left_zoomer=new Zoomer(top_left_canvas,{
-        Width:xdim,Height:ydim,TileSize:tile_size,maxlevel:max_level, // x-y
-        Key:function(level,x,y){
-          var z=cut.z;
+        Width:Xdim,Height:Ydim,TileSize:tile_size,maxlevel:max_level, // X-Y
+        Key:function(level,X,Y){
+          var Z=cut.Z;
           for(var i=0;i<level;i++)
-            z=(z+1)>>1;
-          z = Math.round(z);
-          return url_for_tile(level, "z", z, y, x);
+            Z=(Z+1)>>1;
+          Z = Math.round(Z);
+          return url_for_tile(level, vm.display_to_data_axis.Z, Z,
+                              vm.display_to_data_axis.Y, Y,
+                              vm.display_to_data_axis.X, X);
         },
         Load:function(url,x,y,next){
           var img=document.createElement("img");
-          img.onload=function(){tilecomplete(img,next);};
+          img.onload=function(){tilecomplete(img,axis_swap_needed[vm.display_to_data_axis.Y + vm.display_to_data_axis.X],next);};
           img.onerror=function(){
             console.log("Invalid tile: "+x+","+y+ " "+url);
-            tilecomplete(null,next);
+            tilecomplete(null,null,next);
           };
           img.src=url;
         },
         Overlay:function(ctx,cw,ch,x,y,w,h){
-          cross(cut.x,cut.y,ctx,cw,ch,x,y,w,h);
+          cross(cut.X,cut.Y,ctx,cw,ch,x,y,w,h);
         },
         Click:function(event,cnvw,cnvh,cutx,cuty,cutw,cuth){
-          cut.x=cutx+event.offsetX*cutw/cnvw;
-          cut.y=cuty+event.offsetY*cuth/cnvh;
+          cut.X=cutx+event.offsetX*cutw/cnvw;
+          cut.Y=cuty+event.offsetY*cuth/cnvh;
           cursorUpdatedByZoomer(cut);
           top_left_zoomer.redraw();
           top_right_zoomer.redraw();
@@ -149,11 +193,11 @@
                                         top_left_zoomer.getzoom());
         },
         Scroll:function(slices){
-          cut.z += slices;
-          if(cut.z < 0)
-            cut.z = 0;
-          else if(cut.z >= xdim)
-            cut.z = xdim;
+          cut.Z += slices;
+          if(cut.Z < 0)
+            cut.Z = 0;
+          else if(cut.Z >= Zdim)
+            cut.Z = Zdim;
           cursorUpdatedByZoomer(cut);
           top_left_zoomer.redraw();
           top_right_zoomer.redraw();
@@ -163,29 +207,31 @@
       top_left_zoomer.fullcanvas();
 
       var top_right_zoomer=new Zoomer(top_right_canvas,{
-        Width:zdim,Height:ydim,TileSize:tile_size,maxlevel:max_level, // z-y
-        Key:function(level,z,y){
-          var x=cut.x;
+        Width:Zdim,Height:Ydim,TileSize:tile_size,maxlevel:max_level, // Z-Y
+        Key:function(level,Z,Y){
+          var X=cut.X;
           for(var i=0;i<level;i++)
-            x=(x+1)>>1;
-          x = Math.round(x);
-          return url_for_tile(level, "x", x, y, z);
+            X=(X+1)>>1;
+          X = Math.round(X);
+          return url_for_tile(level, vm.display_to_data_axis.X, X,
+                              vm.display_to_data_axis.Y, Y,
+                              vm.display_to_data_axis.Z, Z);
         },
         Load:function(url,x,y,next){
           var img=document.createElement("img");
-          img.onload=function(){tilecomplete(img,next);};
+          img.onload=function(){tilecomplete(img,axis_swap_needed[vm.display_to_data_axis.Y + vm.display_to_data_axis.Z],next);};
           img.onerror=function(){
             console.log("Invalid tile: "+x+","+y+ " "+url);
-            tilecomplete(null,next);
+            tilecomplete(null,null,next);
           };
           img.src=url;
         },
         Overlay:function(ctx,cw,ch,x,y,w,h){
-          cross(cut.z,cut.y,ctx,cw,ch,x,y,w,h);
+          cross(cut.Z,cut.Y,ctx,cw,ch,x,y,w,h);
         },
         Click:function(event,cnvw,cnvh,cutx,cuty,cutw,cuth){
-          cut.z=cutx+event.offsetX*cutw/cnvw;
-          cut.y=cuty+event.offsetY*cuth/cnvh;
+          cut.Z=cutx+event.offsetX*cutw/cnvw;
+          cut.Y=cuty+event.offsetY*cuth/cnvh;
           cursorUpdatedByZoomer(cut);
           top_left_zoomer.redraw();
           top_right_zoomer.redraw();
@@ -200,11 +246,11 @@
                                         top_right_zoomer.getzoom());
         },
         Scroll:function(slices){
-          cut.x += slices;
-          if(cut.x < 0)
-            cut.x = 0;
-          else if(cut.x >= xdim)
-            cut.x = xdim;
+          cut.X += slices;
+          if(cut.X < 0)
+            cut.X = 0;
+          else if(cut.X >= Xdim)
+            cut.X = Xdim;
           cursorUpdatedByZoomer(cut);
           top_left_zoomer.redraw();
           top_right_zoomer.redraw();
@@ -214,29 +260,31 @@
       top_right_zoomer.fullcanvas();
 
       var bottom_left_zoomer=new Zoomer(bottom_left_canvas,{
-        Width:xdim,Height:zdim,TileSize:tile_size,maxlevel:max_level, // x-z
-        Key:function(level,x,z){
-          var y=cut.y;
+        Width:Xdim,Height:Zdim,TileSize:tile_size,maxlevel:max_level, // X-Z
+        Key:function(level,X,Z){
+          var Y=cut.Y;
           for(var i=0;i<level;i++)
-            y=(y+1)>>1;
-          y = Math.round(y);
-          return url_for_tile(level, "y", y, z, x);
+            Y=(Y+1)>>1;
+          Y = Math.round(Y);
+          return url_for_tile(level, vm.display_to_data_axis.Y, Y,
+                              vm.display_to_data_axis.Z, Z,
+                              vm.display_to_data_axis.X, X);
         },
         Load:function(url,x,y,next){
           var img=document.createElement("img");
-          img.onload=function(){tilecomplete(img,next);};
+          img.onload=function(){tilecomplete(img,axis_swap_needed[vm.display_to_data_axis.Z + vm.display_to_data_axis.X],next);};
           img.onerror=function(){
             console.log("Invalid tile: "+x+","+y+ " "+url);
-            tilecomplete(null,next);
+            tilecomplete(null,null,next);
           };
           img.src=url;
         },
         Overlay:function(ctx,cw,ch,x,y,w,h){
-          cross(cut.x,cut.z,ctx,cw,ch,x,y,w,h);
+          cross(cut.X,cut.Z,ctx,cw,ch,x,y,w,h);
         },
         Click:function(event,cnvw,cnvh,cutx,cuty,cutw,cuth){
-          cut.x=cutx+event.offsetX*cutw/cnvw;
-          cut.z=cuty+event.offsetY*cuth/cnvh;
+          cut.X=cutx+event.offsetX*cutw/cnvw;
+          cut.Z=cuty+event.offsetY*cuth/cnvh;
           cursorUpdatedByZoomer(cut);
           top_left_zoomer.redraw();
           top_right_zoomer.redraw();
@@ -251,11 +299,11 @@
                                       bottom_left_zoomer.getzoom());
         },
         Scroll:function(slices){
-          cut.y += slices;
-          if(cut.y < 0)
-            cut.y = 0;
-          else if(cut.y >= xdim)
-            cut.y = xdim;
+          cut.Y += slices;
+          if(cut.Y < 0)
+            cut.Y = 0;
+          else if(cut.Y >= Ydim)
+            cut.Y = Ydim;
           cursorUpdatedByZoomer(cut);
           top_left_zoomer.redraw();
           top_right_zoomer.redraw();
@@ -266,10 +314,12 @@
 
       // Synchronize the zoom level for all views, because fullcanvas sets it
       // individually.
-      var zoom = Math.max(top_left_zoomer.getzoom(), top_right_zoomer.getzoom(), bottom_left_zoomer.getzoom());
-      top_left_zoomer.setmidzoom(cut.x,cut.y,zoom);
-      top_right_zoomer.setmidzoom(cut.z,cut.y,zoom);
-      bottom_left_zoomer.setmidzoom(cut.x,cut.z,zoom);
+      var zoom = Math.max(top_left_zoomer.getzoom(),
+                          top_right_zoomer.getzoom(),
+                          bottom_left_zoomer.getzoom());
+      top_left_zoomer.setmidzoom(cut.X,cut.Y,zoom);
+      top_right_zoomer.setmidzoom(cut.Z,cut.Y,zoom);
+      bottom_left_zoomer.setmidzoom(cut.X,cut.Z,zoom);
 
       vm.top_left_zoomer = top_left_zoomer;
       vm.top_right_zoomer = top_right_zoomer;
@@ -284,18 +334,23 @@
 
       if(changes.cursor) {
         var current_value = changes.cursor.currentValue;
+        var axX = vm.display_to_data_axis_idx.X;
+        var axY = vm.display_to_data_axis_idx.Y;
+        var axZ = vm.display_to_data_axis_idx.Z;
         var new_cut = [
-          Math.round(current_value[0] / vm.image_info.voxel_size[0]),
-          Math.round(current_value[1] / vm.image_info.voxel_size[1]),
-          Math.round(current_value[2] / vm.image_info.voxel_size[2])];
-        if(cut.x != new_cut[0] ||
-           cut.y != new_cut[1] ||
-           cut.z != new_cut[2]) {
+          Math.round(current_value[axX] / vm.image_info.voxel_size[axX]),
+          Math.round(current_value[axY] / vm.image_info.voxel_size[axY]),
+          Math.round(current_value[axZ] / vm.image_info.voxel_size[axZ])];
+        if(cut.X != new_cut[0] ||
+           cut.Y != new_cut[1] ||
+           cut.Z != new_cut[2]) {
           // TODO handle out-of-bounds
-          cut.x = new_cut[0];
-          cut.y = new_cut[1];
-          cut.z = new_cut[2];
-          if(vm.bottom_left_zoomer && vm.top_right_zoomer && vm.top_left_zoomer) {
+          cut.X = new_cut[0];
+          cut.Y = new_cut[1];
+          cut.Z = new_cut[2];
+          if(vm.bottom_left_zoomer
+             && vm.top_right_zoomer
+             && vm.top_left_zoomer) {
             vm.top_left_zoomer.redraw();
             vm.top_right_zoomer.redraw();
             vm.bottom_left_zoomer.redraw();
@@ -315,9 +370,9 @@
       $scope.$apply(function() {
         vm.onCursorUpdate({
           cursor: [
-            cut.x * vm.image_info.voxel_size[0],
-            cut.y * vm.image_info.voxel_size[1],
-            cut.z * vm.image_info.voxel_size[2]
+            cut[vm.data_to_display_axis[0]] * vm.image_info.voxel_size[0],
+            cut[vm.data_to_display_axis[1]] * vm.image_info.voxel_size[1],
+            cut[vm.data_to_display_axis[2]] * vm.image_info.voxel_size[2]
           ]
         });
       });
