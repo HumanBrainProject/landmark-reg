@@ -24,6 +24,7 @@
     vm.matrix_det = matrix_det;
     vm.performRegistration = performRegistration;
     vm.readyToTransform = readyToTransform;
+    vm.resultUpToDate = resultUpToDate;
     vm.transformationAvailable = transformationAvailable;
     vm.updateIncomingCursor = updateIncomingCursor;
     vm.updateTemplateCursor = updateTemplateCursor;
@@ -35,14 +36,25 @@
       vm.incoming_cursor = pair.source_point.slice();
     }
 
-    function performRegistration() {
-      var alignment_task_description = {
+    function alignmentTask() {
+      return {
         source_image: "URI of source image",
         target_image: "URI of target image",
         transformation_type: vm.transformation_type,
         landmark_pairs: vm.landmark_pairs
       };
-      vm.registration_result = LeastSquares.compute(alignment_task_description);
+    }
+
+    function performRegistration() {
+      var request_description = alignmentTask();
+      // Deep-copy the request object
+      vm.registration_request = jQuery.extend(true, {},
+                                              request_description);
+      vm.registration_result = LeastSquares.compute(vm.registration_request);
+    }
+
+    function resultUpToDate() {
+      return angular.equals(vm.registration_request, alignmentTask());
     }
 
     function readyToTransform() {

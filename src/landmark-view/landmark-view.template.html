@@ -84,7 +84,8 @@
     <div class="bg-danger" ng-show="$ctrl.registration_result.error">
       <p>Error: {{$ctrl.registration_result.error}}</p>
     </div>
-    <div ng-show="$ctrl.transformationAvailable()">
+    <div ng-show="$ctrl.transformationAvailable()"
+         ng-class="$ctrl.resultUpToDate() ? '' : 'text-muted'">
       <p>Estimated transformation matrix</p>
       <transformation-matrix matrix="$ctrl.registration_result.transformation_matrix"/>
       <p>Determinant: {{$ctrl.matrix_det($ctrl.registration_result.transformation_matrix) | number: 4}} (inverse {{$ctrl.matrix_det($ctrl.registration_result.inverse_matrix) | number: 4}})</p>
