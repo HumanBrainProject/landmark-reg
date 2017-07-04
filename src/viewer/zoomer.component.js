@@ -49,16 +49,16 @@
       var max_level = vm.image_info.max_level;
       var tile_size= vm.image_info.tile_size;
 
-      var corcv = $element.find("canvas.coronal")[0];
-      var sagcv = $element.find("canvas.sagittal")[0];
-      var axlcv = $element.find("canvas.axial")[0];
+      var top_left_canvas = $element.find("canvas.top_left")[0];
+      var top_right_canvas = $element.find("canvas.top_right")[0];
+      var bottom_left_canvas = $element.find("canvas.bottom_left")[0];
       // TODO handle resize?
-      corcv.height = corcv.clientHeight;
-      corcv.width = corcv.clientWidth;
-      sagcv.width = sagcv.clientWidth;
-      sagcv.height = sagcv.clientHeight;
-      axlcv.width = axlcv.clientWidth;
-      axlcv.height = axlcv.clientHeight;
+      top_left_canvas.height = top_left_canvas.clientHeight;
+      top_left_canvas.width = top_left_canvas.clientWidth;
+      top_right_canvas.width = top_right_canvas.clientWidth;
+      top_right_canvas.height = top_right_canvas.clientHeight;
+      bottom_left_canvas.width = bottom_left_canvas.clientWidth;
+      bottom_left_canvas.height = bottom_left_canvas.clientHeight;
 
       cut = {
         x:xdim/2,
@@ -93,8 +93,8 @@
         ctx.stroke();
       }
 
-      var corz=new Zoomer(corcv,{
-        Width:xdim,Height:ydim,TileSize:tile_size,MaxLevel:max_level, // coronal x-y
+      var top_left_zoomer=new Zoomer(top_left_canvas,{
+        Width:xdim,Height:ydim,TileSize:tile_size,maxlevel:max_level, // coronal x-y
         Key:function(level,x,y){
           var z=cut.z;
           for(var i=0;i<level;i++)
@@ -118,13 +118,13 @@
           cut.x=cutx+event.offsetX*cutw/cnvw;
           cut.y=cuty+event.offsetY*cuth/cnvh;
           cursorUpdatedByZoomer(cut);
-          corz.redraw();
-          sagz.redraw();
-          axlz.redraw();
+          top_left_zoomer.redraw();
+          top_right_zoomer.redraw();
+          bottom_left_zoomer.redraw();
         },
         Dispatch:function(){
-          sagz.setmidzoom(sagz.getmidx(),corz.getmidy(),corz.getzoom());
-          axlz.setmidzoom(corz.getmidx(),axlz.getmidy(),corz.getzoom());
+          top_right_zoomer.setmidzoom(top_right_zoomer.getmidx(),top_left_zoomer.getmidy(),top_left_zoomer.getzoom());
+          bottom_left_zoomer.setmidzoom(top_left_zoomer.getmidx(),bottom_left_zoomer.getmidy(),top_left_zoomer.getzoom());
         },
         Scroll:function(slices){
           cut.z += slices;
@@ -133,15 +133,15 @@
           else if(cut.z >= xdim)
             cut.z = xdim;
           cursorUpdatedByZoomer(cut);
-          corz.redraw();
-          sagz.redraw();
-          axlz.redraw();
+          top_left_zoomer.redraw();
+          top_right_zoomer.redraw();
+          bottom_left_zoomer.redraw();
         }
       });
-      corz.fullcanvas();
+      top_left_zoomer.fullcanvas();
 
-      var sagz=new Zoomer(sagcv,{
-        Width:zdim,Height:ydim,TileSize:tile_size,MaxLevel:max_level, // sagittal y-z
+      var top_right_zoomer=new Zoomer(top_right_canvas,{
+        Width:zdim,Height:ydim,TileSize:tile_size,maxlevel:max_level, // sagittal y-z
         Key:function(level,y,z){
           var x=cut.x;
           for(var i=0;i<level;i++)
@@ -165,13 +165,13 @@
           cut.z=cutx+event.offsetX*cutw/cnvw;
           cut.y=cuty+event.offsetY*cuth/cnvh;
           cursorUpdatedByZoomer(cut);
-          corz.redraw();
-          sagz.redraw();
-          axlz.redraw();
+          top_left_zoomer.redraw();
+          top_right_zoomer.redraw();
+          bottom_left_zoomer.redraw();
         },
         Dispatch:function(){
-          corz.setmidzoom(corz.getmidx(),sagz.getmidy(),sagz.getzoom());
-          axlz.setmidzoom(axlz.getmidx(),sagz.getmidx(),sagz.getzoom());
+          top_left_zoomer.setmidzoom(top_left_zoomer.getmidx(),top_right_zoomer.getmidy(),top_right_zoomer.getzoom());
+          bottom_left_zoomer.setmidzoom(bottom_left_zoomer.getmidx(),top_right_zoomer.getmidx(),top_right_zoomer.getzoom());
         },
         Scroll:function(slices){
           cut.x += slices;
@@ -180,15 +180,15 @@
           else if(cut.x >= xdim)
             cut.x = xdim;
           cursorUpdatedByZoomer(cut);
-          corz.redraw();
-          sagz.redraw();
-          axlz.redraw();
+          top_left_zoomer.redraw();
+          top_right_zoomer.redraw();
+          bottom_left_zoomer.redraw();
         }
       });
-      sagz.fullcanvas();
+      top_right_zoomer.fullcanvas();
 
-      var axlz=new Zoomer(axlcv,{
-        Width:xdim,Height:zdim,TileSize:tile_size,MaxLevel:max_level, // horizontal x-z
+      var bottom_left_zoomer=new Zoomer(bottom_left_canvas,{
+        Width:xdim,Height:zdim,TileSize:tile_size,maxlevel:max_level, // horizontal x-z
         Key:function(level,x,z){
           var y=cut.y;
           for(var i=0;i<level;i++)
@@ -212,13 +212,13 @@
           cut.x=cutx+event.offsetX*cutw/cnvw;
           cut.z=cuty+event.offsetY*cuth/cnvh;
           cursorUpdatedByZoomer(cut);
-          corz.redraw();
-          sagz.redraw();
-          axlz.redraw();
+          top_left_zoomer.redraw();
+          top_right_zoomer.redraw();
+          bottom_left_zoomer.redraw();
         },
         Dispatch:function(){
-          corz.setmidzoom(axlz.getmidx(),corz.getmidy(),axlz.getzoom());
-          sagz.setmidzoom(axlz.getmidy(),sagz.getmidy(),axlz.getzoom());
+          top_left_zoomer.setmidzoom(bottom_left_zoomer.getmidx(),top_left_zoomer.getmidy(),bottom_left_zoomer.getzoom());
+          top_right_zoomer.setmidzoom(bottom_left_zoomer.getmidy(),top_right_zoomer.getmidy(),bottom_left_zoomer.getzoom());
         },
         Scroll:function(slices){
           cut.y += slices;
@@ -227,23 +227,23 @@
           else if(cut.y >= xdim)
             cut.y = xdim;
           cursorUpdatedByZoomer(cut);
-          corz.redraw();
-          sagz.redraw();
-          axlz.redraw();
+          top_left_zoomer.redraw();
+          top_right_zoomer.redraw();
+          bottom_left_zoomer.redraw();
         }
       });
-      axlz.fullcanvas();
+      bottom_left_zoomer.fullcanvas();
 
       // Synchronize the zoom level for all views, because fullcanvas sets it
       // individually.
-      var zoom = Math.max(corz.getzoom(), sagz.getzoom(), axlz.getzoom());
-      corz.setmidzoom(cut.x,cut.y,zoom);
-      sagz.setmidzoom(cut.z,cut.y,zoom);
-      axlz.setmidzoom(cut.x,cut.z,zoom);
+      var zoom = Math.max(top_left_zoomer.getzoom(), top_right_zoomer.getzoom(), bottom_left_zoomer.getzoom());
+      top_left_zoomer.setmidzoom(cut.x,cut.y,zoom);
+      top_right_zoomer.setmidzoom(cut.z,cut.y,zoom);
+      bottom_left_zoomer.setmidzoom(cut.x,cut.z,zoom);
 
-      vm.corz = corz;
-      vm.sagz = sagz;
-      vm.axlz = axlz;
+      vm.top_left_zoomer = top_left_zoomer;
+      vm.top_right_zoomer = top_right_zoomer;
+      vm.bottom_left_zoomer = bottom_left_zoomer;
     }
 
     // Synchronize the views when the cursor is updated externally (e.g. Go
@@ -265,10 +265,10 @@
           cut.x = new_cut[0];
           cut.y = new_cut[1];
           cut.z = new_cut[2];
-          if(vm.axlz && vm.sagz && vm.corz) {
-            vm.corz.redraw();
-            vm.sagz.redraw();
-            vm.axlz.redraw();
+          if(vm.bottom_left_zoomer && vm.top_right_zoomer && vm.top_left_zoomer) {
+            vm.top_left_zoomer.redraw();
+            vm.top_right_zoomer.redraw();
+            vm.bottom_left_zoomer.redraw();
           }
         }
       }
