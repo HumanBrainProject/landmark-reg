@@ -123,8 +123,12 @@
           bottom_left_zoomer.redraw();
         },
         Dispatch:function(){
-          top_right_zoomer.setmidzoom(top_right_zoomer.getmidx(),top_left_zoomer.getmidy(),top_left_zoomer.getzoom());
-          bottom_left_zoomer.setmidzoom(top_left_zoomer.getmidx(),bottom_left_zoomer.getmidy(),top_left_zoomer.getzoom());
+          top_right_zoomer.setmidzoom(top_right_zoomer.getmidx(),
+                                      top_left_zoomer.getmidy(),
+                                      top_left_zoomer.getzoom());
+          bottom_left_zoomer.setmidzoom(top_left_zoomer.getmidx(),
+                                        bottom_left_zoomer.getmidy(),
+                                        top_left_zoomer.getzoom());
         },
         Scroll:function(slices){
           cut.z += slices;
@@ -170,8 +174,12 @@
           bottom_left_zoomer.redraw();
         },
         Dispatch:function(){
-          top_left_zoomer.setmidzoom(top_left_zoomer.getmidx(),top_right_zoomer.getmidy(),top_right_zoomer.getzoom());
-          bottom_left_zoomer.setmidzoom(bottom_left_zoomer.getmidx(),top_right_zoomer.getmidx(),top_right_zoomer.getzoom());
+          top_left_zoomer.setmidzoom(top_left_zoomer.getmidx(),
+                                     top_right_zoomer.getmidy(),
+                                     top_right_zoomer.getzoom());
+          bottom_left_zoomer.setmidzoom(bottom_left_zoomer.getmidx(),
+                                        top_right_zoomer.getmidx(),
+                                        top_right_zoomer.getzoom());
         },
         Scroll:function(slices){
           cut.x += slices;
@@ -217,8 +225,12 @@
           bottom_left_zoomer.redraw();
         },
         Dispatch:function(){
-          top_left_zoomer.setmidzoom(bottom_left_zoomer.getmidx(),top_left_zoomer.getmidy(),bottom_left_zoomer.getzoom());
-          top_right_zoomer.setmidzoom(bottom_left_zoomer.getmidy(),top_right_zoomer.getmidy(),bottom_left_zoomer.getzoom());
+          top_left_zoomer.setmidzoom(bottom_left_zoomer.getmidx(),
+                                     top_left_zoomer.getmidy(),
+                                     bottom_left_zoomer.getzoom());
+          top_right_zoomer.setmidzoom(bottom_left_zoomer.getmidy(),
+                                      top_right_zoomer.getmidy(),
+                                      bottom_left_zoomer.getzoom());
         },
         Scroll:function(slices){
           cut.y += slices;
