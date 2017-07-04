@@ -93,6 +93,20 @@
         ctx.stroke();
       }
 
+      function url_for_tile(level,
+                            slice_axis, slice_number,
+                            vertical_axis, vertical_idx,
+                            horizontal_axis, horizontal_idx)
+      {
+        return image_url
+          + "/" + (level + level_offset)
+          + "/" + slice_axis
+          + "/" + ("0000" + slice_number).substr(-4, 4)
+          + "/" + vertical_axis + ("00" + vertical_idx).substr(-2, 2)
+          + "_" + horizontal_axis + ("00" + horizontal_idx).substr(-2, 2)
+          + ".png";
+      }
+
       var top_left_zoomer=new Zoomer(top_left_canvas,{
         Width:xdim,Height:ydim,TileSize:tile_size,maxlevel:max_level, // x-y
         Key:function(level,x,y){
@@ -100,7 +114,7 @@
           for(var i=0;i<level;i++)
             z=(z+1)>>1;
           z = Math.round(z);
-          return image_url+"/"+(level+level_offset)+"/z/"+("0000"+z).substr(-4,4)+"/y"+("00"+y).substr(-2,2)+"_x"+("00"+x).substr(-2,2)+".png";
+          return url_for_tile(level, "z", z, "y", y, "x", x);
         },
         Load:function(url,x,y,next){
           var img=document.createElement("img");
@@ -151,7 +165,7 @@
           for(var i=0;i<level;i++)
             x=(x+1)>>1;
           x = Math.round(x);
-          return image_url+"/"+(level+level_offset)+"/x/"+("0000"+x).substr(-4,4)+"/y"+("00"+y).substr(-2,2)+"_z"+("00"+z).substr(-2,2)+".png";
+          return url_for_tile(level, "x", x, "y", y, "z", z);
         },
         Load:function(url,x,y,next){
           var img=document.createElement("img");
@@ -202,7 +216,7 @@
           for(var i=0;i<level;i++)
             y=(y+1)>>1;
           y = Math.round(y);
-          return image_url+"/"+(level+level_offset)+"/y/"+("0000"+y).substr(-4,4)+"/z"+("00"+z).substr(-2,2)+"_x"+("00"+x).substr(-2,2)+".png";
+          return url_for_tile(level, "y", y, "z", z, "x", x);
         },
         Load:function(url,x,y,next){
           var img=document.createElement("img");
