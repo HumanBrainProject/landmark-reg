@@ -94,7 +94,7 @@
       }
 
       var top_left_zoomer=new Zoomer(top_left_canvas,{
-        Width:xdim,Height:ydim,TileSize:tile_size,maxlevel:max_level, // coronal x-y
+        Width:xdim,Height:ydim,TileSize:tile_size,maxlevel:max_level, // x-y
         Key:function(level,x,y){
           var z=cut.z;
           for(var i=0;i<level;i++)
@@ -145,13 +145,13 @@
       top_left_zoomer.fullcanvas();
 
       var top_right_zoomer=new Zoomer(top_right_canvas,{
-        Width:zdim,Height:ydim,TileSize:tile_size,maxlevel:max_level, // sagittal y-z
-        Key:function(level,y,z){
+        Width:zdim,Height:ydim,TileSize:tile_size,maxlevel:max_level, // z-y
+        Key:function(level,z,y){
           var x=cut.x;
           for(var i=0;i<level;i++)
             x=(x+1)>>1;
           x = Math.round(x);
-          return image_url+"/"+(level+level_offset)+"/x/"+("0000"+x).substr(-4,4)+"/y"+("00"+z).substr(-2,2)+"_z"+("00"+y).substr(-2,2)+".png";
+          return image_url+"/"+(level+level_offset)+"/x/"+("0000"+x).substr(-4,4)+"/y"+("00"+y).substr(-2,2)+"_z"+("00"+z).substr(-2,2)+".png";
         },
         Load:function(url,x,y,next){
           var img=document.createElement("img");
@@ -196,7 +196,7 @@
       top_right_zoomer.fullcanvas();
 
       var bottom_left_zoomer=new Zoomer(bottom_left_canvas,{
-        Width:xdim,Height:zdim,TileSize:tile_size,maxlevel:max_level, // horizontal x-z
+        Width:xdim,Height:zdim,TileSize:tile_size,maxlevel:max_level, // x-z
         Key:function(level,x,z){
           var y=cut.y;
           for(var i=0;i<level;i++)
