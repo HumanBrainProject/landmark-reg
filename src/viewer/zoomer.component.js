@@ -125,6 +125,17 @@
         Dispatch:function(){
           sagz.setmidzoom(sagz.getmidx(),corz.getmidy(),corz.getzoom());
           axlz.setmidzoom(corz.getmidx(),axlz.getmidy(),corz.getzoom());
+        },
+        Scroll:function(slices){
+          cut.z += slices;
+          if(cut.z < 0)
+            cut.z = 0;
+          else if(cut.z >= xdim)
+            cut.z = xdim;
+          cursorUpdatedByZoomer(cut);
+          corz.redraw();
+          sagz.redraw();
+          axlz.redraw();
         }
       });
       corz.fullcanvas();
@@ -161,6 +172,17 @@
         Dispatch:function(){
           corz.setmidzoom(corz.getmidx(),sagz.getmidy(),sagz.getzoom());
           axlz.setmidzoom(axlz.getmidx(),sagz.getmidx(),sagz.getzoom());
+        },
+        Scroll:function(slices){
+          cut.x += slices;
+          if(cut.x < 0)
+            cut.x = 0;
+          else if(cut.x >= xdim)
+            cut.x = xdim;
+          cursorUpdatedByZoomer(cut);
+          corz.redraw();
+          sagz.redraw();
+          axlz.redraw();
         }
       });
       sagz.fullcanvas();
@@ -197,6 +219,17 @@
         Dispatch:function(){
           corz.setmidzoom(axlz.getmidx(),corz.getmidy(),axlz.getzoom());
           sagz.setmidzoom(axlz.getmidy(),sagz.getmidy(),axlz.getzoom());
+        },
+        Scroll:function(slices){
+          cut.y += slices;
+          if(cut.y < 0)
+            cut.y = 0;
+          else if(cut.y >= xdim)
+            cut.y = xdim;
+          cursorUpdatedByZoomer(cut);
+          corz.redraw();
+          sagz.redraw();
+          axlz.redraw();
         }
       });
       axlz.fullcanvas();

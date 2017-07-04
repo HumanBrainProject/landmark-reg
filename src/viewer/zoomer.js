@@ -148,7 +148,8 @@ function Zoomer(canvas,cfg){
     this.getmidy=function(){
         return view.cuty+view.cuth/2;
     };
-    this.getzoom=function(){
+    this.getzoom=getzoom;
+    function getzoom(){
         return view.cutw/canvaswidth;
     };
 
@@ -193,22 +194,31 @@ function Zoomer(canvas,cfg){
     };
     this.mwheel=function(event){
         event.preventDefault();
-        if(event.deltaY<0){
-            view.cutx+=(event.offsetX*view.cutw/canvaswidth)*0.1;
-            view.cuty+=(event.offsetY*view.cuth/canvasheight)*0.1;
-
-            view.cutw*=0.9;
-            view.cuth=view.cutw*canvasheight/canvaswidth;
+        if(event.ctrlKey){
+            var slices_to_scroll = Math.sign(event.deltaY);
+            if(getzoom() > 1)
+                slices_to_scroll = Math.round(slices_to_scroll * getzoom());
+            if(cfg.Scroll)
+                try{cfg.Scroll(slices_to_scroll);}
+                catch(ex){console.log("Scroll exception: "+ex);}
         }else{
-            view.cutw/=0.9;
-            view.cuth=view.cutw*canvasheight/canvaswidth;
-            view.cutx-=(event.offsetX*view.cutw/canvaswidth)*0.1;
-            view.cuty-=(event.offsetY*view.cuth/canvasheight)*0.1;
-        }
-        prepare();
-        if(cfg.Dispatch)
-            try{cfg.Dispatch();}
-            catch(ex){console.log("Dispatch exception: "+ex);}
+            if(event.deltaY<0){
+                view.cutx+=(event.offsetX*view.cutw/canvaswidth)*0.1;
+                view.cuty+=(event.offsetY*view.cuth/canvasheight)*0.1;
+
+                view.cutw*=0.9;
+                view.cuth=view.cutw*canvasheight/canvaswidth;
+            }else{
+                view.cutw/=0.9;
+                view.cuth=view.cutw*canvasheight/canvaswidth;
+                view.cutx-=(event.offsetX*view.cutw/canvaswidth)*0.1;
+                view.cuty-=(event.offsetY*view.cuth/canvasheight)*0.1;
+            }
+            prepare();
+            if(cfg.Dispatch)
+                try{cfg.Dispatch();}
+                catch(ex){console.log("Dispatch exception: "+ex);}
+      }
     };
     this.kpress=function(event){
         if(cfg.KeyPress)
