@@ -87,6 +87,7 @@
     <div ng-show="$ctrl.transformationAvailable()">
       <p>Estimated transformation matrix</p>
       <transformation-matrix matrix="$ctrl.registration_result.transformation_matrix"/>
+      <p>Determinant: {{$ctrl.matrix_det($ctrl.registration_result.transformation_matrix) | number: 4}} (inverse {{$ctrl.matrix_det($ctrl.registration_result.inverse_matrix) | number: 4}})</p>
     </div>
     <p>
       <label>

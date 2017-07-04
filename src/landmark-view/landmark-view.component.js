@@ -21,6 +21,7 @@
     vm.registration_result = {};
 
     vm.goToLandmarkPair = goToLandmarkPair;
+    vm.matrix_det = matrix_det;
     vm.performRegistration = performRegistration;
     vm.readyToTransform = readyToTransform;
     vm.transformationAvailable = transformationAvailable;
@@ -80,6 +81,25 @@
               + mat[3][1] * vec[1]
               + mat[3][2] * vec[2]
               + mat[3][3] * vec[3]];
+    }
+
+    function matrix_det(mat) {
+      if(mat == undefined)
+        return null;
+      if(mat.length == 2) {
+        return mat[0][0] * mat[1][1] - mat[0][1] * mat[1][0];
+      } else {
+        var res = 0.;
+        for(var i = 0; i < mat.length; i++) {
+          var minor = [];
+          for(var j = 0; j < mat.length - 1; j++) {
+            minor[j] = mat[j + 1].slice(0, i).concat(mat[j + 1].slice(i + 1, mat.length));
+          }
+          var sign = 1 - 2 * (i % 2);
+          res += sign * mat[0][i] * matrix_det(minor);
+        }
+        return res;
+      }
     }
 
     function updateIncomingCursor(coords) {
