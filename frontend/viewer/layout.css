@@ -1,10 +1,10 @@
 canvas {
-  display : inline-block;
-  margin : 0;
-  padding : 0;
+  display: inline-block;
+  margin: 0;
+  padding: 0;
 }
 
-.top_left {
+div.top_left {
     position: absolute;
     height: 50%;
     top: 0;
@@ -12,13 +12,12 @@ canvas {
     width: 50%;
     left: 0;
     right: 50%;
-    background: #ccccff;
     border-style: solid;
     border-color: #ccc;
     border-width: 0 1px 1px 0;
 }
 
-.top_right {
+div.top_right {
     position: absolute;
     height: 50%;
     top: 0;
@@ -26,13 +25,12 @@ canvas {
     width: 50%;
     left: 50%;
     right: 100%;
-    background: #ccffcc;
     border-style: solid;
     border-color: #ccc;
     border-width: 0 0 1px 1px;
 }
 
-.bottom_left {
+div.bottom_left {
     position: absolute;
     height: 50%;
     top: 50%;
@@ -40,10 +38,24 @@ canvas {
     width: 50%;
     left: 0;
     right: 50%;
-    background: #ffcccc;
     border-style: solid;
     border-color: #ccc;
     border-width: 1px 1px 0 0;
+}
+
+canvas.top_left {
+    width: 100%;
+    height: 100%;
+}
+
+canvas.top_right {
+    width: 100%;
+    height: 100%;
+}
+
+canvas.bottom_left {
+    width: 100%;
+    height: 100%;
 }
 
 div.control_panel {
