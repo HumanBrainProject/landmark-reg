@@ -32,16 +32,6 @@
       // Data axes (x, y, z) are written in lowercase. Display axes (X, Y, Z)
       // are fixed relative to the layout, they are written in uppercase.
 
-      // These constants define a lay-out in neurological convention (subject
-      // right to the right of the screen) with the coronal view on the top
-      // left, axial view on the bottom left, sagittal view on the top right.
-      var AXIS_PERMUTATION = {"R": "X", "L": "X",
-                              "S": "Y", "I": "Y",
-                              "A": "Z", "P": "Z"};
-      var AXIS_INVERSION = {"R": false, "L": true,
-                            "S": true, "I": false,
-                            "A": true, "P": false};
-
       if(vm.image_info.axis_orientations) {
         var ornt = vm.image_info.axis_orientations;
         vm.data_to_display_axis = {
@@ -126,28 +116,11 @@
         ctx.stroke();
       }
 
-      // The following objects are constant, they describe the filename lay-out
-      // of Zoomer tiles. TODO: move this to a service, make it modular to
-      // support DZI.
-      var inplane_axes_for_slice_axis = {
-        "x": ["y", "z"],
-        "y": ["z", "x"],
-        "z": ["y", "x"]
-      };
-      var axis_swap_needed = {
-        "yz": false,
-        "zy": true,
-        "zx": false,
-        "xz": true,
-        "yx": false,
-        "xy": true
-      };
-
       function url_for_tile(level, slice_axis, slice_number,
                             axis1, idx1, axis2, idx2)
       {
         var vertical_idx, horizontal_idx;
-        if(axis_swap_needed[axis1 + axis2]) {
+        if(AXIS_SWAP_NEEDED[axis1 + axis2]) {
           horizontal_idx = idx1;
           vertical_idx = idx2;
         } else {
@@ -158,8 +131,8 @@
           + "/" + (level + level_offset)
           + "/" + slice_axis
           + "/" + ("0000" + slice_number).substr(-4, 4)
-          + "/" + inplane_axes_for_slice_axis[slice_axis][0] + ("00" + vertical_idx).substr(-2, 2)
-          + "_" + inplane_axes_for_slice_axis[slice_axis][1] + ("00" + horizontal_idx).substr(-2, 2)
+          + "/" + INPLANE_AXES_FOR_SLICE_AXIS[slice_axis][0] + ("00" + vertical_idx).substr(-2, 2)
+          + "_" + INPLANE_AXES_FOR_SLICE_AXIS[slice_axis][1] + ("00" + horizontal_idx).substr(-2, 2)
           + ".png";
       }
 
@@ -181,7 +154,7 @@
         },
         Load:function(url,x,y,next){
           var img=document.createElement("img");
-          img.onload=function(){tilecomplete(img,axis_swap_needed[vm.display_to_data_axis.Y + vm.display_to_data_axis.X],next);};
+          img.onload=function(){tilecomplete(img,AXIS_SWAP_NEEDED[vm.display_to_data_axis.Y + vm.display_to_data_axis.X],next);};
           img.onerror=function(){
             $log.warn("Invalid tile: "+x+","+y+ " "+url);
             tilecomplete(null,null,next);
@@ -239,7 +212,7 @@
         },
         Load:function(url,x,y,next){
           var img=document.createElement("img");
-          img.onload=function(){tilecomplete(img,axis_swap_needed[vm.display_to_data_axis.Y + vm.display_to_data_axis.Z],next);};
+          img.onload=function(){tilecomplete(img,AXIS_SWAP_NEEDED[vm.display_to_data_axis.Y + vm.display_to_data_axis.Z],next);};
           img.onerror=function(){
             $log.warn("Invalid tile: "+x+","+y+ " "+url);
             tilecomplete(null,null,next);
@@ -297,7 +270,7 @@
         },
         Load:function(url,x,y,next){
           var img=document.createElement("img");
-          img.onload=function(){tilecomplete(img,axis_swap_needed[vm.display_to_data_axis.Z + vm.display_to_data_axis.X],next);};
+          img.onload=function(){tilecomplete(img,AXIS_SWAP_NEEDED[vm.display_to_data_axis.Z + vm.display_to_data_axis.X],next);};
           img.onerror=function(){
             $log.warn("Invalid tile: "+x+","+y+ " "+url);
             tilecomplete(null,null,next);
@@ -415,11 +388,10 @@
         vm.display_to_data_axis[vm.data_to_display_axis[axis]] = axis;
       }
 
-      var data_axis_name_to_index = {"x": 0, "y": 1, "z": 2};
       vm.display_to_data_axis_idx = {
-        "X": data_axis_name_to_index[vm.display_to_data_axis.X],
-        "Y": data_axis_name_to_index[vm.display_to_data_axis.Y],
-        "Z": data_axis_name_to_index[vm.display_to_data_axis.Z]
+        "X": DATA_AXIS_NAME_TO_INDEX[vm.display_to_data_axis.X],
+        "Y": DATA_AXIS_NAME_TO_INDEX[vm.display_to_data_axis.Y],
+        "Z": DATA_AXIS_NAME_TO_INDEX[vm.display_to_data_axis.Z]
       };
     }
 
@@ -439,10 +411,36 @@
       }
     }
 
+    // The following objects are constant, they describe the filename lay-out
+    // of Zoomer tiles. TODO: move this to a service, make it modular to
+    // support DZI.
+    var DATA_AXIS_NAME_TO_INDEX = {"x": 0, "y": 1, "z": 2};
+    var INPLANE_AXES_FOR_SLICE_AXIS = {
+      "x": ["y", "z"],
+      "y": ["z", "x"],
+      "z": ["y", "x"]
+    };
+    var AXIS_SWAP_NEEDED = {
+      "yz": false,
+      "zy": true,
+      "zx": false,
+      "xz": true,
+      "yx": false,
+      "xy": true
+    };
 
     // Constants related to the anatomical meaning of axes
     var INVERSE_AXIS_NAMES = {"R": "L", "L": "R",
                               "A": "P", "P": "A",
                               "S": "I", "I": "S"};
+    // These constants define a lay-out in neurological convention (subject
+    // right to the right of the screen) with the coronal view on the top
+    // left, axial view on the bottom left, sagittal view on the top right.
+    var AXIS_PERMUTATION = {"R": "X", "L": "X",
+                            "S": "Y", "I": "Y",
+                            "A": "Z", "P": "Z"};
+    var AXIS_INVERSION = {"R": false, "L": true,
+                          "S": true, "I": false,
+                          "A": true, "P": false};
   }
 })(); /* IIFE */
