@@ -5,6 +5,12 @@
     <p class="axis_label axis_label_bottom">{{$ctrl.axis_label("Y+")}}</p>
     <p class="axis_label axis_label_left">{{$ctrl.axis_label("X-")}}</p>
     <p class="axis_label axis_label_right">{{$ctrl.axis_label("X+")}}</p>
+    <button class="btn overlay-btn" ng-click="$ctrl.toggle_axis_inversion('X')">
+      <span class="glyphicon glyphicon-resize-horizontal"></span>
+    </button>
+    <button class="btn overlay-btn" ng-click="$ctrl.toggle_axis_inversion('Y')">
+      <span class="glyphicon glyphicon-resize-vertical"></span>
+    </button>
   </div>
 </div>
 <div class="top_right">
@@ -14,6 +20,12 @@
     <p class="axis_label axis_label_bottom">{{$ctrl.axis_label("Y+")}}</p>
     <p class="axis_label axis_label_left">{{$ctrl.axis_label("Z-")}}</p>
     <p class="axis_label axis_label_right">{{$ctrl.axis_label("Z+")}}</p>
+    <button class="btn overlay-btn" ng-click="$ctrl.toggle_axis_inversion('Z')">
+      <span class="glyphicon glyphicon-resize-horizontal"></span>
+    </button>
+    <button class="btn overlay-btn" ng-click="$ctrl.toggle_axis_inversion('Y')">
+      <span class="glyphicon glyphicon-resize-vertical"></span>
+    </button>
   </div>
 </div>
 <div class="bottom_left">
@@ -23,5 +35,11 @@
     <p class="axis_label axis_label_bottom">{{$ctrl.axis_label("Z+")}}</p>
     <p class="axis_label axis_label_left">{{$ctrl.axis_label("X-")}}</p>
     <p class="axis_label axis_label_right">{{$ctrl.axis_label("X+")}}</p>
+    <button class="btn overlay-btn" ng-click="$ctrl.toggle_axis_inversion('X')">
+      <span class="glyphicon glyphicon-resize-horizontal"></span>
+    </button>
+    <button class="btn overlay-btn" ng-click="$ctrl.toggle_axis_inversion('Z')">
+      <span class="glyphicon glyphicon-resize-vertical"></span>
+    </button>
   </div>
 </div>

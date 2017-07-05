@@ -70,6 +70,10 @@ div.overlay {
     pointer-events: none;
 }
 
+.overlay-btn {
+    pointer-events: auto;
+}
+
 .axis_label_top {
     position: absolute;
     top: 0;

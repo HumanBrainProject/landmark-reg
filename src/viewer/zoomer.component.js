@@ -22,6 +22,7 @@
     vm.$onDestroy = $onDestroy;
 
     vm.axis_label = axis_label;
+    vm.toggle_axis_inversion = toggle_axis_inversion;
 
     ////////////
 
@@ -168,9 +169,7 @@
           vm.cut.X=clickx;
           vm.cut.Y=clicky;
           cutUpdatedByZoomer();
-          top_left_zoomer.redraw();
-          top_right_zoomer.redraw();
-          bottom_left_zoomer.redraw();
+          redraw();
         },
         Dispatch:function(){
           top_right_zoomer.setmidzoom(top_right_zoomer.getmidx(),
@@ -187,11 +186,10 @@
           else if(vm.cut.Z >= Zdim)
             vm.cut.Z = Zdim;
           cutUpdatedByZoomer();
-          top_left_zoomer.redraw();
-          top_right_zoomer.redraw();
-          bottom_left_zoomer.redraw();
+          redraw();
         }
       });
+      vm.top_left_zoomer = top_left_zoomer;
       top_left_zoomer.fullcanvas();
 
       var top_right_zoomer = new Zoomer(top_right_canvas, {  // Z-Y
@@ -226,9 +224,7 @@
           vm.cut.Z=clickx;
           vm.cut.Y=clicky;
           cutUpdatedByZoomer();
-          top_left_zoomer.redraw();
-          top_right_zoomer.redraw();
-          bottom_left_zoomer.redraw();
+          redraw();
         },
         Dispatch:function(){
           top_left_zoomer.setmidzoom(top_left_zoomer.getmidx(),
@@ -245,11 +241,10 @@
           else if(vm.cut.X >= Xdim)
             vm.cut.X = Xdim;
           cutUpdatedByZoomer();
-          top_left_zoomer.redraw();
-          top_right_zoomer.redraw();
-          bottom_left_zoomer.redraw();
+          redraw();
         }
       });
+      vm.top_right_zoomer = top_right_zoomer;
       top_right_zoomer.fullcanvas();
 
       var bottom_left_zoomer = new Zoomer(bottom_left_canvas, {  // X-Z
@@ -284,9 +279,7 @@
           vm.cut.X=clickx;
           vm.cut.Z=clicky;
           cutUpdatedByZoomer();
-          top_left_zoomer.redraw();
-          top_right_zoomer.redraw();
-          bottom_left_zoomer.redraw();
+          redraw();
         },
         Dispatch:function(){
           top_left_zoomer.setmidzoom(bottom_left_zoomer.getmidx(),
@@ -303,11 +296,10 @@
           else if(vm.cut.Y >= Ydim)
             vm.cut.Y = Ydim;
           cutUpdatedByZoomer();
-          top_left_zoomer.redraw();
-          top_right_zoomer.redraw();
-          bottom_left_zoomer.redraw();
+          redraw();
         }
       });
+      vm.bottom_left_zoomer = bottom_left_zoomer;
       bottom_left_zoomer.fullcanvas();
 
       // Synchronize the zoom level for all views, because fullcanvas sets it
@@ -318,10 +310,6 @@
       top_left_zoomer.setmidzoom(vm.cut.X,vm.cut.Y,zoom);
       top_right_zoomer.setmidzoom(vm.cut.Z,vm.cut.Y,zoom);
       bottom_left_zoomer.setmidzoom(vm.cut.X,vm.cut.Z,zoom);
-
-      vm.top_left_zoomer = top_left_zoomer;
-      vm.top_right_zoomer = top_right_zoomer;
-      vm.bottom_left_zoomer = bottom_left_zoomer;
     }
 
     // Synchronize the views when the cursor is updated externally (e.g. Go
@@ -340,9 +328,7 @@
         if(vm.bottom_left_zoomer
            && vm.top_right_zoomer
            && vm.top_left_zoomer) {
-          vm.top_left_zoomer.redraw();
-          vm.top_right_zoomer.redraw();
-          vm.bottom_left_zoomer.redraw();
+          redraw();
         }
       }
 
@@ -395,11 +381,11 @@
       };
     }
 
-    /* display_axis is one of the strings: X-, X+, Y-, Y+, Z-, Z+ */
-    function axis_label(display_axis) {
-      var data_axis = vm.display_to_data_axis[display_axis[0]];
-      var negative_data_axis =
-          (display_axis[1] == "-") != vm.data_axis_inversions[data_axis];
+    /* the argument is one of the strings: X-, X+, Y-, Y+, Z-, Z+ */
+    function axis_label(oriented_display_axis) {
+      var data_axis = vm.display_to_data_axis[oriented_display_axis[0]];
+      var negative_data_axis = (oriented_display_axis[1] == "-")
+          != vm.data_axis_inversions[data_axis];
       if(vm.image_info.axis_orientations) {
         var data_axis_idx = DATA_AXIS_NAME_TO_INDEX[data_axis];
         if(negative_data_axis)
@@ -409,6 +395,33 @@
       } else {
         return data_axis + (negative_data_axis ? "-" : "+");
       }
+    }
+
+    function toggle_axis_inversion(display_axis) {
+      var data_axis = vm.display_to_data_axis[display_axis];
+      vm.data_axis_inversions[data_axis] = !vm.data_axis_inversions[data_axis];
+      update_axis_inversions();
+    }
+
+    function update_axis_inversions() {
+      vm.top_left_zoomer.cfg.MirrorHoriz =
+        vm.data_axis_inversions[vm.display_to_data_axis.X];
+      vm.top_left_zoomer.cfg.MirrorVert =
+        vm.data_axis_inversions[vm.display_to_data_axis.Y];
+      vm.top_right_zoomer.cfg.MirrorHoriz =
+        vm.data_axis_inversions[vm.display_to_data_axis.Z]
+      vm.top_right_zoomer.cfg.MirrorVert =
+        vm.data_axis_inversions[vm.display_to_data_axis.Y];
+      vm.bottom_left_zoomer.cfg.MirrorHoriz =
+        vm.data_axis_inversions[vm.display_to_data_axis.X];
+      vm.bottom_left_zoomer.cfg.MirrorVert =
+        vm.data_axis_inversions[vm.display_to_data_axis.Z];
+      redraw();
+    }
+    function redraw() {
+      vm.top_left_zoomer.redraw();
+      vm.top_right_zoomer.redraw();
+      vm.bottom_left_zoomer.redraw();
     }
 
     // The following objects are constant, they describe the filename lay-out

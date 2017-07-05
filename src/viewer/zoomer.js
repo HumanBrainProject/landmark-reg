@@ -5,6 +5,7 @@ function Zoomer(canvas,cfg){
     var canvaswidth=0;
     var canvasheight=0;
     var view=null; // cutx-cuty-cutw-cuth visible portion of image (in image pixels)
+    this.cfg = cfg;
 
     this.fullcanvas=function(){
         canvaswidth=canvas.width;
