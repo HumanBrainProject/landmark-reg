@@ -21,9 +21,6 @@
     vm.$postLink = $postLink;
     vm.$onDestroy = $onDestroy;
 
-    // Local variable used by Zoomer to store the current cursor position
-    vm.cut={X: 0, Y: 0, Z:0};
-
     ////////////
 
     function $onInit() {
@@ -34,6 +31,13 @@
       // are fixed relative to the layout, they are written in uppercase.
       vm.display_to_data_axis = {"X": "x", "Y": "z", "Z": "y"};
       updateDisplayAxisSwap();
+
+      vm.cut = {
+        X: vm.image_info.size[vm.display_to_data_axis_idx.X] / 2,
+        Y: vm.image_info.size[vm.display_to_data_axis_idx.Y] / 2,
+        Z: vm.image_info.size[vm.display_to_data_axis_idx.Z] / 2
+      };
+      vm.onCursorUpdate({cursor: cut_to_cursor(vm.cut)});
     }
 
     function $postLink() {
@@ -64,19 +68,6 @@
       top_right_canvas.height = top_right_canvas.clientHeight;
       bottom_left_canvas.width = bottom_left_canvas.clientWidth;
       bottom_left_canvas.height = bottom_left_canvas.clientHeight;
-
-      vm.cut = {
-        X: Xdim / 2,
-        Y: Ydim / 2,
-        Z: Zdim / 2
-      };
-      vm.onCursorUpdate({
-        cursor: [
-          vm.cut[vm.data_to_display_axis[0]] * vm.image_info.voxel_size[0],
-          vm.cut[vm.data_to_display_axis[1]] * vm.image_info.voxel_size[1],
-          vm.cut[vm.data_to_display_axis[2]] * vm.image_info.voxel_size[2]
-        ]
-      });
 
       function tilecomplete(tile,swap_axes,next){
         var canvas=document.createElement("canvas");
@@ -322,26 +313,21 @@
         return;
 
       if(changes.cursor) {
-        var current_value = changes.cursor.currentValue;
-        var axX = vm.display_to_data_axis_idx.X;
-        var axY = vm.display_to_data_axis_idx.Y;
-        var axZ = vm.display_to_data_axis_idx.Z;
-        var new_cut = [
-          Math.round(current_value[axX] / vm.image_info.voxel_size[axX]),
-          Math.round(current_value[axY] / vm.image_info.voxel_size[axY]),
-          Math.round(current_value[axZ] / vm.image_info.voxel_size[axZ])];
-        if(angular.equals(vm.cut, new_cut)) {
-          // TODO handle out-of-bounds
-          vm.cut = new_cut;
-          if(vm.bottom_left_zoomer
-             && vm.top_right_zoomer
-             && vm.top_left_zoomer) {
-            vm.top_left_zoomer.redraw();
-            vm.top_right_zoomer.redraw();
-            vm.bottom_left_zoomer.redraw();
-          }
+        // TODO handle out-of-bounds
+        //
+        // We cannot replace vm.cut with the new object (vm.cut = ...), because
+        // the Zoomer instances would still use the old object. Update the
+        // properties in-place instead.
+        $.extend(vm.cut, cursor_to_cut(changes.cursor.currentValue));
+        if(vm.bottom_left_zoomer
+           && vm.top_right_zoomer
+           && vm.top_left_zoomer) {
+          vm.top_left_zoomer.redraw();
+          vm.top_right_zoomer.redraw();
+          vm.bottom_left_zoomer.redraw();
         }
       }
+
       if(changes.imageUrl) {
         $log.error("dynamically changing the image shown by Zoomer is not supported");
       }
@@ -353,14 +339,27 @@
 
     function cutUpdatedByZoomer() {
       $scope.$apply(function() {
-        vm.onCursorUpdate({
-          cursor: [
-            vm.cut[vm.data_to_display_axis[0]] * vm.image_info.voxel_size[0],
-            vm.cut[vm.data_to_display_axis[1]] * vm.image_info.voxel_size[1],
-            vm.cut[vm.data_to_display_axis[2]] * vm.image_info.voxel_size[2]
-          ]
-        });
+        vm.onCursorUpdate({cursor: cut_to_cursor(vm.cut)});
       });
+    }
+
+    function cut_to_cursor(cut) {
+      return [
+        cut[vm.data_to_display_axis[0]] * vm.image_info.voxel_size[0],
+        cut[vm.data_to_display_axis[1]] * vm.image_info.voxel_size[1],
+        cut[vm.data_to_display_axis[2]] * vm.image_info.voxel_size[2]
+      ];
+    }
+
+    function cursor_to_cut(cursor) {
+      var axX = vm.display_to_data_axis_idx.X;
+      var axY = vm.display_to_data_axis_idx.Y;
+      var axZ = vm.display_to_data_axis_idx.Z;
+      return {
+        "X": Math.round(cursor[axX] / vm.image_info.voxel_size[axX]),
+        "Y": Math.round(cursor[axY] / vm.image_info.voxel_size[axY]),
+        "Z": Math.round(cursor[axZ] / vm.image_info.voxel_size[axZ])
+      };
     }
 
     // uses vm.display_to_data_axis as an input
@@ -371,7 +370,7 @@
         "Y": axis_name_to_index[vm.display_to_data_axis.Y],
         "Z": axis_name_to_index[vm.display_to_data_axis.Z]
       };
-      // Inverse the mapping
+      // Invert the mapping
       vm.data_to_display_axis = {};
       for(var axis in vm.display_to_data_axis_idx) {
         vm.data_to_display_axis[vm.display_to_data_axis_idx[axis]] = axis;
