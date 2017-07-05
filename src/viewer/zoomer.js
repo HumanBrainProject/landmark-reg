@@ -161,8 +161,8 @@ function Zoomer(canvas,cfg){
     this.mdown=function(event){
         pick=true;
         pickt=Date.now();
-        pickx=event.offsetX;
-        picky=event.offsetY;
+        pickx=event.clientX;
+        picky=event.clientY;
 //        if(cfg.MouseDown)
 //            try{cfg.MouseDown(event,canvaswidth,canvasheight,view.cutx,view.cuty,view.cutw,view.cuth);}
 //            catch(ex){console.log("MouseDown exception: "+ex);}
@@ -179,10 +179,10 @@ function Zoomer(canvas,cfg){
     this.mmove=function(event){
 //        pickt=null;
         if(pick) {
-            view.cutx+=(pickx-event.offsetX)*view.cutw/canvaswidth;
-            view.cuty+=(picky-event.offsetY)*view.cuth/canvasheight;
-            pickx=event.offsetX;
-            picky=event.offsetY;
+            view.cutx+=(pickx-event.clientX)*view.cutw/canvaswidth;
+            view.cuty+=(picky-event.clientY)*view.cuth/canvasheight;
+            pickx=event.clientX;
+            picky=event.clientY;
             prepare();
             if(cfg.Dispatch)
                 try{cfg.Dispatch();}
@@ -203,16 +203,16 @@ function Zoomer(canvas,cfg){
                 catch(ex){console.log("Scroll exception: "+ex);}
         }else{
             if(event.deltaY<0){
-                view.cutx+=(event.offsetX*view.cutw/canvaswidth)*0.1;
-                view.cuty+=(event.offsetY*view.cuth/canvasheight)*0.1;
+                view.cutx+=(event.clientX*view.cutw/canvaswidth)*0.1;
+                view.cuty+=(event.clientY*view.cuth/canvasheight)*0.1;
 
                 view.cutw*=0.9;
                 view.cuth=view.cutw*canvasheight/canvaswidth;
             }else{
                 view.cutw/=0.9;
                 view.cuth=view.cutw*canvasheight/canvaswidth;
-                view.cutx-=(event.offsetX*view.cutw/canvaswidth)*0.1;
-                view.cuty-=(event.offsetY*view.cuth/canvasheight)*0.1;
+                view.cutx-=(event.clientX*view.cutw/canvaswidth)*0.1;
+                view.cuty-=(event.clientY*view.cuth/canvasheight)*0.1;
             }
             prepare();
             if(cfg.Dispatch)
