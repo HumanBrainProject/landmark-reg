@@ -154,7 +154,7 @@
           var img=document.createElement("img");
           img.onload=function(){tilecomplete(img,axis_swap_needed[vm.display_to_data_axis.Y + vm.display_to_data_axis.X],next);};
           img.onerror=function(){
-            console.log("Invalid tile: "+x+","+y+ " "+url);
+            $log.warn("Invalid tile: "+x+","+y+ " "+url);
             tilecomplete(null,null,next);
           };
           img.src=url;
@@ -212,7 +212,7 @@
           var img=document.createElement("img");
           img.onload=function(){tilecomplete(img,axis_swap_needed[vm.display_to_data_axis.Y + vm.display_to_data_axis.Z],next);};
           img.onerror=function(){
-            console.log("Invalid tile: "+x+","+y+ " "+url);
+            $log.warn("Invalid tile: "+x+","+y+ " "+url);
             tilecomplete(null,null,next);
           };
           img.src=url;
@@ -270,7 +270,7 @@
           var img=document.createElement("img");
           img.onload=function(){tilecomplete(img,axis_swap_needed[vm.display_to_data_axis.Z + vm.display_to_data_axis.X],next);};
           img.onerror=function(){
-            console.log("Invalid tile: "+x+","+y+ " "+url);
+            $log.warn("Invalid tile: "+x+","+y+ " "+url);
             tilecomplete(null,null,next);
           };
           img.src=url;
