@@ -21,6 +21,8 @@
     vm.$postLink = $postLink;
     vm.$onDestroy = $onDestroy;
 
+    vm.axis_label = axis_label;
+
     ////////////
 
     function $onInit() {
@@ -420,6 +422,27 @@
         "Z": data_axis_name_to_index[vm.display_to_data_axis.Z]
       };
     }
-  }
 
+    /* display_axis is one of the strings: X-, X+, Y-, Y+, Z-, Z+ */
+    function axis_label(display_axis) {
+      var data_axis = vm.display_to_data_axis[display_axis[0]];
+      var negative_data_axis =
+          (display_axis[1] == "-") != vm.data_axis_inversions[data_axis];
+      if(vm.image_info.axis_orientations) {
+        var data_axis_idx = DATA_AXIS_NAME_TO_INDEX[data_axis];
+        if(negative_data_axis)
+          return INVERSE_AXIS_NAMES[vm.image_info.axis_orientations[data_axis_idx]];
+        else
+          return vm.image_info.axis_orientations[data_axis_idx];
+      } else {
+        return data_axis + (negative_data_axis ? "-" : "+");
+      }
+    }
+
+
+    // Constants related to the anatomical meaning of axes
+    var INVERSE_AXIS_NAMES = {"R": "L", "L": "R",
+                              "A": "P", "P": "A",
+                              "S": "I", "I": "S"};
+  }
 })(); /* IIFE */

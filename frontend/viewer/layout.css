@@ -58,6 +58,55 @@ canvas.bottom_left {
     height: 100%;
 }
 
+div.overlay {
+    position: absolute;
+    top: 0%;
+    bottom: 100%;
+    left: 0%;
+    right: 100%;
+    width: 100%;
+    height: 100%;
+    /*z-index: 10;*/
+    pointer-events: none;
+}
+
+.axis_label_top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: 0.5ex auto;
+}
+.axis_label_bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0.5ex auto;
+}
+.axis_label_left {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translate(0, -50%);
+    margin: 0 0.5ex;
+}
+.axis_label_right {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translate(0, -50%);
+    margin: 0 0.5ex;
+}
+.axis_label {
+    padding: 0.2ex;
+    width: 1.8em;
+    height: 1.8em;
+    text-align: center;
+    background-color: #cccccc99;
+    /*border: 1px solid #444;*/
+}
+
 div.control_panel {
     position: absolute;
     height: 50%;

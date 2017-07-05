@@ -1,9 +1,27 @@
 <div class="top_left">
   <canvas class="top_left">Your browser does not seem to support HTML5 canvas. Please use a more recent browser.</canvas>
+  <div class="overlay">
+    <p class="axis_label axis_label_top">{{$ctrl.axis_label("Y-")}}</p>
+    <p class="axis_label axis_label_bottom">{{$ctrl.axis_label("Y+")}}</p>
+    <p class="axis_label axis_label_left">{{$ctrl.axis_label("X-")}}</p>
+    <p class="axis_label axis_label_right">{{$ctrl.axis_label("X+")}}</p>
+  </div>
 </div>
 <div class="top_right">
   <canvas class="top_right"></canvas>
+  <div class="overlay">
+    <p class="axis_label axis_label_top">{{$ctrl.axis_label("Y-")}}</p>
+    <p class="axis_label axis_label_bottom">{{$ctrl.axis_label("Y+")}}</p>
+    <p class="axis_label axis_label_left">{{$ctrl.axis_label("Z-")}}</p>
+    <p class="axis_label axis_label_right">{{$ctrl.axis_label("Z+")}}</p>
+  </div>
 </div>
 <div class="bottom_left">
   <canvas class="bottom_left"></canvas>
+  <div class="overlay">
+    <p class="axis_label axis_label_top">{{$ctrl.axis_label("Z-")}}</p>
+    <p class="axis_label axis_label_bottom">{{$ctrl.axis_label("Z+")}}</p>
+    <p class="axis_label axis_label_left">{{$ctrl.axis_label("X-")}}</p>
+    <p class="axis_label axis_label_right">{{$ctrl.axis_label("X+")}}</p>
+  </div>
 </div>
