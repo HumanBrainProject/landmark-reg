@@ -209,11 +209,11 @@ function Zoomer(canvas,cfg){
             catch(ex){console.log("MouseMove exception: "+ex);}
     };
     this.mwheel=function(event){
-        event.preventDefault();
-        if(event.ctrlKey){
+        if(event.shiftKey){
             var slices_to_scroll = Math.sign(event.deltaY);
             if(getzoom() > 1)
                 slices_to_scroll = Math.round(slices_to_scroll * getzoom());
+            event.preventDefault();
             if(cfg.Scroll)
                 try{cfg.Scroll(slices_to_scroll);}
                 catch(ex){console.log("Scroll exception: "+ex);}
@@ -231,6 +231,7 @@ function Zoomer(canvas,cfg){
                 view.cutx-=(event_coords.dataX - view.cutx)*0.1;
                 view.cuty-=(event_coords.dataY - view.cuty)*0.1;
             }
+            event.preventDefault();
             prepare();
             if(cfg.Dispatch)
                 try{cfg.Dispatch();}
