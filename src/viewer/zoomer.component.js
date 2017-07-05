@@ -29,8 +29,35 @@
 
       // Data axes (x, y, z) are written in lowercase. Display axes (X, Y, Z)
       // are fixed relative to the layout, they are written in uppercase.
-      vm.display_to_data_axis = {"X": "x", "Y": "z", "Z": "y"};
-      vm.data_axis_inversions = {"x": false, "y": true, "z": true};
+
+      // These constants define a lay-out in neurological convention (subject
+      // right to the right of the screen) with the coronal view on the top
+      // left, axial view on the bottom left, sagittal view on the top right.
+      var AXIS_PERMUTATION = {"R": "X", "L": "X",
+                              "S": "Y", "I": "Y",
+                              "A": "Z", "P": "Z"};
+      var AXIS_INVERSION = {"R": false, "L": true,
+                            "S": true, "I": false,
+                            "A": true, "P": false};
+
+      if(vm.image_info.axis_orientations) {
+        var ornt = vm.image_info.axis_orientations;
+        vm.data_to_display_axis = {
+          "x": AXIS_PERMUTATION[ornt[0]],
+          "y": AXIS_PERMUTATION[ornt[1]],
+          "z": AXIS_PERMUTATION[ornt[2]]
+        };
+        vm.data_axis_inversions = {
+          "x": AXIS_INVERSION[ornt[0]],
+          "y": AXIS_INVERSION[ornt[1]],
+          "z": AXIS_INVERSION[ornt[2]]
+        };
+      } else {
+        // Assume native Zoomer orientation
+        vm.data_to_display_axis = {"x": "X", "y": "Y", "z": "Z"};
+        vm.data_axis_inversions = {"x": false, "y": false, "z": false};
+      }
+
       updateDisplayAxisSwap();
 
       vm.cut = {
@@ -361,9 +388,9 @@
 
     function cut_to_cursor(cut) {
       return [
-        cut[vm.data_to_display_axis[0]] * vm.image_info.voxel_size[0],
-        cut[vm.data_to_display_axis[1]] * vm.image_info.voxel_size[1],
-        cut[vm.data_to_display_axis[2]] * vm.image_info.voxel_size[2]
+        cut[vm.data_to_display_axis["x"]] * vm.image_info.voxel_size[0],
+        cut[vm.data_to_display_axis["y"]] * vm.image_info.voxel_size[1],
+        cut[vm.data_to_display_axis["z"]] * vm.image_info.voxel_size[2]
       ];
     }
 
@@ -378,19 +405,20 @@
       };
     }
 
-    // uses vm.display_to_data_axis as an input
+    // uses vm.data_to_display_axis as an input
     function updateDisplayAxisSwap() {
-      var axis_name_to_index = {"x": 0, "y": 1, "z": 2};
-      vm.display_to_data_axis_idx = {
-        "X": axis_name_to_index[vm.display_to_data_axis.X],
-        "Y": axis_name_to_index[vm.display_to_data_axis.Y],
-        "Z": axis_name_to_index[vm.display_to_data_axis.Z]
-      };
       // Invert the mapping
-      vm.data_to_display_axis = {};
-      for(var axis in vm.display_to_data_axis_idx) {
-        vm.data_to_display_axis[vm.display_to_data_axis_idx[axis]] = axis;
+      vm.display_to_data_axis = {};
+      for(var axis in vm.data_to_display_axis) {
+        vm.display_to_data_axis[vm.data_to_display_axis[axis]] = axis;
       }
+
+      var data_axis_name_to_index = {"x": 0, "y": 1, "z": 2};
+      vm.display_to_data_axis_idx = {
+        "X": data_axis_name_to_index[vm.display_to_data_axis.X],
+        "Y": data_axis_name_to_index[vm.display_to_data_axis.Y],
+        "Z": data_axis_name_to_index[vm.display_to_data_axis.Z]
+      };
     }
   }
 

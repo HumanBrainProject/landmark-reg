@@ -17,7 +17,8 @@
           "size": [822, 926, 714],
           "voxel_size": [0.16933333333333334, 0.160, 0.16933333333333334],
           "max_level": 2,
-          "tile_size": 256
+          "tile_size": 256,
+          "axis_orientations": "RAS+"
         },
         "/data/B20_stn_l": {
           "size": [1002, 820, 489],
@@ -30,7 +31,8 @@
           "voxel_size": [0.084666666666666666, 0.08, 0.084666666666666666],
           "level_offset": 2,
           "max_level": 3,
-          "tile_size": 256
+          "tile_size": 256,
+          "axis_orientations": "RIA+"
         }
       }
     };
