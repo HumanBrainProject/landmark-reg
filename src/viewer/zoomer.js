@@ -65,6 +65,10 @@ function Zoomer(canvas,cfg){
         var ctx=image.getContext("2d");
 
         var mainctx=canvas.getContext("2d");
+        mainctx.setTransform(cfg.MirrorHoriz ? -1 : 1, 0,
+                             0, cfg.MirrorVert ? -1 : 1,
+                             cfg.MirrorHoriz ? canvaswidth : 0,
+                             cfg.MirrorVert ? canvasheight : 0);
         var tempx=cutx;
         while(tempx<0)tempx+=tilesize;
         var tempy=cuty;
@@ -154,6 +158,16 @@ function Zoomer(canvas,cfg){
     };
 
 
+    function coords_for_mouseevent(event) {
+        var clientrect = canvas.getBoundingClientRect();
+        var clickx_px = event.clientX - clientrect.left;
+        var clicky_px = event.clientY - clientrect.top;
+        return {
+            dataX: view.cutx+(cfg.MirrorHoriz ? (clientrect.width - clickx_px) : clickx_px)*view.cutw/clientrect.width,
+            dataY: view.cuty+(cfg.MirrorVert ? (clientrect.height - clicky_px) : clicky_px)*view.cuth/clientrect.height
+        };
+    }
+
     var pick=false;
     var pickt=null;
     var pickx;
@@ -172,15 +186,17 @@ function Zoomer(canvas,cfg){
 //        if(cfg.MouseUp)
 //            try{cfg.MouseUp(event,canvaswidth,canvasheight,view.cutx,view.cuty,view.cutw,view.cuth);}
 //            catch(ex){console.log("MouseUp exception: "+ex);}
-        if(pickt && (Date.now()-pickt<1000) && cfg.Click)
-            try{cfg.Click(event,canvaswidth,canvasheight,view.cutx,view.cuty,view.cutw,view.cuth);}
+        if(pickt && (Date.now()-pickt<1000) && cfg.Click) {
+            var event_coords = coords_for_mouseevent(event);
+            try{cfg.Click(event,event_coords.dataX,event_coords.dataY);}
             catch(ex){console.log("Click exception: "+ex);}
+        }
     };
     this.mmove=function(event){
 //        pickt=null;
         if(pick) {
-            view.cutx+=(pickx-event.clientX)*view.cutw/canvaswidth;
-            view.cuty+=(picky-event.clientY)*view.cuth/canvasheight;
+            view.cutx+=(cfg.MirrorHoriz ? -1 : 1) * (pickx-event.clientX)*view.cutw/canvaswidth;
+            view.cuty+=(cfg.MirrorVert ? -1 : 1) * (picky-event.clientY)*view.cuth/canvasheight;
             pickx=event.clientX;
             picky=event.clientY;
             prepare();
@@ -202,17 +218,18 @@ function Zoomer(canvas,cfg){
                 try{cfg.Scroll(slices_to_scroll);}
                 catch(ex){console.log("Scroll exception: "+ex);}
         }else{
+            var event_coords = coords_for_mouseevent(event);
             if(event.deltaY<0){
-                view.cutx+=(event.clientX*view.cutw/canvaswidth)*0.1;
-                view.cuty+=(event.clientY*view.cuth/canvasheight)*0.1;
+                view.cutx+=(event_coords.dataX - view.cutx)*0.1;
+                view.cuty+=(event_coords.dataY - view.cuty)*0.1;
 
                 view.cutw*=0.9;
                 view.cuth=view.cutw*canvasheight/canvaswidth;
             }else{
                 view.cutw/=0.9;
                 view.cuth=view.cutw*canvasheight/canvaswidth;
-                view.cutx-=(event.clientX*view.cutw/canvaswidth)*0.1;
-                view.cuty-=(event.clientY*view.cuth/canvasheight)*0.1;
+                view.cutx-=(event_coords.dataX - view.cutx)*0.1;
+                view.cuty-=(event_coords.dataY - view.cuty)*0.1;
             }
             prepare();
             if(cfg.Dispatch)

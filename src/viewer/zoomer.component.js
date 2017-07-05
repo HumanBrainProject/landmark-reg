@@ -30,6 +30,7 @@
       // Data axes (x, y, z) are written in lowercase. Display axes (X, Y, Z)
       // are fixed relative to the layout, they are written in uppercase.
       vm.display_to_data_axis = {"X": "x", "Y": "z", "Z": "y"};
+      vm.data_axis_inversions = {"x": false, "y": true, "z": true};
       updateDisplayAxisSwap();
 
       vm.cut = {
@@ -133,8 +134,13 @@
           + ".png";
       }
 
-      var top_left_zoomer=new Zoomer(top_left_canvas,{
-        Width:Xdim,Height:Ydim,TileSize:tile_size,maxlevel:max_level, // X-Y
+      var top_left_zoomer = new Zoomer(top_left_canvas, {  // X-Y
+        Width: Xdim,
+        Height: Ydim,
+        TileSize: tile_size,
+        maxlevel: max_level,
+        MirrorHoriz: vm.data_axis_inversions[vm.display_to_data_axis.X],
+        MirrorVert: vm.data_axis_inversions[vm.display_to_data_axis.Y],
         Key:function(level,X,Y){
           var Z=vm.cut.Z;
           for(var i=0;i<level;i++)
@@ -156,9 +162,9 @@
         Overlay:function(ctx,cw,ch,x,y,w,h){
           cross(vm.cut.X,vm.cut.Y,ctx,cw,ch,x,y,w,h);
         },
-        Click:function(event,cnvw,cnvh,cutx,cuty,cutw,cuth){
-          vm.cut.X=cutx+event.offsetX*cutw/cnvw;
-          vm.cut.Y=cuty+event.offsetY*cuth/cnvh;
+        Click:function(event,clickx, clicky){
+          vm.cut.X=clickx;
+          vm.cut.Y=clicky;
           cutUpdatedByZoomer();
           top_left_zoomer.redraw();
           top_right_zoomer.redraw();
@@ -186,8 +192,13 @@
       });
       top_left_zoomer.fullcanvas();
 
-      var top_right_zoomer=new Zoomer(top_right_canvas,{
-        Width:Zdim,Height:Ydim,TileSize:tile_size,maxlevel:max_level, // Z-Y
+      var top_right_zoomer = new Zoomer(top_right_canvas, {  // Z-Y
+        Width:Zdim,
+        Height:Ydim,
+        TileSize:tile_size,
+        maxlevel:max_level,
+        MirrorHoriz: vm.data_axis_inversions[vm.display_to_data_axis.Z],
+        MirrorVert: vm.data_axis_inversions[vm.display_to_data_axis.Y],
         Key:function(level,Z,Y){
           var X=vm.cut.X;
           for(var i=0;i<level;i++)
@@ -209,9 +220,9 @@
         Overlay:function(ctx,cw,ch,x,y,w,h){
           cross(vm.cut.Z,vm.cut.Y,ctx,cw,ch,x,y,w,h);
         },
-        Click:function(event,cnvw,cnvh,cutx,cuty,cutw,cuth){
-          vm.cut.Z=cutx+event.offsetX*cutw/cnvw;
-          vm.cut.Y=cuty+event.offsetY*cuth/cnvh;
+        Click:function(event,clickx, clicky){
+          vm.cut.Z=clickx;
+          vm.cut.Y=clicky;
           cutUpdatedByZoomer();
           top_left_zoomer.redraw();
           top_right_zoomer.redraw();
@@ -239,8 +250,13 @@
       });
       top_right_zoomer.fullcanvas();
 
-      var bottom_left_zoomer=new Zoomer(bottom_left_canvas,{
-        Width:Xdim,Height:Zdim,TileSize:tile_size,maxlevel:max_level, // X-Z
+      var bottom_left_zoomer = new Zoomer(bottom_left_canvas, {  // X-Z
+        Width: Xdim,
+        Height: Zdim,
+        TileSize: tile_size,
+        maxlevel: max_level,
+        MirrorHoriz: vm.data_axis_inversions[vm.display_to_data_axis.X],
+        MirrorVert: vm.data_axis_inversions[vm.display_to_data_axis.Z],
         Key:function(level,X,Z){
           var Y=vm.cut.Y;
           for(var i=0;i<level;i++)
@@ -262,9 +278,9 @@
         Overlay:function(ctx,cw,ch,x,y,w,h){
           cross(vm.cut.X,vm.cut.Z,ctx,cw,ch,x,y,w,h);
         },
-        Click:function(event,cnvw,cnvh,cutx,cuty,cutw,cuth){
-          vm.cut.X=cutx+event.offsetX*cutw/cnvw;
-          vm.cut.Z=cuty+event.offsetY*cuth/cnvh;
+        Click:function(event, clickx, clicky){
+          vm.cut.X=clickx;
+          vm.cut.Z=clicky;
           cutUpdatedByZoomer();
           top_left_zoomer.redraw();
           top_right_zoomer.redraw();
