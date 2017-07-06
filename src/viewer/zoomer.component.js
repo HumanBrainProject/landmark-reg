@@ -328,7 +328,7 @@
         // We cannot replace vm.cut with the new object (vm.cut = ...), because
         // the Zoomer instances would still use the old object. Update the
         // properties in-place instead.
-        $.extend(vm.cut, cursor_to_cut(changes.cursor.currentValue));
+        Object.assign(vm.cut, cursor_to_cut(changes.cursor.currentValue));
         if(vm.bottom_left_zoomer
            && vm.top_right_zoomer
            && vm.top_left_zoomer) {
@@ -413,6 +413,7 @@
       vm.data_to_display_axis[data_axis1] = display_axis2;
       vm.data_to_display_axis[data_axis2] = display_axis1;
       updateDisplayAxisSwap();
+      Object.assign(vm.cut, cursor_to_cut(vm.cursor));
       reconfigure_zoomer_instances();
     }
 
