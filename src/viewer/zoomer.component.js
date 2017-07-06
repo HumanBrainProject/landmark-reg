@@ -84,13 +84,14 @@
       var top_left_canvas = $element.find("canvas.top_left")[0];
       var top_right_canvas = $element.find("canvas.top_right")[0];
       var bottom_left_canvas = $element.find("canvas.bottom_left")[0];
-      // TODO handle resize?
-      top_left_canvas.height = top_left_canvas.clientHeight;
       top_left_canvas.width = top_left_canvas.clientWidth;
+      top_left_canvas.height = top_left_canvas.clientHeight;
       top_right_canvas.width = top_right_canvas.clientWidth;
       top_right_canvas.height = top_right_canvas.clientHeight;
       bottom_left_canvas.width = bottom_left_canvas.clientWidth;
       bottom_left_canvas.height = bottom_left_canvas.clientHeight;
+
+      $($window).on("resize", resize);
 
       function tilecomplete(tile,swap_axes,next){
         var canvas=document.createElement("canvas");
@@ -344,6 +345,8 @@
 
     function $onDestroy() {
       if(redraw_throttler) $timeout.cancel(redraw_throttler);
+      if(resize_throttler) $timeout.cancel(resize_throttler);
+      $($window).off("resize", resize);
       vm.bottom_left_zoomer.destroy();
       vm.top_right_zoomer.destroy();
       vm.top_left_zoomer.destroy();
@@ -455,6 +458,18 @@
           vm.top_right_zoomer.redraw();
           vm.bottom_left_zoomer.redraw();
         }, 0, false);
+      }
+    }
+
+    var resize_throttler;
+    function resize() {
+      if(!resize_throttler) {
+        resize_throttler = $timeout(function() {
+          resize_throttler = null;
+          vm.top_left_zoomer.resize();
+          vm.top_right_zoomer.resize();
+          vm.bottom_left_zoomer.resize();
+        }, 66, true);
       }
     }
 

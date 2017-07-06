@@ -35,6 +35,17 @@ function Zoomer(canvas,cfg){
         }
         prepare();
     };
+
+    this.resize=function(){
+        var midx = this.getmidx();
+        var midy = this.getmidy();
+        var zoom = this.getzoom();
+        canvas.width = canvas.clientWidth;
+        canvas.height = canvas.clientHeight;
+        var new_zoom = zoom * Math.sqrt((canvaswidth / canvas.width)
+                                        * (canvasheight / canvas.height));
+        this.setmidzoom(midx, midy, new_zoom);
+    }
     
     var viewnumber=0;
     
