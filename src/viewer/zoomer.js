@@ -9,6 +9,8 @@ function Zoomer(canvas,cfg){
 
     this.reconfigure=function(new_cfg){
         Object.assign(cfg, new_cfg);
+        // Empty the cache, because it may contain obsolete data
+        cache=new LRUCache(300);
     }
 
     this.fullcanvas=function(){

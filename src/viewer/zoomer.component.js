@@ -23,6 +23,7 @@
 
     vm.axis_label = axis_label;
     vm.toggle_axis_inversion = toggle_axis_inversion;
+    vm.exchange_axes = exchange_axes;
 
     ////////////
 
@@ -180,6 +181,7 @@
                                         top_left_zoomer.getzoom());
         },
         Scroll:function(slices){
+          var Zdim = vm.image_info.size[vm.display_to_data_axis_idx.Z];
           vm.cut.Z += slices;
           if(vm.cut.Z < 0)
             vm.cut.Z = 0;
@@ -235,6 +237,7 @@
                                         top_right_zoomer.getzoom());
         },
         Scroll:function(slices){
+          var Xdim = vm.image_info.size[vm.display_to_data_axis_idx.X];
           vm.cut.X += slices;
           if(vm.cut.X < 0)
             vm.cut.X = 0;
@@ -290,6 +293,7 @@
                                       bottom_left_zoomer.getzoom());
         },
         Scroll:function(slices){
+          var Ydim = vm.image_info.size[vm.display_to_data_axis_idx.Y];
           vm.cut.Y += slices;
           if(vm.cut.Y < 0)
             vm.cut.Y = 0;
@@ -400,19 +404,37 @@
     function toggle_axis_inversion(display_axis) {
       var data_axis = vm.display_to_data_axis[display_axis];
       vm.data_axis_inversions[data_axis] = !vm.data_axis_inversions[data_axis];
-      update_axis_inversions();
+      reconfigure_zoomer_instances();
     }
 
-    function update_axis_inversions() {
+    function exchange_axes(display_axis1, display_axis2) {
+      var data_axis1 = vm.display_to_data_axis[display_axis1];
+      var data_axis2 = vm.display_to_data_axis[display_axis2];
+      vm.data_to_display_axis[data_axis1] = display_axis2;
+      vm.data_to_display_axis[data_axis2] = display_axis1;
+      updateDisplayAxisSwap();
+      reconfigure_zoomer_instances();
+    }
+
+    function reconfigure_zoomer_instances() {
+      var Xdim = vm.image_info.size[vm.display_to_data_axis_idx.X];
+      var Ydim = vm.image_info.size[vm.display_to_data_axis_idx.Y];
+      var Zdim = vm.image_info.size[vm.display_to_data_axis_idx.Z];
       vm.top_left_zoomer.reconfigure({
+        Width: Xdim,
+        Height: Ydim,
         MirrorHoriz: vm.data_axis_inversions[vm.display_to_data_axis.X],
         MirrorVert: vm.data_axis_inversions[vm.display_to_data_axis.Y]
       });
       vm.top_right_zoomer.reconfigure({
+        Width: Zdim,
+        Height: Ydim,
         MirrorHoriz: vm.data_axis_inversions[vm.display_to_data_axis.Z],
         MirrorVert: vm.data_axis_inversions[vm.display_to_data_axis.Y]
       });
       vm.bottom_left_zoomer.reconfigure({
+        Width: Xdim,
+        Height: Zdim,
         MirrorHoriz: vm.data_axis_inversions[vm.display_to_data_axis.X],
         MirrorVert: vm.data_axis_inversions[vm.display_to_data_axis.Z]
       });
