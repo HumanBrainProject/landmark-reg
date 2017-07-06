@@ -10,7 +10,7 @@ function Zoomer(canvas,cfg){
     this.reconfigure=function(new_cfg){
         Object.assign(cfg, new_cfg);
         // Empty the cache, because it may contain obsolete data
-        cache=new LRUCache(300);
+        cache.empty();
     }
 
     this.fullcanvas=function(){
@@ -256,6 +256,15 @@ function Zoomer(canvas,cfg){
     canvas.addEventListener("mousemove",this.mmove,true);
     canvas.addEventListener("wheel",this.mwheel,true);
     canvas.addEventListener("keypress",this.kpress,true);
+
+    this.destroy=function(){
+        cache.empty();
+        canvas.removeEventListener("mousedown",this.mdown,true);
+        canvas.removeEventListener("mouseup",this.mup,true);
+        canvas.removeEventListener("mousemove",this.mmove,true);
+        canvas.removeEventListener("wheel",this.mwheel,true);
+        canvas.removeEventListener("keypress",this.kpress,true);
+    }
 }
 
 // Local Variables:

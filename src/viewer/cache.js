@@ -29,6 +29,13 @@ LRUCache.prototype={
         }
         this.map[key]=new CacheItem(key,data,this.head);
         this.length++;
+    },
+    empty:function(){
+        for(var key in this.map) {
+            this.map[key].unlink();
+            delete this.map[key];
+        }
+        this.length=0;
     }
 };
 
@@ -53,3 +60,7 @@ CacheItem.prototype={
         this.next=null;
     }
 };
+
+// Local Variables:
+// js-indent-level: 4
+// End:

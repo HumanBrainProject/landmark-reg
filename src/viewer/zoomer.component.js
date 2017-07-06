@@ -342,7 +342,9 @@
     }
 
     function $onDestroy() {
-      $log.warn("$onDestroy is not implemented, memory may be leaked");
+      vm.bottom_left_zoomer.destroy();
+      vm.top_right_zoomer.destroy();
+      vm.top_left_zoomer.destroy();
     }
 
     function cutUpdatedByZoomer() {
