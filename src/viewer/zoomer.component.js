@@ -13,7 +13,8 @@
       }
     });
 
-  function ZoomerController(ZoomerMetadata, $element, $scope, $log) {
+  function ZoomerController(ZoomerMetadata, $element, $log, $scope,
+                            $timeout, $window) {
     var vm = this;
 
     vm.$onInit = $onInit;
@@ -342,6 +343,7 @@
     }
 
     function $onDestroy() {
+      if(redraw_throttler) $timeout.cancel(redraw_throttler);
       vm.bottom_left_zoomer.destroy();
       vm.top_right_zoomer.destroy();
       vm.top_left_zoomer.destroy();
@@ -443,10 +445,17 @@
       });
       redraw();
     }
+
+    var redraw_throttler;
     function redraw() {
-      vm.top_left_zoomer.redraw();
-      vm.top_right_zoomer.redraw();
-      vm.bottom_left_zoomer.redraw();
+      if(!redraw_throttler) {
+        redraw_throttler = $timeout(function() {
+          redraw_throttler = null;
+          vm.top_left_zoomer.redraw();
+          vm.top_right_zoomer.redraw();
+          vm.bottom_left_zoomer.redraw();
+        }, 0, false);
+      }
     }
 
     // The following objects are constant, they describe the filename lay-out
