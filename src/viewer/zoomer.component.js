@@ -404,18 +404,18 @@
     }
 
     function update_axis_inversions() {
-      vm.top_left_zoomer.cfg.MirrorHoriz =
-        vm.data_axis_inversions[vm.display_to_data_axis.X];
-      vm.top_left_zoomer.cfg.MirrorVert =
-        vm.data_axis_inversions[vm.display_to_data_axis.Y];
-      vm.top_right_zoomer.cfg.MirrorHoriz =
-        vm.data_axis_inversions[vm.display_to_data_axis.Z]
-      vm.top_right_zoomer.cfg.MirrorVert =
-        vm.data_axis_inversions[vm.display_to_data_axis.Y];
-      vm.bottom_left_zoomer.cfg.MirrorHoriz =
-        vm.data_axis_inversions[vm.display_to_data_axis.X];
-      vm.bottom_left_zoomer.cfg.MirrorVert =
-        vm.data_axis_inversions[vm.display_to_data_axis.Z];
+      vm.top_left_zoomer.reconfigure({
+        MirrorHoriz: vm.data_axis_inversions[vm.display_to_data_axis.X],
+        MirrorVert: vm.data_axis_inversions[vm.display_to_data_axis.Y]
+      });
+      vm.top_right_zoomer.reconfigure({
+        MirrorHoriz: vm.data_axis_inversions[vm.display_to_data_axis.Z],
+        MirrorVert: vm.data_axis_inversions[vm.display_to_data_axis.Y]
+      });
+      vm.bottom_left_zoomer.reconfigure({
+        MirrorHoriz: vm.data_axis_inversions[vm.display_to_data_axis.X],
+        MirrorVert: vm.data_axis_inversions[vm.display_to_data_axis.Z]
+      });
       redraw();
     }
     function redraw() {

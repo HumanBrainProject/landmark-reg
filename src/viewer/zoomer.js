@@ -5,7 +5,11 @@ function Zoomer(canvas,cfg){
     var canvaswidth=0;
     var canvasheight=0;
     var view=null; // cutx-cuty-cutw-cuth visible portion of image (in image pixels)
-    this.cfg = cfg;
+    var cfg = cfg;
+
+    this.reconfigure=function(new_cfg){
+        Object.assign(cfg, new_cfg);
+    }
 
     this.fullcanvas=function(){
         canvaswidth=canvas.width;
@@ -251,3 +255,7 @@ function Zoomer(canvas,cfg){
     canvas.addEventListener("wheel",this.mwheel,true);
     canvas.addEventListener("keypress",this.kpress,true);
 }
+
+// Local Variables:
+// js-indent-level: 4
+// End:
