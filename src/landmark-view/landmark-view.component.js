@@ -40,12 +40,16 @@
       vm.incoming_cursor = pair.source_point.slice();
     }
 
+    function active_landmark_pairs() {
+      return vm.landmark_pairs.filter(function(pair){return pair.active;})
+    }
+
     function alignmentTask() {
       return {
         source_image: vm.incoming_image_url,
         target_image: vm.template_image_url,
         transformation_type: vm.transformation_type,
-        landmark_pairs: vm.landmark_pairs
+        landmark_pairs: active_landmark_pairs()
       };
     }
 
@@ -61,14 +65,15 @@
     }
 
     function readyToTransform() {
+      var active_pairs = active_landmark_pairs();
       switch(vm.transformation_type) {
       case "translation":
-        return vm.landmark_pairs.length >= 1;
+        return active_pairs.length >= 1;
       case "rigid":
-        return vm.landmark_pairs.length >= 2;
+        return active_pairs.length >= 2;
       case "similarity":
       case "affine":
-        return vm.landmark_pairs.length >= 3;
+        return active_pairs.length >= 3;
       default:
         $log.error("unknown transformation type");
         return false;

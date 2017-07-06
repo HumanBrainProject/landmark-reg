@@ -1,9 +1,21 @@
-<table class="table table-condensed table-hover">
+<table class="table table-condensed">
   <tbody>
-    <tr ng-repeat="pair in $ctrl.landmark_pairs">
-      <td><coordinates coords="pair.target_point"/></td>
-      <td>←</td>
-      <td><coordinates coords="pair.source_point"/></td>
+    <tr ng-repeat="pair in $ctrl.landmark_pairs"
+        ng-class="$ctrl.pairIsActive(pair) ? 'active' : ''">
+      <td>
+        <input type="checkbox" class="checkbox input-sm"
+               ng-model="pair.active"/>
+        <!-- TODO remove the ugly line break -->
+        <input type="text" class="form-control input-sm"
+               ng-model="pair.name"/>
+      </td>
+      <!--<td>
+        <small>
+          <coordinates coords="pair.target_point"/><br/>
+          ←
+          <coordinates coords="pair.source_point"/>
+        </small>
+      </td>-->
       <td>
         <button title="Show" class="btn btn-xs btn-default"
                 ng-click="$ctrl.goToLandmarkPair({pair: pair})">
