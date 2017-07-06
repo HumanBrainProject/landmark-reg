@@ -13,6 +13,13 @@
       },
 
       _static_metadata : {
+        "/data/BigBrainRelease.2015": {
+          "size": [6572, 7404, 5711],
+          "voxel_size": [0.021166666666666666, 0.020, 0.021166666666666666],
+          "max_level": 6,
+          "tile_size": 256,
+          "axis_orientations": "RAS+"
+        },
         "/data/BigBrain-160um": {
           "size": [822, 926, 714],
           "voxel_size": [0.16933333333333334, 0.160, 0.16933333333333334],

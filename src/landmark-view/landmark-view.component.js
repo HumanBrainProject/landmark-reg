@@ -15,7 +15,8 @@
     vm.incoming_image_url = "/data/B20_stn_l";
 
     vm.template_cursor = [0, 0, 0];
-    vm.template_image_url = "/data/BigBrain-160um";
+    //vm.template_image_url = "/data/BigBrain-160um";
+    vm.template_image_url = "/data/BigBrainRelease.2015";
     //vm.template_image_url = "http://www.nesys.uio.no/CDPTest/data";
 
     vm.landmark_pairs = [];
