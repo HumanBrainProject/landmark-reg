@@ -142,7 +142,7 @@
         Width: Xdim,
         Height: Ydim,
         TileSize: tile_size,
-        maxlevel: max_level,
+        MaxLevel: max_level,
         MirrorHoriz: vm.data_axis_inversions[vm.display_to_data_axis.X],
         MirrorVert: vm.data_axis_inversions[vm.display_to_data_axis.Y],
         Key:function(level,X,Y){
@@ -198,7 +198,7 @@
         Width:Zdim,
         Height:Ydim,
         TileSize:tile_size,
-        maxlevel:max_level,
+        MaxLevel:max_level,
         MirrorHoriz: vm.data_axis_inversions[vm.display_to_data_axis.Z],
         MirrorVert: vm.data_axis_inversions[vm.display_to_data_axis.Y],
         Key:function(level,Z,Y){
@@ -254,7 +254,7 @@
         Width: Xdim,
         Height: Zdim,
         TileSize: tile_size,
-        maxlevel: max_level,
+        MaxLevel: max_level,
         MirrorHoriz: vm.data_axis_inversions[vm.display_to_data_axis.X],
         MirrorVert: vm.data_axis_inversions[vm.display_to_data_axis.Z],
         Key:function(level,X,Z){
