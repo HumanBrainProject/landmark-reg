@@ -91,7 +91,7 @@
       bottom_left_canvas.width = bottom_left_canvas.clientWidth;
       bottom_left_canvas.height = bottom_left_canvas.clientHeight;
 
-      $($window).on("resize", resize);
+      $($window).on("optimizedResize", resize);
 
       function tilecomplete(tile,swap_axes,next){
         var canvas=document.createElement("canvas");
@@ -345,8 +345,7 @@
 
     function $onDestroy() {
       if(redraw_throttler) $timeout.cancel(redraw_throttler);
-      if(resize_throttler) $timeout.cancel(resize_throttler);
-      $($window).off("resize", resize);
+      $($window).off("optimizedResize", resize);
       vm.bottom_left_zoomer.destroy();
       vm.top_right_zoomer.destroy();
       vm.top_left_zoomer.destroy();
@@ -461,16 +460,10 @@
       }
     }
 
-    var resize_throttler;
     function resize() {
-      if(!resize_throttler) {
-        resize_throttler = $timeout(function() {
-          resize_throttler = null;
-          vm.top_left_zoomer.resize();
-          vm.top_right_zoomer.resize();
-          vm.bottom_left_zoomer.resize();
-        }, 66, true);
-      }
+      vm.top_left_zoomer.resize();
+      vm.top_right_zoomer.resize();
+      vm.bottom_left_zoomer.resize();
     }
 
     // The following objects are constant, they describe the filename lay-out
