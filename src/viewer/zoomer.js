@@ -5,13 +5,12 @@ function Zoomer(canvas,cfg){
     var canvaswidth=0;
     var canvasheight=0;
     var view=null; // cutx-cuty-cutw-cuth visible portion of image (in image pixels)
-    var cfg = cfg;
 
     this.reconfigure=function(new_cfg){
         Object.assign(cfg, new_cfg);
         // Empty the cache, because it may contain obsolete data
         cache.empty();
-    }
+    };
 
     this.fullcanvas=function(){
         canvaswidth=canvas.width;
@@ -46,7 +45,7 @@ function Zoomer(canvas,cfg){
             new_zoom = zoom * Math.sqrt((canvaswidth / canvas.width)
                                         * (canvasheight / canvas.height));
         this.setmidzoom(midx, midy, new_zoom);
-    }
+    };
     
     var viewnumber=0;
     
@@ -100,7 +99,7 @@ function Zoomer(canvas,cfg){
             if(cfg.Overlay)
                 try{cfg.Overlay(mainctx,canvaswidth,canvasheight,view.cutx,view.cuty,view.cutw,view.cuth);}
                 catch(ex){console.log("Overlay exception: "+ex);}
-        };
+        }
 
         function drawTile(tile,x,y){
             ctx.drawImage(tile,x*tilesize,y*tilesize);
@@ -174,7 +173,7 @@ function Zoomer(canvas,cfg){
     this.getzoom=getzoom;
     function getzoom(){
         return view.cutw/canvaswidth;
-    };
+    }
 
 
     function coords_for_mouseevent(event) {
@@ -276,7 +275,7 @@ function Zoomer(canvas,cfg){
         canvas.removeEventListener("mousemove",this.mmove,true);
         canvas.removeEventListener("wheel",this.mwheel,true);
         canvas.removeEventListener("keypress",this.kpress,true);
-    }
+    };
 }
 
 // Local Variables:

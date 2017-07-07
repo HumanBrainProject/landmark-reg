@@ -28,8 +28,8 @@
 
     function generate_name() {
       var i = 1;
-      while(vm.landmark_pairs.find(
-        function(pair) {return pair.name == i;}))
+      function predicate(pair) {return pair.name == i;}
+      while(vm.landmark_pairs.find(predicate))
         i++;
       return String(i);
     }

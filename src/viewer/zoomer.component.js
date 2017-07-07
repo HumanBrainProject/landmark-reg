@@ -100,7 +100,7 @@
         canvas.width=tile_size;
         canvas.height=tile_size;
         if(tile !== null) {
-          var ctx = canvas.getContext("2d")
+          var ctx = canvas.getContext("2d");
           if(swap_axes)
             ctx.setTransform(0, 1, 1, 0, 0, 0);
           else
@@ -385,9 +385,9 @@
 
     function cut_to_cursor(cut) {
       return [
-        cut[vm.data_to_display_axis["x"]] * vm.image_info.voxel_size[0],
-        cut[vm.data_to_display_axis["y"]] * vm.image_info.voxel_size[1],
-        cut[vm.data_to_display_axis["z"]] * vm.image_info.voxel_size[2]
+        cut[vm.data_to_display_axis.x] * vm.image_info.voxel_size[0],
+        cut[vm.data_to_display_axis.y] * vm.image_info.voxel_size[1],
+        cut[vm.data_to_display_axis.z] * vm.image_info.voxel_size[2]
       ];
     }
 

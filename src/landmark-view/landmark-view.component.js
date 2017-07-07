@@ -45,7 +45,7 @@
     }
 
     function active_landmark_pairs() {
-      return vm.landmark_pairs.filter(function(pair){return pair.active;})
+      return vm.landmark_pairs.filter(function(pair){return pair.active;});
     }
 
     function alignmentTask() {
@@ -108,12 +108,12 @@
     }
 
     function matrix_det(mat) {
-      if(mat == undefined)
+      if(!mat)
         return null;
       if(mat.length == 2) {
         return mat[0][0] * mat[1][1] - mat[0][1] * mat[1][0];
       } else {
-        var res = 0.;
+        var res = 0;
         for(var i = 0; i < mat.length; i++) {
           var minor = [];
           for(var j = 0; j < mat.length - 1; j++) {

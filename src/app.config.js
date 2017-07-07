@@ -1,4 +1,6 @@
 (function() { /* IIFE */
+  "use strict";
+
   angular
     .module("landmarkRegApp")
     .config(configure);
