@@ -23,6 +23,7 @@
     vm.transformation_type = "rigid";
     vm.registration_result = {};
     vm.synchronize_cursors = false;
+    vm.synchronize_zoom = false;
 
     vm.goToLandmarkPair = goToLandmarkPair;
     vm.matrix_det = matrix_det;
@@ -32,6 +33,9 @@
     vm.transformationAvailable = transformationAvailable;
     vm.updateIncomingCursor = updateIncomingCursor;
     vm.updateTemplateCursor = updateTemplateCursor;
+    vm.incomingPixelSizeUpdated = incomingPixelSizeUpdated;
+    vm.templatePixelSizeUpdated = templatePixelSizeUpdated;
+    vm.zoomSynchronizationToggled = zoomSynchronizationToggled;
 
     ////////////
 
@@ -120,6 +124,23 @@
         }
         return res;
       }
+    }
+
+    function incomingPixelSizeUpdated(pixel_size) {
+      vm.incoming_pixel_size = pixel_size;
+      if(vm.synchronize_zoom)
+        vm.template_pixel_size = pixel_size;
+    }
+
+    function templatePixelSizeUpdated(pixel_size) {
+      vm.template_pixel_size = pixel_size;
+      if(vm.synchronize_zoom)
+        vm.incoming_pixel_size = pixel_size;
+    }
+
+    function zoomSynchronizationToggled() {
+      vm.incoming_pixel_size = vm.template_pixel_size = Math.max(
+        vm.incoming_pixel_size, vm.template_pixel_size);
     }
 
     function updateIncomingCursor(coords) {

@@ -7,9 +7,11 @@
       templateUrl: "viewer/zoomer.template.html",
       controller: ZoomerController,
       bindings: {
-        cursor: "<",
         imageUrl: "@",
-        onCursorUpdate: "&"
+        cursor: "<",
+        onCursorUpdate: "&",
+        displayPixelSize: "<",
+        onDisplayPixelSizeUpdate: "&"
       }
     });
 
@@ -175,12 +177,14 @@
           redraw();
         },
         Dispatch:function(){
+          var zoom = top_left_zoomer.getzoom();
           top_right_zoomer.setmidzoom(top_right_zoomer.getmidx(),
                                       top_left_zoomer.getmidy(),
-                                      top_left_zoomer.getzoom());
+                                      zoom);
           bottom_left_zoomer.setmidzoom(top_left_zoomer.getmidx(),
                                         bottom_left_zoomer.getmidy(),
-                                        top_left_zoomer.getzoom());
+                                        zoom);
+          zoom_updated_by_zoomer(zoom);
         },
         Scroll:function(slices){
           var Zdim = vm.image_info.size[vm.display_to_data_axis_idx.Z];
@@ -193,8 +197,6 @@
           redraw();
         }
       });
-      vm.top_left_zoomer = top_left_zoomer;
-      top_left_zoomer.fullcanvas();
 
       var top_right_zoomer = new Zoomer(top_right_canvas, {  // Z-Y
         Width:Zdim,
@@ -231,12 +233,14 @@
           redraw();
         },
         Dispatch:function(){
+          var zoom = top_right_zoomer.getzoom();
           top_left_zoomer.setmidzoom(top_left_zoomer.getmidx(),
                                      top_right_zoomer.getmidy(),
-                                     top_right_zoomer.getzoom());
+                                     zoom);
           bottom_left_zoomer.setmidzoom(bottom_left_zoomer.getmidx(),
                                         top_right_zoomer.getmidx(),
-                                        top_right_zoomer.getzoom());
+                                        zoom);
+          zoom_updated_by_zoomer(zoom);
         },
         Scroll:function(slices){
           var Xdim = vm.image_info.size[vm.display_to_data_axis_idx.X];
@@ -249,8 +253,6 @@
           redraw();
         }
       });
-      vm.top_right_zoomer = top_right_zoomer;
-      top_right_zoomer.fullcanvas();
 
       var bottom_left_zoomer = new Zoomer(bottom_left_canvas, {  // X-Z
         Width: Xdim,
@@ -287,12 +289,14 @@
           redraw();
         },
         Dispatch:function(){
+          var zoom = bottom_left_zoomer.getzoom();
           top_left_zoomer.setmidzoom(bottom_left_zoomer.getmidx(),
                                      top_left_zoomer.getmidy(),
-                                     bottom_left_zoomer.getzoom());
+                                     zoom);
           top_right_zoomer.setmidzoom(bottom_left_zoomer.getmidy(),
                                       top_right_zoomer.getmidy(),
-                                      bottom_left_zoomer.getzoom());
+                                      zoom);
+          zoom_updated_by_zoomer(zoom);
         },
         Scroll:function(slices){
           var Ydim = vm.image_info.size[vm.display_to_data_axis_idx.Y];
@@ -305,7 +309,12 @@
           redraw();
         }
       });
+
+      vm.top_left_zoomer = top_left_zoomer;
+      vm.top_right_zoomer = top_right_zoomer;
       vm.bottom_left_zoomer = bottom_left_zoomer;
+      top_left_zoomer.fullcanvas();
+      top_right_zoomer.fullcanvas();
       bottom_left_zoomer.fullcanvas();
 
       // Synchronize the zoom level for all views, because fullcanvas sets it
@@ -316,6 +325,10 @@
       top_left_zoomer.setmidzoom(vm.cut.X,vm.cut.Y,zoom);
       top_right_zoomer.setmidzoom(vm.cut.Z,vm.cut.Y,zoom);
       bottom_left_zoomer.setmidzoom(vm.cut.X,vm.cut.Z,zoom);
+      vm.displayPixelSize = zoom * (vm.image_info.voxel_size[0]
+                                    + vm.image_info.voxel_size[1]
+                                    + vm.image_info.voxel_size[2]) / 3;
+      vm.onDisplayPixelSizeUpdate({pixel_size: vm.displayPixelSize});
     }
 
     // Synchronize the views when the cursor is updated externally (e.g. Go
@@ -335,6 +348,19 @@
            && vm.top_right_zoomer
            && vm.top_left_zoomer) {
           redraw();
+        }
+      }
+
+      if(changes.displayPixelSize) {
+        var new_pixel_size = changes.displayPixelSize.currentValue;
+        if(vm.image_info && vm.bottom_left_zoomer
+           && vm.top_right_zoomer && vm.top_left_zoomer) {
+          var zoom = new_pixel_size / (vm.image_info.voxel_size[0]
+                                       + vm.image_info.voxel_size[1]
+                                       + vm.image_info.voxel_size[2]) * 3;
+          vm.top_left_zoomer.setmidzoom(vm.cut.X,vm.cut.Y,zoom);
+          vm.top_right_zoomer.setmidzoom(vm.cut.Z,vm.cut.Y,zoom);
+          vm.bottom_left_zoomer.setmidzoom(vm.cut.X,vm.cut.Z,zoom);
         }
       }
 
@@ -462,8 +488,21 @@
 
     function resize() {
       vm.top_left_zoomer.resize();
-      vm.top_right_zoomer.resize();
-      vm.bottom_left_zoomer.resize();
+      var new_zoom = vm.top_left_zoomer.getzoom();
+      vm.top_right_zoomer.resize(new_zoom);
+      vm.bottom_left_zoomer.resize(new_zoom);
+      zoom_updated_by_zoomer(new_zoom);
+    }
+
+    function zoom_updated_by_zoomer(zoom) {
+      $scope.$apply(function() {
+        // FIXME: this displayPixelSize is approximate because Zoomer does not
+        // yet support anisotropic pixels
+        vm.displayPixelSize = zoom * (vm.image_info.voxel_size[0]
+                                      + vm.image_info.voxel_size[1]
+                                      + vm.image_info.voxel_size[2]) / 3;
+        vm.onDisplayPixelSizeUpdate({pixel_size: vm.displayPixelSize});
+      });
     }
 
     // The following objects are constant, they describe the filename lay-out

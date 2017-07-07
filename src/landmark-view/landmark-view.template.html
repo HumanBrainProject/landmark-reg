@@ -1,7 +1,10 @@
 <div id="template_viewer">
-  <zoomer cursor="$ctrl.template_cursor"
-          image-url="{{$ctrl.template_image_url}}"
-          on-cursor-update="$ctrl.updateTemplateCursor(cursor);"/>
+  <zoomer image-url="{{$ctrl.template_image_url}}"
+          cursor="$ctrl.template_cursor"
+          on-cursor-update="$ctrl.updateTemplateCursor(cursor)"
+          display-pixel-size="$ctrl.template_pixel_size"
+          on-display-pixel-size-update="$ctrl.templatePixelSizeUpdated(pixel_size)"
+          />
 
   <div class="control_panel"> <!-- TODO decide in which CSS this class should go -->
     <p>Template: {{$ctrl.template_image_url}}</p>
@@ -17,12 +20,21 @@
   </div>
 </div>
 <div id="incoming_viewer">
-  <zoomer cursor="$ctrl.incoming_cursor"
-          image-url="{{$ctrl.incoming_image_url}}"
-          on-cursor-update="$ctrl.updateIncomingCursor(cursor);"/>
+  <zoomer image-url="{{$ctrl.incoming_image_url}}"
+          cursor="$ctrl.incoming_cursor"
+          on-cursor-update="$ctrl.updateIncomingCursor(cursor)"
+          display-pixel-size="$ctrl.incoming_pixel_size"
+          on-display-pixel-size-update="$ctrl.incomingPixelSizeUpdated(pixel_size)"
+          />
 
   <div class="control_panel">
     <p>Incoming image: {{$ctrl.incoming_image_url}}</p>
+    <label>
+      <input type="checkbox"
+             ng-model="$ctrl.synchronize_zoom"
+             ng-change="$ctrl.zoomSynchronizationToggled()"/>
+      Synchronize zoom
+    </label>
     <!-- TODO: un-hide when this is functional
     <!-- TODO insert here a reference to the incoming image's metadata
          (e.g. link to dataset page) ->

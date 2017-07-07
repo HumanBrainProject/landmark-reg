@@ -36,13 +36,14 @@ function Zoomer(canvas,cfg){
         prepare();
     };
 
-    this.resize=function(){
+    this.resize=function(new_zoom){
         var midx = this.getmidx();
         var midy = this.getmidy();
         var zoom = this.getzoom();
         canvas.width = canvas.clientWidth;
         canvas.height = canvas.clientHeight;
-        var new_zoom = zoom * Math.sqrt((canvaswidth / canvas.width)
+        if(!new_zoom)
+            new_zoom = zoom * Math.sqrt((canvaswidth / canvas.width)
                                         * (canvasheight / canvas.height));
         this.setmidzoom(midx, midy, new_zoom);
     }
