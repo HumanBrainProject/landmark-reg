@@ -31,17 +31,10 @@
     ////////////
 
     function $onInit() {
-      ZoomerMetadata.fetch_metadata(vm.imageUrl)
-        .then(initialize_zoomer,
-              function(reason) {
-                $log.error("cannot fetch metadata for image " + vm.imageUrl
-                           + ": " + reason)
-              });
       $($window).on("optimizedResize", resize);
     }
 
     function initialize_zoomer(image_info) {
-      $log.debug("initialize_zoomer(" + angular.toJson(image_info) + ")");
       vm.image_info = image_info;
 
       // Data axes (x, y, z) are written in lowercase. Display axes (X, Y, Z)
@@ -311,6 +304,16 @@
     // Synchronize the views when the cursor is updated externally (e.g. Go
     // To Landmark).
     function $onChanges(changes) {
+      if(changes.imageUrl) {
+        vm.image_info = null;
+        ZoomerMetadata.fetch_metadata(vm.imageUrl)
+          .then(initialize_zoomer,
+                function(reason) {
+                  $log.error("cannot fetch metadata for image " + vm.imageUrl
+                             + ": " + reason.statusText)
+                });
+       }
+
       if(!vm.image_info)
         return;
 
@@ -336,10 +339,6 @@
           vm.top_right_zoomer.setmidzoom(vm.cut.Z,vm.cut.Y,zoom);
           vm.bottom_left_zoomer.setmidzoom(vm.cut.X,vm.cut.Z,zoom);
         }
-      }
-
-      if(changes.imageUrl) {
-        $log.error("dynamically changing the image shown by Zoomer is not supported");
       }
     }
 
