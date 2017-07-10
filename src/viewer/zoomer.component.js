@@ -31,8 +31,18 @@
     ////////////
 
     function $onInit() {
-      vm.image_info = ZoomerMetadata.get_metadata(vm.imageUrl);
-      vm.image_info.url = vm.imageUrl;
+      ZoomerMetadata.fetch_metadata(vm.imageUrl)
+        .then(initialize_zoomer,
+              function(reason) {
+                $log.error("cannot fetch metadata for image " + vm.imageUrl
+                           + ": " + reason)
+              });
+      $($window).on("optimizedResize", resize);
+    }
+
+    function initialize_zoomer(image_info) {
+      $log.debug("initialize_zoomer(" + angular.toJson(image_info) + ")");
+      vm.image_info = image_info;
 
       // Data axes (x, y, z) are written in lowercase. Display axes (X, Y, Z)
       // are fixed relative to the layout, they are written in uppercase.
@@ -63,26 +73,29 @@
         Z: vm.image_info.size[vm.display_to_data_axis_idx.Z] / 2
       };
       vm.onCursorUpdate({cursor: cut_to_cursor(vm.cut)});
+
+      reconfigure_zoomer_instances();
+
+      vm.top_left_zoomer.fullcanvas();
+      vm.top_right_zoomer.fullcanvas();
+      vm.bottom_left_zoomer.fullcanvas();
+
+      // Synchronize the zoom level for all views, because fullcanvas sets it
+      // individually.
+      var zoom = Math.max(vm.top_left_zoomer.getzoom(),
+                          vm.top_right_zoomer.getzoom(),
+                          vm.bottom_left_zoomer.getzoom());
+      vm.top_left_zoomer.setmidzoom(vm.cut.X,vm.cut.Y,zoom);
+      vm.top_right_zoomer.setmidzoom(vm.cut.Z,vm.cut.Y,zoom);
+      vm.bottom_left_zoomer.setmidzoom(vm.cut.X,vm.cut.Z,zoom);
+      vm.displayPixelSize = zoom * (vm.image_info.voxel_size[0]
+                                    + vm.image_info.voxel_size[1]
+                                    + vm.image_info.voxel_size[2]) / 3;
+      vm.onDisplayPixelSizeUpdate({pixel_size: vm.displayPixelSize});
+      redraw();
     }
 
     function $postLink() {
-      if(!vm.image_info) {
-        $log.error("no available image metadata for " + vm.imageUrl);
-        return;
-      }
-
-      var image_url = vm.image_info.url;
-      var Xdim = vm.image_info.size[vm.display_to_data_axis_idx.X];
-      var Ydim = vm.image_info.size[vm.display_to_data_axis_idx.Y];
-      var Zdim = vm.image_info.size[vm.display_to_data_axis_idx.Z];
-      var level_offset;
-      if(vm.image_info.level_offset)
-        level_offset = vm.image_info.level_offset;
-      else
-        level_offset = 0;
-      var max_level = vm.image_info.max_level;
-      var tile_size= vm.image_info.tile_size;
-
       var top_left_canvas = $element.find("canvas.top_left")[0];
       var top_right_canvas = $element.find("canvas.top_right")[0];
       var bottom_left_canvas = $element.find("canvas.bottom_left")[0];
@@ -93,12 +106,10 @@
       bottom_left_canvas.width = bottom_left_canvas.clientWidth;
       bottom_left_canvas.height = bottom_left_canvas.clientHeight;
 
-      $($window).on("optimizedResize", resize);
-
       function tilecomplete(tile,swap_axes,next){
         var canvas=document.createElement("canvas");
-        canvas.width=tile_size;
-        canvas.height=tile_size;
+        canvas.width=vm.image_info.tile_size;
+        canvas.height=vm.image_info.tile_size;
         if(tile !== null) {
           var ctx = canvas.getContext("2d");
           if(swap_axes)
@@ -133,8 +144,8 @@
           vertical_idx = idx1;
           horizontal_idx = idx2;
         }
-        return image_url
-          + "/" + (level + level_offset)
+        return vm.imageUrl
+          + "/" + (level + (vm.image_info.level_offset || 0))
           + "/" + slice_axis
           + "/" + ("0000" + slice_number).substr(-4, 4)
           + "/" + INPLANE_AXES_FOR_SLICE_AXIS[slice_axis][0] + ("00" + vertical_idx).substr(-2, 2)
@@ -143,12 +154,6 @@
       }
 
       var top_left_zoomer = new Zoomer(top_left_canvas, {  // X-Y
-        Width: Xdim,
-        Height: Ydim,
-        TileSize: tile_size,
-        MaxLevel: max_level,
-        MirrorHoriz: vm.data_axis_inversions[vm.display_to_data_axis.X],
-        MirrorVert: vm.data_axis_inversions[vm.display_to_data_axis.Y],
         Key:function(level,X,Y){
           var Z=vm.cut.Z;
           for(var i=0;i<level;i++)
@@ -199,12 +204,6 @@
       });
 
       var top_right_zoomer = new Zoomer(top_right_canvas, {  // Z-Y
-        Width:Zdim,
-        Height:Ydim,
-        TileSize:tile_size,
-        MaxLevel:max_level,
-        MirrorHoriz: vm.data_axis_inversions[vm.display_to_data_axis.Z],
-        MirrorVert: vm.data_axis_inversions[vm.display_to_data_axis.Y],
         Key:function(level,Z,Y){
           var X=vm.cut.X;
           for(var i=0;i<level;i++)
@@ -255,12 +254,6 @@
       });
 
       var bottom_left_zoomer = new Zoomer(bottom_left_canvas, {  // X-Z
-        Width: Xdim,
-        Height: Zdim,
-        TileSize: tile_size,
-        MaxLevel: max_level,
-        MirrorHoriz: vm.data_axis_inversions[vm.display_to_data_axis.X],
-        MirrorVert: vm.data_axis_inversions[vm.display_to_data_axis.Z],
         Key:function(level,X,Z){
           var Y=vm.cut.Y;
           for(var i=0;i<level;i++)
@@ -313,22 +306,6 @@
       vm.top_left_zoomer = top_left_zoomer;
       vm.top_right_zoomer = top_right_zoomer;
       vm.bottom_left_zoomer = bottom_left_zoomer;
-      top_left_zoomer.fullcanvas();
-      top_right_zoomer.fullcanvas();
-      bottom_left_zoomer.fullcanvas();
-
-      // Synchronize the zoom level for all views, because fullcanvas sets it
-      // individually.
-      var zoom = Math.max(top_left_zoomer.getzoom(),
-                          top_right_zoomer.getzoom(),
-                          bottom_left_zoomer.getzoom());
-      top_left_zoomer.setmidzoom(vm.cut.X,vm.cut.Y,zoom);
-      top_right_zoomer.setmidzoom(vm.cut.Z,vm.cut.Y,zoom);
-      bottom_left_zoomer.setmidzoom(vm.cut.X,vm.cut.Z,zoom);
-      vm.displayPixelSize = zoom * (vm.image_info.voxel_size[0]
-                                    + vm.image_info.voxel_size[1]
-                                    + vm.image_info.voxel_size[2]) / 3;
-      vm.onDisplayPixelSizeUpdate({pixel_size: vm.displayPixelSize});
     }
 
     // Synchronize the views when the cursor is updated externally (e.g. Go
@@ -344,17 +321,14 @@
         // the Zoomer instances would still use the old object. Update the
         // properties in-place instead.
         Object.assign(vm.cut, cursor_to_cut(changes.cursor.currentValue));
-        if(vm.bottom_left_zoomer
-           && vm.top_right_zoomer
-           && vm.top_left_zoomer) {
+        if(zoomer_is_instantiated()) {
           redraw();
         }
       }
 
       if(changes.displayPixelSize) {
         var new_pixel_size = changes.displayPixelSize.currentValue;
-        if(vm.image_info && vm.bottom_left_zoomer
-           && vm.top_right_zoomer && vm.top_left_zoomer) {
+        if(vm.image_info && zoomer_is_instantiated()) {
           var zoom = new_pixel_size / (vm.image_info.voxel_size[0]
                                        + vm.image_info.voxel_size[1]
                                        + vm.image_info.voxel_size[2]) * 3;
@@ -372,9 +346,12 @@
     function $onDestroy() {
       if(redraw_throttler) $timeout.cancel(redraw_throttler);
       $($window).off("optimizedResize", resize);
-      vm.bottom_left_zoomer.destroy();
-      vm.top_right_zoomer.destroy();
-      vm.top_left_zoomer.destroy();
+      if(vm.bottom_left_zoomer)
+        vm.bottom_left_zoomer.destroy();
+      if(vm.top_right_zoomer)
+        vm.top_right_zoomer.destroy();
+      if(vm.top_left_zoomer)
+        vm.top_left_zoomer.destroy();
     }
 
     function cutUpdatedByZoomer() {
@@ -419,6 +396,8 @@
 
     /* the argument is one of the strings: X-, X+, Y-, Y+, Z-, Z+ */
     function axis_label(oriented_display_axis) {
+      if(!vm.image_info)
+        return;
       var data_axis = vm.display_to_data_axis[oriented_display_axis[0]];
       var negative_data_axis = (oriented_display_axis[1] == "-")
           != vm.data_axis_inversions[data_axis];
@@ -437,6 +416,7 @@
       var data_axis = vm.display_to_data_axis[display_axis];
       vm.data_axis_inversions[data_axis] = !vm.data_axis_inversions[data_axis];
       reconfigure_zoomer_instances();
+      redraw();
     }
 
     function exchange_axes(display_axis1, display_axis2) {
@@ -447,31 +427,40 @@
       updateDisplayAxisSwap();
       Object.assign(vm.cut, cursor_to_cut(vm.cursor));
       reconfigure_zoomer_instances();
+      redraw();
     }
 
     function reconfigure_zoomer_instances() {
       var Xdim = vm.image_info.size[vm.display_to_data_axis_idx.X];
       var Ydim = vm.image_info.size[vm.display_to_data_axis_idx.Y];
       var Zdim = vm.image_info.size[vm.display_to_data_axis_idx.Z];
+      var max_level = vm.image_info.max_level;
+      var tile_size= vm.image_info.tile_size;
+
       vm.top_left_zoomer.reconfigure({
         Width: Xdim,
         Height: Ydim,
         MirrorHoriz: vm.data_axis_inversions[vm.display_to_data_axis.X],
-        MirrorVert: vm.data_axis_inversions[vm.display_to_data_axis.Y]
+        MirrorVert: vm.data_axis_inversions[vm.display_to_data_axis.Y],
+        TileSize: tile_size,
+        MaxLevel: max_level
       });
       vm.top_right_zoomer.reconfigure({
         Width: Zdim,
         Height: Ydim,
         MirrorHoriz: vm.data_axis_inversions[vm.display_to_data_axis.Z],
-        MirrorVert: vm.data_axis_inversions[vm.display_to_data_axis.Y]
+        MirrorVert: vm.data_axis_inversions[vm.display_to_data_axis.Y],
+        TileSize: tile_size,
+        MaxLevel: max_level
       });
       vm.bottom_left_zoomer.reconfigure({
         Width: Xdim,
         Height: Zdim,
         MirrorHoriz: vm.data_axis_inversions[vm.display_to_data_axis.X],
-        MirrorVert: vm.data_axis_inversions[vm.display_to_data_axis.Z]
+        MirrorVert: vm.data_axis_inversions[vm.display_to_data_axis.Z],
+        TileSize: tile_size,
+        MaxLevel: max_level
       });
-      redraw();
     }
 
     var redraw_throttler;
@@ -486,12 +475,20 @@
       }
     }
 
+    function zoomer_is_instantiated() {
+      return Boolean(vm.top_left_zoomer
+                     && vm.top_right_zoomer
+                     && vm.bottom_left_zoomer);
+    }
+
     function resize() {
-      vm.top_left_zoomer.resize();
-      var new_zoom = vm.top_left_zoomer.getzoom();
-      vm.top_right_zoomer.resize(new_zoom);
-      vm.bottom_left_zoomer.resize(new_zoom);
-      zoom_updated_by_zoomer(new_zoom);
+      if(zoomer_is_instantiated()) {
+        vm.top_left_zoomer.resize();
+        var new_zoom = vm.top_left_zoomer.getzoom();
+        vm.top_right_zoomer.resize(new_zoom);
+        vm.bottom_left_zoomer.resize(new_zoom);
+        zoom_updated_by_zoomer(new_zoom);
+      }
     }
 
     function zoom_updated_by_zoomer(zoom) {
