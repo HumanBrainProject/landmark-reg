@@ -5,21 +5,18 @@
     <p class="axis_label axis_label_bottom">{{$ctrl.axis_label("Y+")}}</p>
     <p class="axis_label axis_label_left">{{$ctrl.axis_label("X-")}}</p>
     <p class="axis_label axis_label_right">{{$ctrl.axis_label("X+")}}</p>
-    <button class="btn overlay-btn"
-            title="Mirror horizontal axis"
-            ng-click="$ctrl.toggle_axis_inversion('X')">
-      <span class="glyphicon glyphicon-resize-horizontal"></span>
-    </button>
-    <button class="btn overlay-btn"
-            title="Mirror vertical axis"
-            ng-click="$ctrl.toggle_axis_inversion('Y')">
-      <span class="glyphicon glyphicon-resize-vertical"></span>
-    </button>
-    <button class="btn overlay-btn"
-            title="Exchange axes"
-            ng-click="$ctrl.exchange_axes('X', 'Y')">
-      <span class="glyphicon glyphicon-retweet"></span>
-    </button>
+    <div class="orientation-buttons">
+      <button class="btn overlay-btn"
+              title="Mirror horizontal axis"
+              ng-click="$ctrl.toggle_axis_inversion('X')">
+        <span class="glyphicon glyphicon-resize-horizontal"></span>
+      </button>
+      <button class="btn overlay-btn"
+              title="Exchange axes"
+              ng-click="$ctrl.exchange_axes('X', 'Y')">
+        <span class="glyphicon glyphicon-retweet"></span>
+      </button>
+    </div>
   </div>
 </div>
 <div class="top_right">
@@ -29,21 +26,18 @@
     <p class="axis_label axis_label_bottom">{{$ctrl.axis_label("Y+")}}</p>
     <p class="axis_label axis_label_left">{{$ctrl.axis_label("Z-")}}</p>
     <p class="axis_label axis_label_right">{{$ctrl.axis_label("Z+")}}</p>
-    <button class="btn overlay-btn"
-            title="Mirror horizontal axis"
-            ng-click="$ctrl.toggle_axis_inversion('Z')">
-      <span class="glyphicon glyphicon-resize-horizontal"></span>
-    </button>
-    <button class="btn overlay-btn"
-            title="Mirror vertical axis"
-            ng-click="$ctrl.toggle_axis_inversion('Y')">
-      <span class="glyphicon glyphicon-resize-vertical"></span>
-    </button>
-    <button class="btn overlay-btn"
-            title="Exchange axes"
-            ng-click="$ctrl.exchange_axes('Z', 'Y')">
-      <span class="glyphicon glyphicon-retweet"></span>
-    </button>
+    <div class="orientation-buttons">
+      <button class="btn overlay-btn"
+              title="Mirror vertical axis"
+              ng-click="$ctrl.toggle_axis_inversion('Y')">
+        <span class="glyphicon glyphicon-resize-vertical"></span>
+      </button>
+      <button class="btn overlay-btn"
+              title="Exchange axes"
+              ng-click="$ctrl.exchange_axes('Z', 'Y')">
+        <span class="glyphicon glyphicon-retweet"></span>
+      </button>
+    </div>
   </div>
 </div>
 <div class="bottom_left">
@@ -53,20 +47,17 @@
     <p class="axis_label axis_label_bottom">{{$ctrl.axis_label("Z+")}}</p>
     <p class="axis_label axis_label_left">{{$ctrl.axis_label("X-")}}</p>
     <p class="axis_label axis_label_right">{{$ctrl.axis_label("X+")}}</p>
-    <button class="btn overlay-btn"
-            title="Mirror horizontal axis"
-            ng-click="$ctrl.toggle_axis_inversion('X')">
-      <span class="glyphicon glyphicon-resize-horizontal"></span>
-    </button>
-    <button class="btn overlay-btn"
-            title="Mirror vertical axis"
-            ng-click="$ctrl.toggle_axis_inversion('Z')">
-      <span class="glyphicon glyphicon-resize-vertical"></span>
-    </button>
-    <button class="btn overlay-btn"
-            title="Exchange axes"
-            ng-click="$ctrl.exchange_axes('X', 'Z')">
-      <span class="glyphicon glyphicon-retweet"></span>
-    </button>
+    <div class="orientation-buttons">
+      <button class="btn overlay-btn"
+              title="Mirror vertical axis"
+              ng-click="$ctrl.toggle_axis_inversion('Z')">
+        <span class="glyphicon glyphicon-resize-vertical"></span>
+      </button>
+      <button class="btn overlay-btn"
+              title="Exchange axes"
+              ng-click="$ctrl.exchange_axes('X', 'Z')">
+        <span class="glyphicon glyphicon-retweet"></span>
+      </button>
+    </div>
   </div>
 </div>

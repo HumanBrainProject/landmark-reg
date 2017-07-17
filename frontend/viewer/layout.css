@@ -111,6 +111,25 @@ div.overlay {
     /*border: 1px solid #444;*/
 }
 
+.orientation-buttons {
+    padding: 0.5ex;
+}
+.top_left .orientation-buttons{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+.top_right .orientation-buttons{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+.bottom_left .orientation-buttons{
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
 div.control_panel {
     position: absolute;
     height: 50%;
