@@ -12,12 +12,13 @@
     var vm = this;
 
     vm.incoming_cursor = [0, 0, 0];
-    vm.incoming_image_url = "/data/B20_stn_l";
+    vm.incoming_image_url = "https://www.jubrain.fz-juelich.de/apps/landmark-reg/data/B20_stn_l";
+    //vm.incoming_image_url = "/data/B20_stn_l";
 
     vm.template_cursor = [0, 0, 0];
     //vm.template_image_url = "/data/BigBrain-160um";
-    vm.template_image_url = "/data/BigBrainRelease.2015";
-    //vm.template_image_url = "http://www.nesys.uio.no/CDPTest/data";
+    //vm.template_image_url = "/data/BigBrainRelease.2015";
+    vm.template_image_url = "http://www.nesys.uio.no/CDPTest/data";
 
     vm.landmark_pairs = [];
     vm.transformation_type = "rigid";
