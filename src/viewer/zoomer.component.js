@@ -65,7 +65,8 @@
         Y: vm.image_info.size[vm.display_to_data_axis_idx.Y] / 2,
         Z: vm.image_info.size[vm.display_to_data_axis_idx.Z] / 2
       };
-      vm.onCursorUpdate({cursor: cut_to_cursor(vm.cut)});
+      vm.onCursorUpdate({cursor: display_to_data_coords(vm.cut)});
+      vm.mid = Object.assign({}, vm.cut);
 
       reconfigure_zoomer_instances();
 
@@ -78,14 +79,25 @@
       var zoom = Math.max(vm.top_left_zoomer.getzoom(),
                           vm.top_right_zoomer.getzoom(),
                           vm.bottom_left_zoomer.getzoom());
-      vm.top_left_zoomer.setmidzoom(vm.cut.X,vm.cut.Y,zoom);
-      vm.top_right_zoomer.setmidzoom(vm.cut.Z,vm.cut.Y,zoom);
-      vm.bottom_left_zoomer.setmidzoom(vm.cut.X,vm.cut.Z,zoom);
+      // FIXME: this displayPixelSize is approximate because Zoomer does not
+      // yet support anisotropic pixels
       vm.displayPixelSize = zoom * (vm.image_info.voxel_size[0]
                                     + vm.image_info.voxel_size[1]
                                     + vm.image_info.voxel_size[2]) / 3;
       vm.onDisplayPixelSizeUpdate({pixel_size: vm.displayPixelSize});
+      set_view();
       redraw();
+    }
+
+    function set_view() {
+      // FIXME: this displayPixelSize is approximate because Zoomer does not
+      // yet support anisotropic pixels
+      var zoom = vm.displayPixelSize / (vm.image_info.voxel_size[0]
+                                        + vm.image_info.voxel_size[1]
+                                        + vm.image_info.voxel_size[2]) * 3;
+      vm.top_left_zoomer.setmidzoom(vm.mid.X,vm.mid.Y,zoom);
+      vm.top_right_zoomer.setmidzoom(vm.mid.Z,vm.mid.Y,zoom);
+      vm.bottom_left_zoomer.setmidzoom(vm.mid.X,vm.mid.Z,zoom);
     }
 
     function $postLink() {
@@ -176,12 +188,10 @@
         },
         Dispatch:function(){
           var zoom = top_left_zoomer.getzoom();
-          top_right_zoomer.setmidzoom(top_right_zoomer.getmidx(),
-                                      top_left_zoomer.getmidy(),
-                                      zoom);
-          bottom_left_zoomer.setmidzoom(top_left_zoomer.getmidx(),
-                                        bottom_left_zoomer.getmidy(),
-                                        zoom);
+          vm.mid.X = top_left_zoomer.getmidx();
+          vm.mid.Y = top_left_zoomer.getmidy();
+          top_right_zoomer.setmidzoom(vm.mid.Z, vm.mid.Y, zoom);
+          bottom_left_zoomer.setmidzoom(vm.mid.X, vm.mid.Z, zoom);
           zoom_updated_by_zoomer(zoom);
         },
         Scroll:function(slices){
@@ -226,12 +236,10 @@
         },
         Dispatch:function(){
           var zoom = top_right_zoomer.getzoom();
-          top_left_zoomer.setmidzoom(top_left_zoomer.getmidx(),
-                                     top_right_zoomer.getmidy(),
-                                     zoom);
-          bottom_left_zoomer.setmidzoom(bottom_left_zoomer.getmidx(),
-                                        top_right_zoomer.getmidx(),
-                                        zoom);
+          vm.mid.Z = top_right_zoomer.getmidx();
+          vm.mid.Y = top_right_zoomer.getmidy();
+          top_left_zoomer.setmidzoom(vm.mid.X, vm.mid.Y, zoom);
+          bottom_left_zoomer.setmidzoom(vm.mid.X, vm.mid.Z, zoom);
           zoom_updated_by_zoomer(zoom);
         },
         Scroll:function(slices){
@@ -276,12 +284,10 @@
         },
         Dispatch:function(){
           var zoom = bottom_left_zoomer.getzoom();
-          top_left_zoomer.setmidzoom(bottom_left_zoomer.getmidx(),
-                                     top_left_zoomer.getmidy(),
-                                     zoom);
-          top_right_zoomer.setmidzoom(bottom_left_zoomer.getmidy(),
-                                      top_right_zoomer.getmidy(),
-                                      zoom);
+          vm.mid.X = bottom_left_zoomer.getmidx();
+          vm.mid.Z = bottom_left_zoomer.getmidy();
+          top_left_zoomer.setmidzoom(vm.mid.X, vm.mid.Y, zoom);
+          top_right_zoomer.setmidzoom(vm.mid.Z, vm.mid.Y, zoom);
           zoom_updated_by_zoomer(zoom);
         },
         Scroll:function(slices){
@@ -301,8 +307,6 @@
       vm.bottom_left_zoomer = bottom_left_zoomer;
     }
 
-    // Synchronize the views when the cursor is updated externally (e.g. Go
-    // To Landmark).
     function $onChanges(changes) {
       if(changes.imageUrl) {
         vm.image_info = null;
@@ -317,27 +321,23 @@
       if(!vm.image_info)
         return;
 
+      // Synchronize the views when the cursor is updated externally (e.g. Go
+      // To Landmark).
       if(changes.cursor) {
         // TODO handle out-of-bounds
         //
         // We cannot replace vm.cut with the new object (vm.cut = ...), because
         // the Zoomer instances would still use the old object. Update the
         // properties in-place instead.
-        Object.assign(vm.cut, cursor_to_cut(changes.cursor.currentValue));
+        Object.assign(vm.cut, data_to_display_coords(changes.cursor.currentValue));
         if(zoomer_is_instantiated()) {
           redraw();
         }
       }
 
       if(changes.displayPixelSize) {
-        var new_pixel_size = changes.displayPixelSize.currentValue;
         if(vm.image_info && zoomer_is_instantiated()) {
-          var zoom = new_pixel_size / (vm.image_info.voxel_size[0]
-                                       + vm.image_info.voxel_size[1]
-                                       + vm.image_info.voxel_size[2]) * 3;
-          vm.top_left_zoomer.setmidzoom(vm.cut.X,vm.cut.Y,zoom);
-          vm.top_right_zoomer.setmidzoom(vm.cut.Z,vm.cut.Y,zoom);
-          vm.bottom_left_zoomer.setmidzoom(vm.cut.X,vm.cut.Z,zoom);
+          set_view();
         }
       }
     }
@@ -355,11 +355,11 @@
 
     function cutUpdatedByZoomer() {
       $scope.$apply(function() {
-        vm.onCursorUpdate({cursor: cut_to_cursor(vm.cut)});
+        vm.onCursorUpdate({cursor: display_to_data_coords(vm.cut)});
       });
     }
 
-    function cut_to_cursor(cut) {
+    function display_to_data_coords(cut) {
       return [
         cut[vm.data_to_display_axis.x] * vm.image_info.voxel_size[0],
         cut[vm.data_to_display_axis.y] * vm.image_info.voxel_size[1],
@@ -367,7 +367,7 @@
       ];
     }
 
-    function cursor_to_cut(cursor) {
+    function data_to_display_coords(cursor) {
       var axX = vm.display_to_data_axis_idx.X;
       var axY = vm.display_to_data_axis_idx.Y;
       var axZ = vm.display_to_data_axis_idx.Z;
@@ -419,12 +419,16 @@
     }
 
     function exchange_axes(display_axis1, display_axis2) {
+      var cursor = display_to_data_coords(vm.cut);
+      var mid_in_data_coords = display_to_data_coords(vm.mid);
       var data_axis1 = vm.display_to_data_axis[display_axis1];
       var data_axis2 = vm.display_to_data_axis[display_axis2];
       vm.data_to_display_axis[data_axis1] = display_axis2;
       vm.data_to_display_axis[data_axis2] = display_axis1;
       updateDisplayAxisSwap();
-      Object.assign(vm.cut, cursor_to_cut(vm.cursor));
+      Object.assign(vm.cut, data_to_display_coords(cursor));
+      Object.assign(vm.mid, data_to_display_coords(mid_in_data_coords));
+      set_view();
       reconfigure_zoomer_instances();
       redraw();
     }
