@@ -187,12 +187,12 @@ function Zoomer(canvas,cfg){
     }
 
     var pick=false;
-    var pickt=null;
+    var dragging;
     var pickx;
     var picky;
     this.mdown=function(event){
         pick=true;
-        pickt=Date.now();
+        dragging=false;
         pickx=event.clientX;
         picky=event.clientY;
         canvas.setCapture(true);
@@ -207,7 +207,7 @@ function Zoomer(canvas,cfg){
 //            if(cfg.MouseUp)
 //                try{cfg.MouseUp(event,canvaswidth,canvasheight,view.cutx,view.cuty,view.cutw,view.cuth);}
 //                catch(ex){console.log("MouseUp exception: "+ex);}
-            if(pickt && (Date.now()-pickt<1000) && cfg.Click) {
+            if(cfg.Click && !dragging) {
                 var event_coords = coords_for_mouseevent(event);
                 try{cfg.Click(event,event_coords.dataX,event_coords.dataY);}
                 catch(ex){console.log("Click exception: "+ex);}
@@ -217,6 +217,7 @@ function Zoomer(canvas,cfg){
     this.mmove=function(event){
 //        pickt=null;
         if(pick) {
+            dragging=true;
             view.cutx+=(cfg.MirrorHoriz ? -1 : 1) * (pickx-event.clientX)*view.cutw/canvaswidth;
             view.cuty+=(cfg.MirrorVert ? -1 : 1) * (picky-event.clientY)*view.cuth/canvasheight;
             pickx=event.clientX;
