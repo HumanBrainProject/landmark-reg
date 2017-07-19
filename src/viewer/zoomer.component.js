@@ -98,6 +98,7 @@
       vm.top_left_zoomer.setmidzoom(vm.mid.X,vm.mid.Y,zoom);
       vm.top_right_zoomer.setmidzoom(vm.mid.Z,vm.mid.Y,zoom);
       vm.bottom_left_zoomer.setmidzoom(vm.mid.X,vm.mid.Z,zoom);
+      redraw();
     }
 
     function $postLink() {
@@ -159,6 +160,7 @@
       }
 
       var top_left_zoomer = new Zoomer(top_left_canvas, {  // X-Y
+        ExternalRedraw: true,
         Key:function(level,X,Y){
           var Z=vm.cut.Z;
           for(var i=0;i<level;i++)
@@ -193,6 +195,7 @@
           top_right_zoomer.setmidzoom(vm.mid.Z, vm.mid.Y, zoom);
           bottom_left_zoomer.setmidzoom(vm.mid.X, vm.mid.Z, zoom);
           zoom_updated_by_zoomer(zoom);
+          redraw();
         },
         Scroll:function(slices){
           var Zdim = vm.image_info.size[vm.display_to_data_axis_idx.Z];
@@ -207,6 +210,7 @@
       });
 
       var top_right_zoomer = new Zoomer(top_right_canvas, {  // Z-Y
+        ExternalRedraw: true,
         Key:function(level,Z,Y){
           var X=vm.cut.X;
           for(var i=0;i<level;i++)
@@ -241,6 +245,7 @@
           top_left_zoomer.setmidzoom(vm.mid.X, vm.mid.Y, zoom);
           bottom_left_zoomer.setmidzoom(vm.mid.X, vm.mid.Z, zoom);
           zoom_updated_by_zoomer(zoom);
+          redraw();
         },
         Scroll:function(slices){
           var Xdim = vm.image_info.size[vm.display_to_data_axis_idx.X];
@@ -255,6 +260,7 @@
       });
 
       var bottom_left_zoomer = new Zoomer(bottom_left_canvas, {  // X-Z
+        ExternalRedraw: true,
         Key:function(level,X,Z){
           var Y=vm.cut.Y;
           for(var i=0;i<level;i++)
@@ -289,6 +295,7 @@
           top_left_zoomer.setmidzoom(vm.mid.X, vm.mid.Y, zoom);
           top_right_zoomer.setmidzoom(vm.mid.Z, vm.mid.Y, zoom);
           zoom_updated_by_zoomer(zoom);
+          redraw();
         },
         Scroll:function(slices){
           var Ydim = vm.image_info.size[vm.display_to_data_axis_idx.Y];
@@ -466,15 +473,16 @@
       });
     }
 
-    var redraw_throttler;
+    var redraw_pending = false;
     function redraw() {
-      if(!redraw_throttler) {
-        redraw_throttler = $timeout(function() {
-          redraw_throttler = null;
+      if(!redraw_pending) {
+        redraw_pending = true;
+        redraw_throttler = $window.requestAnimationFrame(function() {
+          redraw_pending = false;
           vm.top_left_zoomer.redraw();
           vm.top_right_zoomer.redraw();
           vm.bottom_left_zoomer.redraw();
-        }, 0, false);
+        });
       }
     }
 

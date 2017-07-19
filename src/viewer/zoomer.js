@@ -32,7 +32,8 @@ function Zoomer(canvas,cfg){
                 cuth:w*canvasheight/canvaswidth
             };
         }
-        prepare();
+        if(!cfg.ExternalRedraw)
+            prepare();
     };
 
     this.resize=function(new_zoom){
@@ -162,7 +163,8 @@ function Zoomer(canvas,cfg){
             cutw:zoom*canvaswidth,
             cuth:zoom*canvasheight
         };
-        prepare();
+        if(!cfg.ExternalRedraw)
+            prepare();
     };
     this.getmidx=function(){
         return view.cutx+view.cutw/2;
@@ -222,7 +224,8 @@ function Zoomer(canvas,cfg){
             view.cuty+=(cfg.MirrorVert ? -1 : 1) * (picky-event.clientY)*view.cuth/canvasheight;
             pickx=event.clientX;
             picky=event.clientY;
-            prepare();
+            if(!cfg.ExternalRedraw)
+                prepare();
             if(cfg.Dispatch)
                 try{cfg.Dispatch();}
                 catch(ex){console.log("Dispatch exception: "+ex);}
@@ -255,7 +258,8 @@ function Zoomer(canvas,cfg){
                 view.cuty-=(event_coords.dataY - view.cuty)*0.1;
             }
             event.preventDefault();
-            prepare();
+            if(!cfg.ExternalRedraw)
+                prepare();
             if(cfg.Dispatch)
                 try{cfg.Dispatch();}
                 catch(ex){console.log("Dispatch exception: "+ex);}
