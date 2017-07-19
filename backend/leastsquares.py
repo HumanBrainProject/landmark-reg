@@ -2,6 +2,12 @@
 
 import numpy as np
 
+def per_landmark_mismatch(src, dst, matrix):
+    src_block = np.concatenate((src.T, np.ones((1, src.shape[0]))), axis=0)
+    transformed_src_block = np.dot(matrix, src_block)
+    distances = np.sqrt(np.sum((dst - transformed_src_block[:3].T) ** 2, axis=1))
+    return distances
+
 # This function is from scikit-image
 # (https://github.com/scikit-image/scikit-image/blob/v0.13.0/skimage/transform/_geometric.py)
 # See licence at the end of this file.

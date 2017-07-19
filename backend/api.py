@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import math
 import pprint
 
 import flask_restful
@@ -23,10 +24,11 @@ class LeastSquaresAPI(flask_restful.Resource):
     def post(self):
         pprint.pprint(request.json)
         transformation_type = request.json["transformation_type"]
+        landmark_pairs = request.json["landmark_pairs"]
         source_points = np.array([pair["source_point"]
-                                  for pair in request.json["landmark_pairs"]])
+                                  for pair in landmark_pairs])
         target_points = np.array([pair["target_point"]
-                                  for pair in request.json["landmark_pairs"]])
+                                  for pair in landmark_pairs])
 
         if transformation_type == "translation":
             return {"error": "not implemented yet"}, HTTP_200_OK
@@ -41,11 +43,20 @@ class LeastSquaresAPI(flask_restful.Resource):
                     HTTP_501_NOT_IMPLEMENTED)
 
         inv_mat = np.linalg.inv(mat)
+
+        mismatches = leastsquares.per_landmark_mismatch(
+            source_points, target_points, mat)
+        for pair, mismatch in zip(landmark_pairs, mismatches):
+            pair["mismatch"] = mismatch
+        rmse = math.sqrt(np.mean(mismatches ** 2))
+
         if np.all(np.isfinite(mat)) and np.all(np.isfinite(inv_mat)):
             transformation_matrix = np_matrix_to_json(mat)
             inverse_matrix = np_matrix_to_json(inv_mat)
             return ({"transformation_matrix": transformation_matrix,
-                     "inverse_matrix": inverse_matrix},
+                     "inverse_matrix": inverse_matrix,
+                     "landmark_pairs": landmark_pairs,
+                     "RMSE": rmse},
                     HTTP_200_OK)
         else:
             return {"error": "cannot compute least-squares solution "
