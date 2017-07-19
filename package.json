@@ -18,21 +18,18 @@
     "karma-chrome-launcher": "^0.2.3",
     "karma-firefox-launcher": "^0.1.7",
     "karma-jasmine": "^0.3.8",
-    "karma-junit-reporter": "^0.4.1"
+    "karma-junit-reporter": "^0.4.1",
+    "pump": "^1.0.2"
   },
   "scripts": {
     "postinstall": "bower install",
-
     "update-deps": "npm update",
     "postupdate-deps": "bower update",
-
     "prebuild": "npm install",
     "build": "gulp",
     "build:watch": "gulp watch",
-
     "prestart": "npm run build",
     "start": "PYTHONPATH=. FLASK_APP=backend flask run",
-
     "pretest": "npm run build",
     "test": "karma start karma.conf.js --single-run",
     "test:watch": "karma start karma.conf.js --no-single-run"
