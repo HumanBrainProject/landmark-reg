@@ -477,7 +477,7 @@
     function redraw() {
       if(!redraw_pending) {
         redraw_pending = true;
-        redraw_throttler = $window.requestAnimationFrame(function() {
+        $window.requestAnimationFrame(function() {
           redraw_pending = false;
           vm.top_left_zoomer.redraw();
           vm.top_right_zoomer.redraw();
