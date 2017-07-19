@@ -195,19 +195,23 @@ function Zoomer(canvas,cfg){
         pickt=Date.now();
         pickx=event.clientX;
         picky=event.clientY;
+        canvas.setCapture(true);
 //        if(cfg.MouseDown)
 //            try{cfg.MouseDown(event,canvaswidth,canvasheight,view.cutx,view.cuty,view.cutw,view.cuth);}
 //            catch(ex){console.log("MouseDown exception: "+ex);}
     };
     this.mup=function(event){
-        pick=false;
-//        if(cfg.MouseUp)
-//            try{cfg.MouseUp(event,canvaswidth,canvasheight,view.cutx,view.cuty,view.cutw,view.cuth);}
-//            catch(ex){console.log("MouseUp exception: "+ex);}
-        if(pickt && (Date.now()-pickt<1000) && cfg.Click) {
-            var event_coords = coords_for_mouseevent(event);
-            try{cfg.Click(event,event_coords.dataX,event_coords.dataY);}
-            catch(ex){console.log("Click exception: "+ex);}
+        if(pick) {
+            document.releaseCapture();
+            pick=false;
+//            if(cfg.MouseUp)
+//                try{cfg.MouseUp(event,canvaswidth,canvasheight,view.cutx,view.cuty,view.cutw,view.cuth);}
+//                catch(ex){console.log("MouseUp exception: "+ex);}
+            if(pickt && (Date.now()-pickt<1000) && cfg.Click) {
+                var event_coords = coords_for_mouseevent(event);
+                try{cfg.Click(event,event_coords.dataX,event_coords.dataY);}
+                catch(ex){console.log("Click exception: "+ex);}
+            }
         }
     };
     this.mmove=function(event){
