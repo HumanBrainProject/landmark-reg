@@ -21,6 +21,8 @@
     vm.template_image_url = "http://www.nesys.uio.no/CDPTest/data";
 
     vm.landmark_pairs = [];
+    vm.incomingLandmarks = [];
+    vm.templateLandmarks = [];
     vm.transformation_type = "rigid";
     vm.registration_result = {};
     vm.synchronize_cursors = false;
@@ -32,6 +34,7 @@
     vm.readyToTransform = readyToTransform;
     vm.resultUpToDate = resultUpToDate;
     vm.transformationAvailable = transformationAvailable;
+    vm.updateLandmarkList = updateLandmarkList;
     vm.updateIncomingCursor = updateIncomingCursor;
     vm.updateTemplateCursor = updateTemplateCursor;
     vm.incomingPixelSizeUpdated = incomingPixelSizeUpdated;
@@ -47,6 +50,22 @@
 
     function active_landmark_pairs() {
       return vm.landmark_pairs.filter(function(pair){return pair.active;});
+    }
+
+    function updateLandmarkList(landmark_pairs) {
+      vm.landmark_pairs = landmark_pairs;
+
+      var target_landmarks = vm.landmark_pairs.map(function(pair) {
+        return {coords: pair.target_point};
+      });
+      if(!angular.equals(vm.templateLandmarks, target_landmarks))
+        vm.templateLandmarks = target_landmarks;
+
+      var source_landmarks = vm.landmark_pairs.map(function(pair) {
+        return {coords: pair.source_point};
+      });
+      if(!angular.equals(vm.incomingLandmarks, source_landmarks))
+        vm.incomingLandmarks = source_landmarks;
     }
 
     function alignmentTask() {

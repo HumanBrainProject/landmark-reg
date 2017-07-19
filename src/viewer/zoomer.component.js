@@ -11,7 +11,8 @@
         cursor: "<",
         onCursorUpdate: "&",
         displayPixelSize: "<",
-        onDisplayPixelSizeUpdate: "&"
+        onDisplayPixelSizeUpdate: "&",
+        landmarks: "<"
       }
     });
 
@@ -139,6 +140,19 @@
         ctx.stroke();
       }
 
+      function draw_landmark(x,y,ctx,cnvw,cnvh,cutx,cuty,cutw,cuth,strokeStyle){
+        ctx.strokeStyle=strokeStyle;
+        var lx=Math.round((x-cutx)*cnvw/cutw)+0.5;
+        var ly=Math.round((y-cuty)*cnvh/cuth)+0.5;
+        ctx.beginPath();
+        ctx.moveTo(lx - 5, ly - 5);
+        ctx.lineTo(lx + 5, ly + 5);
+        ctx.moveTo(lx + 5,ly - 5);
+        ctx.lineTo(lx - 5,ly + 5);
+        ctx.closePath();
+        ctx.stroke();
+      }
+
       function url_for_tile(level, slice_axis, slice_number,
                             axis1, idx1, axis2, idx2)
       {
@@ -181,6 +195,12 @@
         },
         Overlay:function(ctx,cw,ch,x,y,w,h){
           cross(vm.cut.X,vm.cut.Y,ctx,cw,ch,x,y,w,h);
+          if(vm.landmarks) {
+            vm.landmarks.forEach(function(landmark) {
+              var pos = data_to_display_coords(landmark.coords);
+              draw_landmark(pos.X,pos.Y,ctx,cw,ch,x,y,w,h, "#33CC33");
+            });
+          }
         },
         Click:function(event,clickx, clicky){
           vm.cut.X=clickx;
@@ -231,6 +251,12 @@
         },
         Overlay:function(ctx,cw,ch,x,y,w,h){
           cross(vm.cut.Z,vm.cut.Y,ctx,cw,ch,x,y,w,h);
+          if(vm.landmarks) {
+            vm.landmarks.forEach(function(landmark) {
+              var pos = data_to_display_coords(landmark.coords);
+              draw_landmark(pos.Z,pos.Y,ctx,cw,ch,x,y,w,h, "#33CC33");
+            });
+          }
         },
         Click:function(event,clickx, clicky){
           vm.cut.Z=clickx;
@@ -281,6 +307,12 @@
         },
         Overlay:function(ctx,cw,ch,x,y,w,h){
           cross(vm.cut.X,vm.cut.Z,ctx,cw,ch,x,y,w,h);
+          if(vm.landmarks) {
+            vm.landmarks.forEach(function(landmark) {
+              var pos = data_to_display_coords(landmark.coords);
+              draw_landmark(pos.X,pos.Z,ctx,cw,ch,x,y,w,h, "#33CC33");
+            });
+          }
         },
         Click:function(event, clickx, clicky){
           vm.cut.X=clickx;
@@ -340,6 +372,10 @@
         if(zoomer_is_instantiated()) {
           redraw();
         }
+      }
+
+      if(changes.landmarks) {
+        redraw();
       }
 
       if(changes.displayPixelSize) {
