@@ -56,13 +56,19 @@
       vm.landmark_pairs = landmark_pairs;
 
       var target_landmarks = vm.landmark_pairs.map(function(pair) {
-        return {coords: pair.target_point};
+        return {
+          coords: pair.target_point,
+          colour: pair.colour
+        };
       });
       if(!angular.equals(vm.templateLandmarks, target_landmarks))
         vm.templateLandmarks = target_landmarks;
 
       var source_landmarks = vm.landmark_pairs.map(function(pair) {
-        return {coords: pair.source_point};
+        return {
+          coords: pair.source_point,
+          colour: pair.colour
+        };
       });
       if(!angular.equals(vm.incomingLandmarks, source_landmarks))
         vm.incomingLandmarks = source_landmarks;

@@ -34,12 +34,38 @@
       return String(i);
     }
 
+    // Colormap from ColorBrewer:
+    // http://colorbrewer2.org/#type=qualitative&scheme=Paired&n=12
+    var colours = [
+      "#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99", "#e31a1c",
+      "#fdbf6f", "#ff7f00", "#cab2d6", "#6a3d9a", "#ffff99", "#b15928"];
+
+    function generate_colour() {
+      var colour_use_count = colours.map(function(colour) {
+        return vm.landmark_pairs.reduce(function(count, pair) {
+          if(pair.colour == colour) {
+            return count + 1;
+          } else {
+            return count;
+          }
+        }, 0);
+      });
+
+      var least_used_colours = colours.map(function(colour, index) {
+        var count = colour_use_count[index];
+        return {colour: colour, count: count};
+      });
+      least_used_colours.sort(function(a, b) { return a.count - b.count; });
+      return least_used_colours[0].colour;
+    }
+
     function addLandmarkPair() {
       vm.landmark_pairs.push({
         target_point: vm.template_cursor.slice(),
         source_point: vm.incoming_cursor.slice(),
         active: true,
-        name: generate_name()
+        name: generate_name(),
+        colour: generate_colour()
       });
       if(vm.onUpdate)
         vm.onUpdate({landmark_pairs: vm.landmark_pairs});

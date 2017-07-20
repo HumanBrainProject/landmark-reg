@@ -128,7 +128,6 @@
         next(canvas);
       }
       function cross(x,y,ctx,cnvw,cnvh,cutx,cuty,cutw,cuth){
-        ctx.strokeStyle="#FF8080";
         ctx.beginPath();
         var lx=Math.round((x-cutx)*cnvw/cutw)+0.5;
         ctx.moveTo(lx,0);
@@ -137,19 +136,30 @@
         ctx.moveTo(0,ly);
         ctx.lineTo(cnvw,ly);
         ctx.closePath();
+        ctx.strokeStyle="#FF8080";
+        ctx.lineWidth = 1;
+        ctx.lineCap = "butt";
         ctx.stroke();
       }
 
-      function draw_landmark(x,y,ctx,cnvw,cnvh,cutx,cuty,cutw,cuth,strokeStyle){
-        ctx.strokeStyle=strokeStyle;
+      function draw_landmark(x,y,ctx,cnvw,cnvh,cutx,cuty,cutw,cuth,colour){
         var lx=Math.round((x-cutx)*cnvw/cutw)+0.5;
         var ly=Math.round((y-cuty)*cnvh/cuth)+0.5;
         ctx.beginPath();
-        ctx.moveTo(lx - 5, ly - 5);
-        ctx.lineTo(lx + 5, ly + 5);
-        ctx.moveTo(lx + 5,ly - 5);
-        ctx.lineTo(lx - 5,ly + 5);
+        var landmark_size = 7;
+        var landmark_hole_size = 2;
+        ctx.moveTo(lx - landmark_size, ly - landmark_size);
+        ctx.lineTo(lx - landmark_hole_size, ly - landmark_hole_size);
+        ctx.moveTo(lx + landmark_size, ly - landmark_size);
+        ctx.lineTo(lx + landmark_hole_size, ly - landmark_hole_size);
+        ctx.moveTo(lx - landmark_size, ly + landmark_size);
+        ctx.lineTo(lx - landmark_hole_size, ly + landmark_hole_size);
+        ctx.moveTo(lx + landmark_size, ly + landmark_size);
+        ctx.lineTo(lx + landmark_hole_size, ly + landmark_hole_size);
         ctx.closePath();
+        ctx.lineWidth = 2;
+        ctx.lineCap = "round";
+        ctx.strokeStyle = colour;
         ctx.stroke();
       }
 
@@ -198,7 +208,8 @@
           if(vm.landmarks) {
             vm.landmarks.forEach(function(landmark) {
               var pos = data_to_display_coords(landmark.coords);
-              draw_landmark(pos.X,pos.Y,ctx,cw,ch,x,y,w,h, "#33CC33");
+              var colour = landmark.colour || "#33CC33";
+              draw_landmark(pos.X,pos.Y,ctx,cw,ch,x,y,w,h,colour);
             });
           }
         },
@@ -254,7 +265,8 @@
           if(vm.landmarks) {
             vm.landmarks.forEach(function(landmark) {
               var pos = data_to_display_coords(landmark.coords);
-              draw_landmark(pos.Z,pos.Y,ctx,cw,ch,x,y,w,h, "#33CC33");
+              var colour = landmark.colour || "#33CC33";
+              draw_landmark(pos.Z,pos.Y,ctx,cw,ch,x,y,w,h,colour);
             });
           }
         },
@@ -310,7 +322,8 @@
           if(vm.landmarks) {
             vm.landmarks.forEach(function(landmark) {
               var pos = data_to_display_coords(landmark.coords);
-              draw_landmark(pos.X,pos.Z,ctx,cw,ch,x,y,w,h, "#33CC33");
+              var colour = landmark.colour || "#33CC33";
+              draw_landmark(pos.X,pos.Z,ctx,cw,ch,x,y,w,h,colour);
             });
           }
         },
