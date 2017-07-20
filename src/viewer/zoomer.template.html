@@ -7,6 +7,11 @@
     <p class="axis_label axis_label_right">{{$ctrl.axis_label("X+")}}</p>
     <div class="orientation-buttons">
       <button class="btn overlay-btn"
+              title="Mirror vertical axis"
+              ng-click="$ctrl.toggle_axis_inversion('Y')">
+        <span class="glyphicon glyphicon-resize-vertical"></span>
+      </button>
+      <button class="btn overlay-btn"
               title="Mirror horizontal axis"
               ng-click="$ctrl.toggle_axis_inversion('X')">
         <span class="glyphicon glyphicon-resize-horizontal"></span>
@@ -33,6 +38,11 @@
         <span class="glyphicon glyphicon-resize-vertical"></span>
       </button>
       <button class="btn overlay-btn"
+              title="Mirror horizontal axis"
+              ng-click="$ctrl.toggle_axis_inversion('Z')">
+        <span class="glyphicon glyphicon-resize-horizontal"></span>
+      </button>
+      <button class="btn overlay-btn"
               title="Exchange axes"
               ng-click="$ctrl.exchange_axes('Z', 'Y')">
         <span class="glyphicon glyphicon-retweet"></span>
@@ -52,6 +62,11 @@
               title="Mirror vertical axis"
               ng-click="$ctrl.toggle_axis_inversion('Z')">
         <span class="glyphicon glyphicon-resize-vertical"></span>
+      </button>
+      <button class="btn overlay-btn"
+              title="Mirror horizontal axis"
+              ng-click="$ctrl.toggle_axis_inversion('X')">
+        <span class="glyphicon glyphicon-resize-horizontal"></span>
       </button>
       <button class="btn overlay-btn"
               title="Exchange axes"
