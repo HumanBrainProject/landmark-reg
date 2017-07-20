@@ -1,11 +1,29 @@
-<table class="table table-condensed">
+<table class="landmark-table table table-condensed">
+  <colgroup>
+    <col class="landmark-active"/>
+    <col class="landmark-colour"/>
+    <col class="landmark-name"/>
+    <col class="landmark-controls"/>
+  </colgroup>
+  <thead class="sr-only">
+    <th scope="col">Active</th>
+    <th scope="col">Colour</th>
+    <th scope="col">Name</th>
+    <th scope="col">Controls</th>
+  </thead>
   <tbody>
     <tr ng-repeat="pair in $ctrl.landmark_pairs"
         ng-class="$ctrl.pairIsActive(pair) ? 'active' : ''">
       <td>
         <input type="checkbox" class="checkbox input-sm"
                ng-model="pair.active"/>
-        <!-- TODO remove the ugly line break -->
+      </td>
+      <td>
+        <span class="glyphicon glyphicon-remove"
+              style="color: {{pair.colour}}"
+              aria-hidden="true"></span>
+      </td>
+      <td>
         <input type="text" class="form-control input-sm"
                ng-model="pair.name"/>
       </td>

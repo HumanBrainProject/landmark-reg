@@ -1,0 +1,19 @@
+table.landmark-table {
+    table-layout: fixed;
+}
+
+table.landmark-table > colgroup > col.landmark-active {
+    width: 26px;
+}
+
+table.landmark-table > colgroup > col.landmark-colour {
+    width: 24px;
+}
+
+table.landmark-table > colgroup > col.landmark-name {
+    width: auto;
+}
+
+table.landmark-table > colgroup > col.landmark-controls {
+    width: 90px;
+}
