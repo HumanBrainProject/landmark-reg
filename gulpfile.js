@@ -13,13 +13,17 @@ var js_sources = [
   "src/!(*.spec).js",
   "src/!(bower_components)/**/*.module.js",
   "src/!(bower_components)/**/!(*.spec).js"];
+var css_sources = [
+  "src/*.css",
+  "src/!(bower_components)/**/*.css"];
 var angular_templates = "src/**/*.html";
 
-gulp.task("default", ["js", "template-cache"]);
+gulp.task("default", ["js", "css", "template-cache"]);
 
-gulp.task("watch", ["js", "template-cache"], function () {
+gulp.task("watch", ["js", "css", "template-cache"], function () {
   gulp.watch(js_sources, ["js"]);
   gulp.watch(angular_templates, ["template-cache"]);
+  gulp.watch(css_sources, ["css"]);
 });
 
 gulp.task("js", function (cb) {
@@ -39,6 +43,15 @@ gulp.task("js-min", function (cb) {
     ngAnnotate({single_quotes: false}),
     concat("bundle.js"),
     uglify(),
+    sourcemaps.write("."),
+    gulp.dest("frontend")], cb);
+});
+
+gulp.task("css", function (cb) {
+  pump([
+    gulp.src(css_sources),
+    sourcemaps.init(),
+    concat("bundle.css"),
     sourcemaps.write("."),
     gulp.dest("frontend")], cb);
 });

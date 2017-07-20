@@ -1,6 +1,5 @@
 # Generated files
-/frontend/bundle.js
-/frontend/bundle.js.map
+/frontend/bundle.*
 /frontend/templates.js
 
 # Large files which should not be committed to git

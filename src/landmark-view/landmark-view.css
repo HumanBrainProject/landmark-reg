@@ -31,3 +31,10 @@ div#incoming_viewer {
     border-color: #777;
     border-width: 0 0 0 1px;
 }
+
+.colour-patch {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    border: 1px;
+}
