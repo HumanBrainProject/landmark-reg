@@ -100,7 +100,6 @@
       case "translation":
         return active_pairs.length >= 1;
       case "rigid":
-        return active_pairs.length >= 2;
       case "similarity":
       case "affine":
         return active_pairs.length >= 3;
