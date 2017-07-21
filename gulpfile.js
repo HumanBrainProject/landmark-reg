@@ -2,6 +2,7 @@
 
 var gulp = require("gulp");
 var concat = require("gulp-concat");
+var modernizr = require('gulp-modernizr');
 var ngAnnotate = require("gulp-ng-annotate");
 var pump = require("pump");
 var sourcemaps = require('gulp-sourcemaps');
@@ -18,12 +19,30 @@ var css_sources = [
   "src/!(bower_components)/**/*.css"];
 var angular_templates = "src/**/*.html";
 
-gulp.task("default", ["js", "css", "template-cache"]);
+gulp.task("default", ["js", "modernizr", "css", "template-cache"]);
 
-gulp.task("watch", ["js", "css", "template-cache"], function () {
+gulp.task("watch", ["default"], function () {
   gulp.watch(js_sources, ["js"]);
   gulp.watch(angular_templates, ["template-cache"]);
   gulp.watch(css_sources, ["css"]);
+});
+
+
+gulp.task("modernizr", function(cb) {
+  pump([
+    gulp.src(js_sources),
+    modernizr({
+      "crawl": false,
+      "tests": [
+        "localstorage",
+        "sessionstorage"
+      ],
+      "options": [
+        "setClasses"
+      ]
+    }),
+    uglify(),
+    gulp.dest("frontend")], cb);
 });
 
 gulp.task("js", function (cb) {
