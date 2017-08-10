@@ -12,13 +12,16 @@
     var vm = this;
 
     vm.incoming_cursor = [0, 0, 0];
-    vm.incoming_image_url = "https://www.jubrain.fz-juelich.de/apps/landmark-reg/data/B20_stn_l";
-    //vm.incoming_image_url = "/data/B20_stn_l";
+    vm.incoming_image = {
+      zoomer_url: "https://www.jubrain.fz-juelich.de/apps/landmark-reg/data/B20_stn_l",
+      neuroglancer_url: "precomputed://https://www.jubrain.fz-juelich.de/apps/neuroglancer/B20_stn_l/isotropic-raw"
+    };
 
     vm.template_cursor = [0, 0, 0];
-    //vm.template_image_url = "/data/BigBrain-160um";
-    //vm.template_image_url = "/data/BigBrainRelease.2015";
-    vm.template_image_url = "http://www.nesys.uio.no/CDPTest/data";
+    vm.template_image = {
+      zoomer_url: "https://www.jubrain.fz-juelich.de/apps/landmark-reg/data/BigBrain-160um",
+      neuroglancer_url: "precomputed://https://www.jubrain.fz-juelich.de/apps/neuroglancer/BigBrainRelease.2015/image"
+    };
 
     vm.landmark_pairs = [];
     vm.incomingLandmarks = [];
@@ -30,6 +33,7 @@
 
     vm.goToLandmarkPair = goToLandmarkPair;
     vm.matrix_det = matrix_det;
+    vm.neuroglancer_transform_urljson = neuroglancer_transform_urljson;
     vm.performRegistration = performRegistration;
     vm.readyToTransform = readyToTransform;
     vm.resultUpToDate = resultUpToDate;
@@ -76,8 +80,8 @@
 
     function alignmentTask() {
       return {
-        source_image: vm.incoming_image_url,
-        target_image: vm.template_image_url,
+        source_image: vm.incoming_image.zoomer_url,
+        target_image: vm.template_image.zoomer_url,
         transformation_type: vm.transformation_type,
         landmark_pairs: active_landmark_pairs()
       };
@@ -149,6 +153,17 @@
         }
         return res;
       }
+    }
+
+    function neuroglancer_transform_urljson() {
+      var ng_matrix = angular.copy(vm.registration_result.transformation_matrix);
+      if(!ng_matrix)
+        return null;
+      ng_matrix[0][3] *= 1e6;
+      ng_matrix[1][3] *= 1e6;
+      ng_matrix[2][3] *= 1e6;
+      var json_string = angular.toJson(ng_matrix, false);
+      return json_string.replace(/,/g, "_");
     }
 
     function incomingPixelSizeUpdated(pixel_size) {

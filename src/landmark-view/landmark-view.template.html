@@ -1,5 +1,5 @@
 <div id="template_viewer">
-  <zoomer image-url="{{$ctrl.template_image_url}}"
+  <zoomer image-url="{{$ctrl.template_image.zoomer_url}}"
           cursor="$ctrl.template_cursor"
           on-cursor-update="$ctrl.updateTemplateCursor(cursor)"
           display-pixel-size="$ctrl.template_pixel_size"
@@ -8,7 +8,7 @@
           />
 
   <div class="control_panel"> <!-- TODO decide in which CSS this class should go -->
-    <p>Template: {{$ctrl.template_image_url}}</p>
+    <p>Template: {{$ctrl.template_image.zoomer_url}}</p>
     <hr/>
     <p>Template image cursor: <coordinates coords="$ctrl.template_cursor"/></p>
     <p>Incoming image cursor: <coordinates coords="$ctrl.incoming_cursor"/></p>
@@ -21,7 +21,7 @@
   </div>
 </div>
 <div id="incoming_viewer">
-  <zoomer image-url="{{$ctrl.incoming_image_url}}"
+  <zoomer image-url="{{$ctrl.incoming_image.zoomer_url}}"
           cursor="$ctrl.incoming_cursor"
           on-cursor-update="$ctrl.updateIncomingCursor(cursor)"
           display-pixel-size="$ctrl.incoming_pixel_size"
@@ -30,7 +30,7 @@
           />
 
   <div class="control_panel">
-    <p>Incoming image: {{$ctrl.incoming_image_url}}</p>
+    <p>Incoming image: {{$ctrl.incoming_image.zoomer_url}}</p>
     <label>
       <input type="checkbox"
              ng-model="$ctrl.synchronize_zoom"
@@ -91,7 +91,7 @@
     </p>
     <a class="btn btn-primary" ng-disabled="!$ctrl.transformationAvailable()"
        target="_blank"
-       href="https://www.jubrain.fz-juelich.de/apps/neuroglancer/#!{%27layers%27:{%27template%27:{%27type%27:%27image%27_%27source%27:%27precomputed://https://www.jubrain.fz-juelich.de/apps/neuroglancer/BigBrainRelease.2015/image%27}_%27incoming%27:{%27type%27:%27image%27_%27source%27:%27precomputed://https://www.jubrain.fz-juelich.de/apps/neuroglancer/B20_stn_l/isotropic-raw%27_%27shader%27:%27void%20main()%20{\n%20%20emitRGB(vec3(0.,%20toNormalized(getDataValue()),%200.));\n}\n%27_%27transform%27:[[{{$ctrl.registration_result.transformation_matrix[0][0]}}_{{$ctrl.registration_result.transformation_matrix[0][1]}}_{{$ctrl.registration_result.transformation_matrix[0][2]}}_{{$ctrl.registration_result.transformation_matrix[0][3] * 1e6}}]_[{{$ctrl.registration_result.transformation_matrix[1][0]}}_{{$ctrl.registration_result.transformation_matrix[1][1]}}_{{$ctrl.registration_result.transformation_matrix[1][2]}}_{{$ctrl.registration_result.transformation_matrix[1][3] * 1e6}}]_[{{$ctrl.registration_result.transformation_matrix[2][0]}}_{{$ctrl.registration_result.transformation_matrix[2][1]}}_{{$ctrl.registration_result.transformation_matrix[2][2]}}_{{$ctrl.registration_result.transformation_matrix[2][3] * 1e6}}]_[{{$ctrl.registration_result.transformation_matrix[3][0]}}_{{$ctrl.registration_result.transformation_matrix[3][1]}}_{{$ctrl.registration_result.transformation_matrix[3][2]}}_{{$ctrl.registration_result.transformation_matrix[3][3]}}]]}}_'navigation':{'pose':{'position':{'voxelSize':[21166.666015625_20000_21166.666015625]_'voxelCoordinates':[2866_3746_2325]}}_'zoomFactor':160000}_'perspectiveOrientation':[-0.18877309560775757_-0.7845551371574402_0.5663105249404907_0.16771550476551056]_'perspectiveZoom':2000000}">
+       href="https://www.jubrain.fz-juelich.de/apps/neuroglancer/#!{%27layers%27:{%27template%27:{%27type%27:%27image%27_%27source%27:%27{{$ctrl.template_image.neuroglancer_url}}%27}_%27incoming%27:{%27type%27:%27image%27_%27source%27:%27{{$ctrl.incoming_image.neuroglancer_url}}%27_%27shader%27:%27void%20main()%20{\n%20%20emitRGB(vec3(0.,%20toNormalized(getDataValue()),%200.));\n}\n%27_%27transform%27:{{$ctrl.neuroglancer_transform_urljson()}}}}}">
       Display result
     </a>
   </div>
