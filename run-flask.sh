@@ -1,10 +1,7 @@
 #! /bin/sh -e
 
-export PYTHONPATH=$(dirname -- "$0")
-export FLASK_APP=backend
+PYTHONPATH=$(dirname -- "$0")${PYTHONPATH+:}$PYTHONPATH
+FLASK_APP=backend
+export PYTHONPATH FLASK_APP
 
-if [ "$1" = debug ]; then
-    export FLASK_DEBUG=1
-fi
-
-flask run
+flask run "$@"
