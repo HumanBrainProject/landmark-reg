@@ -30,7 +30,8 @@
     "build": "gulp",
     "build:watch": "gulp watch",
     "prestart": "npm run build",
-    "start": "PYTHONPATH=. FLASK_APP=backend flask run",
+    "start": "./run-flask.sh",
+    "start:debug": "./run-flask.sh debug",
     "pretest": "npm run build",
     "test": "karma start karma.conf.js --single-run",
     "test:watch": "karma start karma.conf.js --no-single-run"
