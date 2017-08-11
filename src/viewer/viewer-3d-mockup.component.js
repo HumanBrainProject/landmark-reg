@@ -7,8 +7,8 @@
       templateUrl: "viewer/viewer-3d-mockup.template.html",
       controller: Viewer3dMockupController,
       bindings: {
-        cursor: "<",
-        onCursorUpdate: "&"
+        cursor: "<?",
+        onCursorUpdate: "&?"
       }
     });
 
@@ -21,7 +21,9 @@
     ////////////
 
     function sendCursorUpdate() {
-      vm.onCursorUpdate({cursor: vm.cursor});
+      if(vm.onCursorUpdate) {
+        vm.onCursorUpdate({cursor: vm.cursor});
+      }
     }
 
     function $onChanges(changes) {

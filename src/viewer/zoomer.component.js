@@ -8,11 +8,11 @@
       controller: ZoomerController,
       bindings: {
         imageUrl: "@",
-        cursor: "<",
-        onCursorUpdate: "&",
-        displayPixelSize: "<",
-        onDisplayPixelSizeUpdate: "&",
-        landmarks: "<"
+        cursor: "<?",
+        onCursorUpdate: "&?",
+        displayPixelSize: "<?",
+        onDisplayPixelSizeUpdate: "&?",
+        landmarks: "<?"
       }
     });
 
@@ -66,7 +66,7 @@
         Y: vm.image_info.size[vm.display_to_data_axis_idx.Y] / 2,
         Z: vm.image_info.size[vm.display_to_data_axis_idx.Z] / 2
       };
-      vm.onCursorUpdate({cursor: display_to_data_coords(vm.cut)});
+      send_cursor_update();
       vm.mid = Object.assign({}, vm.cut);
 
       reconfigure_zoomer_instances();
@@ -85,9 +85,15 @@
       vm.displayPixelSize = zoom * (vm.image_info.voxel_size[0]
                                     + vm.image_info.voxel_size[1]
                                     + vm.image_info.voxel_size[2]) / 3;
-      vm.onDisplayPixelSizeUpdate({pixel_size: vm.displayPixelSize});
+      display_pixel_size_updated();
       set_view();
       redraw();
+    }
+
+    function display_pixel_size_updated() {
+      if(vm.onDisplayPixelSizeUpdate) {
+        vm.onDisplayPixelSizeUpdate({pixel_size: vm.displayPixelSize});
+      }
     }
 
     function set_view() {
@@ -411,8 +417,14 @@
 
     function cutUpdatedByZoomer() {
       $scope.$apply(function() {
-        vm.onCursorUpdate({cursor: display_to_data_coords(vm.cut)});
+        send_cursor_update();
       });
+    }
+
+    function send_cursor_update() {
+      if(vm.onCursorUpdate) {
+        vm.onCursorUpdate({cursor: display_to_data_coords(vm.cut)});
+      }
     }
 
     function display_to_data_coords(cut) {
@@ -558,7 +570,7 @@
         vm.displayPixelSize = zoom * (vm.image_info.voxel_size[0]
                                       + vm.image_info.voxel_size[1]
                                       + vm.image_info.voxel_size[2]) / 3;
-        vm.onDisplayPixelSizeUpdate({pixel_size: vm.displayPixelSize});
+        display_pixel_size_updated();
       });
     }
 

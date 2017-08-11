@@ -6,8 +6,8 @@
     .component("landmarkList", {
       templateUrl: "landmarks/landmark-list.template.html",
       bindings: {
-        onUpdate: "&",
-        goToLandmarkPair: "&",
+        onUpdate: "&?",
+        goToLandmarkPair: "&?",
         incoming_cursor: "<incomingCursor",
         template_cursor: "<templateCursor"
       },
