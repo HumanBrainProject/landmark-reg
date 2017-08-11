@@ -20,6 +20,7 @@ var css_sources = [
 var angular_templates = "src/**/*.html";
 
 gulp.task("default", ["js", "modernizr", "css", "template-cache"]);
+gulp.task("min", ["js-min", "modernizr", "css", "template-cache"]);
 
 gulp.task("watch", ["default"], function () {
   gulp.watch(js_sources, ["js"]);

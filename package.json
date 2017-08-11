@@ -28,6 +28,7 @@
     "postupdate-deps": "bower update",
     "prebuild": "npm install",
     "build": "gulp",
+    "build:min": "gulp min",
     "build:watch": "gulp watch",
     "prestart": "npm run build",
     "start": "./run-flask.sh",
