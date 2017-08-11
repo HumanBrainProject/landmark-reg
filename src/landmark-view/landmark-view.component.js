@@ -90,7 +90,7 @@
     function performRegistration() {
       var request_description = alignmentTask();
       // Deep-copy the request object
-      vm.registration_request = $.extend(true, {}, request_description);
+      vm.registration_request = angular.copy(request_description);
       vm.registration_result = LeastSquares.compute(vm.registration_request);
     }
 
