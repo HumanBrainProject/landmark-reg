@@ -197,14 +197,16 @@ function Zoomer(canvas,cfg){
         dragging=false;
         pickx=event.clientX;
         picky=event.clientY;
-        canvas.setCapture(true);
+        if(canvas.setCapture)
+            canvas.setCapture(true);
 //        if(cfg.MouseDown)
 //            try{cfg.MouseDown(event,canvaswidth,canvasheight,view.cutx,view.cuty,view.cutw,view.cuth);}
 //            catch(ex){console.log("MouseDown exception: "+ex);}
     };
     this.mup=function(event){
         if(pick) {
-            document.releaseCapture();
+            if(document.releaseCapture)
+                document.releaseCapture();
             pick=false;
 //            if(cfg.MouseUp)
 //                try{cfg.MouseUp(event,canvaswidth,canvasheight,view.cutx,view.cuty,view.cutw,view.cuth);}
