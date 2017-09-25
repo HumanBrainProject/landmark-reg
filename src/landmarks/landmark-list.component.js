@@ -14,7 +14,7 @@
       controller: LandmarkListController
     });
 
-  function LandmarkListController($log) {
+  function LandmarkListController($log, $window, LandmarkFileIo) {
     var vm = this;
 
     vm.landmark_pairs = [];
@@ -23,6 +23,8 @@
     vm.deleteLandmarkPair = deleteLandmarkPair;
     vm.pairIsActive = pairIsActive;
     vm.resetLandmarkPair = resetLandmarkPair;
+    vm.loadLandmarks = loadLandmarks;
+    vm.saveLandmarks = saveLandmarks;
 
     ////////////
 
@@ -80,6 +82,21 @@
       }
       if(vm.onUpdate)
         vm.onUpdate({landmark_pairs: vm.landmark_pairs});
+    }
+
+    function saveLandmarks() {
+      LandmarkFileIo.save_to_file(vm.landmark_pairs, "landmarks.json");
+    }
+
+    function loadLandmarks() {
+      LandmarkFileIo.open_with_file_dialog().then(function(result) {
+        vm.landmark_pairs = result;
+        if(vm.onUpdate)
+          vm.onUpdate({landmark_pairs: vm.landmark_pairs});
+      }, function(reason) {
+        // TODO nicer error feedback
+        $window.alert("Could not load landmarks from file: " + reason);
+      });
     }
 
     function pairIsActive(pair) {

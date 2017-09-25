@@ -34,10 +34,7 @@ gulp.task("modernizr", function(cb) {
     gulp.src(js_sources),
     modernizr({
       "crawl": false,
-      "tests": [
-        "localstorage",
-        "sessionstorage"
-      ],
+      "tests": [],
       "options": [
         "setClasses"
       ]
