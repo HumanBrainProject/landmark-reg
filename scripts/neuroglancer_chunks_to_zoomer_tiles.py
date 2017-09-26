@@ -108,7 +108,7 @@ def convert_scale(info, level, input_dir, output_dir):
         total=(((size[0] - 1) // TILE_SIZE + 1)
                * ((size[1] - 1) // TILE_SIZE + 1)
                * ((size[2] - 1) // TILE_SIZE + 1)),
-        desc="converting scale {}".format(key), unit="tilechunks", leave=True)
+        desc="converting scale {}".format(key), unit="tilechunk", leave=True)
     for x_idx in range((size[0] - 1) // TILE_SIZE + 1):
         for y_idx in range((size[1] - 1) // TILE_SIZE + 1):
             for z_idx in range((size[2] - 1) // TILE_SIZE + 1):
@@ -132,8 +132,17 @@ def convert_scales(input_dir, output_dir):
     """Convert all scales from an input info file"""
     with (input_dir / "info").open() as f:
         info = json.load(f)
+
     # TODO ensure that factor of 2 downscaling happens for every axis at every
     # level (Zoomer assumption)
+
+    with (output_dir / "zoomer-info.json").open("w") as f:
+        json.dump({
+            "size": info["scales"][0]["size"],
+            "voxel_size": [sz * 1e-6 for sz in info["scales"][0]["resolution"]],
+            "max_level": len(info["scales"]) - 1,
+            "tile_size": TILE_SIZE
+        }, f)
     for level in range(len(info["scales"])):
         convert_scale(info, level, input_dir, output_dir)
 
