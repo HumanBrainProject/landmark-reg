@@ -40,9 +40,9 @@
                 ng-click="$ctrl.goToLandmarkPair({pair: pair})">
           <span class="glyphicon glyphicon-eye-open"></span>
         </button>
-        <button title="Reset" class="btn btn-xs btn-default"
+        <button title="Reset" class="btn btn-xs btn-warning"
                 ng-click="$ctrl.resetLandmarkPair(pair)">
-          <span class="glyphicon glyphicon-move"></span>
+          <span class="glyphicon glyphicon-pushpin"></span>
         </button>
         <button title="Delete" class="btn btn-xs btn-danger"
                 ng-click="$ctrl.deleteLandmarkPair(pair)">
@@ -58,13 +58,11 @@
     Add landmark pair
   </button>
 </p>
-<!-- TODO: un-hide when this is functional
 <p class="text-center">
-  <button id="load_landmarks" class="btn btn-default btn-sm">
+  <button ng-click="$ctrl.loadLandmarks()" class="btn btn-default btn-sm">
     <span class="glyphicon glyphicon-open"></span> Load…
   </button>
-  <button id="save_landmarks" class="btn btn-default btn-sm">
+  <button ng-click="$ctrl.saveLandmarks()" class="btn btn-default btn-sm">
     <span class="glyphicon glyphicon-save"></span> Save…
   </button>
 </p>
--->
