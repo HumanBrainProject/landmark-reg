@@ -37,7 +37,7 @@ class LeastSquaresAPI(flask_restful.Resource):
         elif transformation_type == "similarity":
             mat = leastsquares.umeyama(source_points, target_points, True)
         elif transformation_type == "affine":
-            return {"error": "not implemented yet"}, HTTP_200_OK
+            mat = leastsquares.affine(source_points, target_points)
         else:
             return ({"error": "unrecognized transformation_type"},
                     HTTP_501_NOT_IMPLEMENTED)

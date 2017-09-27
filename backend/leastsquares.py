@@ -8,6 +8,25 @@ def per_landmark_mismatch(src, dst, matrix):
     distances = np.sqrt(np.sum((dst - transformed_src_block[:3].T) ** 2, axis=1))
     return distances
 
+
+def affine(src, dst):
+    flat_dst = dst.flatten(order="C")  # order: dst1x, dst1y, dst1z, dst2x...
+
+    src_mat = np.zeros((len(flat_dst), 12))
+    for src_idx, src_vec in enumerate(src):
+        src_mat[3 * src_idx][:3] = src_vec
+        src_mat[3 * src_idx][3] = 1
+        src_mat[3 * src_idx + 1][4:7] = src_vec
+        src_mat[3 * src_idx + 1][7] = 1
+        src_mat[3 * src_idx + 2][8:11] = src_vec
+        src_mat[3 * src_idx + 2][11] = 1
+
+    flat_mat, _, _, _ = np.linalg.lstsq(src_mat, flat_dst)
+    mat = flat_mat.reshape((3, 4), order="C")
+    mat = np.concatenate((mat, [[0, 0, 0, 1]]), axis=0)
+    return mat
+
+
 # This function is from scikit-image
 # (https://github.com/scikit-image/scikit-image/blob/v0.13.0/skimage/transform/_geometric.py)
 # See licence at the end of this file.
