@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import json
 import math
 import pprint
 
@@ -22,7 +23,7 @@ def np_matrix_to_json(np_matrix):
 
 class LeastSquaresAPI(flask_restful.Resource):
     def post(self):
-        pprint.pprint(request.json)
+        print(json.dumps(request.json, indent=4, sort_keys=True))
         transformation_type = request.json["transformation_type"]
         landmark_pairs = request.json["landmark_pairs"]
         source_points = np.array([pair["source_point"]
