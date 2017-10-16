@@ -91,7 +91,7 @@
     </p>
     <a class="btn btn-primary" ng-disabled="!$ctrl.transformationAvailable()"
        target="_blank"
-       href="https://www.jubrain.fz-juelich.de/apps/neuroglancer/#!{%27layers%27:{%27template%27:{%27type%27:%27image%27_%27source%27:%27{{$ctrl.template_image.neuroglancer_url}}%27}_%27incoming%27:{%27type%27:%27image%27_%27source%27:%27{{$ctrl.incoming_image.neuroglancer_url}}%27_%27shader%27:%27void%20main()%20{\n%20%20emitRGB(vec3(0.,%20toNormalized(getDataValue()),%200.));\n}\n%27_%27transform%27:{{$ctrl.neuroglancer_transform_urljson()}}}}}">
+       href="{{$ctrl.neuroglancer_instance_url}}#!{%27layers%27:{%27template%27:{%27type%27:%27image%27_%27source%27:%27{{$ctrl.template_image.neuroglancer_url}}%27}_%27incoming%27:{%27type%27:%27image%27_%27source%27:%27{{$ctrl.incoming_image.neuroglancer_url}}%27_%27shader%27:%27void%20main()%20{\n%20%20emitRGB(vec3(0.,%20toNormalized(getDataValue()),%200.));\n}\n%27_%27transform%27:{{$ctrl.neuroglancer_transform_urljson()}}}}_'navigation':{'pose':{'position':{'spatialCoordinates':{{$ctrl.template_barycentre_urljson()}}}}}}">
       Display result
     </a>
   </div>

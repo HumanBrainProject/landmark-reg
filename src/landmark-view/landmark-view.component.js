@@ -43,6 +43,7 @@
     vm.updateTemplateCursor = updateTemplateCursor;
     vm.incomingPixelSizeUpdated = incomingPixelSizeUpdated;
     vm.templatePixelSizeUpdated = templatePixelSizeUpdated;
+    vm.template_barycentre_urljson = template_barycentre_urljson;
     vm.zoomSynchronizationToggled = zoomSynchronizationToggled;
 
     ////////////
@@ -163,6 +164,20 @@
       ng_matrix[1][3] *= 1e6;
       ng_matrix[2][3] *= 1e6;
       var json_string = angular.toJson(ng_matrix, false);
+      return json_string.replace(/,/g, "_");
+    }
+
+    function template_barycentre_urljson() {
+      var ng_coords = [0, 0, 0];
+      for(var i = 0; i < vm.landmark_pairs.length; i++) {
+        ng_coords[0] += vm.landmark_pairs[i].target_point[0];
+        ng_coords[1] += vm.landmark_pairs[i].target_point[1];
+        ng_coords[2] += vm.landmark_pairs[i].target_point[2];
+      }
+      ng_coords[0] *= 1e6 / vm.landmark_pairs.length;
+      ng_coords[1] *= 1e6 / vm.landmark_pairs.length;
+      ng_coords[2] *= 1e6 / vm.landmark_pairs.length;
+      var json_string = angular.toJson(ng_coords, false);
       return json_string.replace(/,/g, "_");
     }
 
