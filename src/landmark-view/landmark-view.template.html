@@ -8,7 +8,17 @@
           />
 
   <div class="control_panel"> <!-- TODO decide in which CSS this class should go -->
-    <p>Template: {{$ctrl.template_image.zoomer_url}}</p>
+    <label for="template">Template:</label>
+    <div class="input-group input-group-sm">
+      <input class="form-control" type="text" readonly="readonly"
+             id="template" ng-model="$ctrl.template_image.zoomer_url" />
+      <span class="input-group-btn">
+        <button class="btn btn-default" ng-click="$ctrl.select_template()">
+          Select…
+        </button>
+      </span>
+    </div>
+
     <hr/>
     <p>Template image cursor: <coordinates coords="$ctrl.template_cursor"/></p>
     <p>Incoming image cursor: <coordinates coords="$ctrl.incoming_cursor"/></p>
@@ -30,7 +40,16 @@
           />
 
   <div class="control_panel">
-    <p>Incoming image: {{$ctrl.incoming_image.zoomer_url}}</p>
+    <label for="incoming">Incoming image:</label>
+    <div class="input-group input-group-sm">
+      <input class="form-control" type="text" readonly="readonly"
+             id="incoming" ng-model="$ctrl.incoming_image.zoomer_url" />
+      <span class="input-group-btn">
+        <button class="btn btn-default" ng-click="$ctrl.select_incoming()">
+          Select…
+        </button>
+      </span>
+    </div>
     <label>
       <input type="checkbox"
              ng-model="$ctrl.synchronize_zoom"

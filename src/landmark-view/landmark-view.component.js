@@ -8,7 +8,7 @@
       controller: LandmarkViewController
     });
 
-  function LandmarkViewController(LeastSquares, $log) {
+  function LandmarkViewController(LeastSquares, $log, $uibModal) {
     var vm = this;
 
     vm.incoming_cursor = [0, 0, 0];
@@ -39,6 +39,8 @@
     vm.performRegistration = performRegistration;
     vm.readyToTransform = readyToTransform;
     vm.resultUpToDate = resultUpToDate;
+    vm.select_incoming = select_incoming;
+    vm.select_template = select_template;
     vm.transformationAvailable = transformationAvailable;
     vm.updateLandmarkList = updateLandmarkList;
     vm.updateIncomingCursor = updateIncomingCursor;
@@ -220,6 +222,28 @@
           homogeneous_coords);
         vm.incoming_cursor = homogeneous_result.slice(0, 3);
       }
+    }
+
+    function select_incoming() {
+      var modalInstance = $uibModal.open({
+        component: "datasetSelectorModal"
+      });
+      modalInstance.result.then(function(result) {
+        if(result) {
+          vm.incoming_image = result;
+        }
+      });
+    }
+
+    function select_template() {
+      var modalInstance = $uibModal.open({
+        component: "datasetSelectorModal"
+      });
+      modalInstance.result.then(function(result) {
+        if(result) {
+          vm.template_image = result;
+        }
+      });
     }
   }
 })(); /* IIFE */
