@@ -23,6 +23,8 @@
       neuroglancer_url: "precomputed://https://www.jubrain.fz-juelich.de/apps/neuroglancer/BigBrainRelease.2015/image"
     };
 
+    vm.neuroglancer_instance_url = "http://localhost:8080/";
+
     vm.landmark_pairs = [];
     vm.incomingLandmarks = [];
     vm.templateLandmarks = [];
