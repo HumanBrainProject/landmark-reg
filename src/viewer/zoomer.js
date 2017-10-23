@@ -193,6 +193,7 @@ function Zoomer(canvas,cfg){
     var pickx;
     var picky;
     this.mdown=function(event){
+        event.preventDefault();
         pick=true;
         dragging_distance=0;
         pickx=event.clientX;
@@ -204,6 +205,7 @@ function Zoomer(canvas,cfg){
 //            catch(ex){console.log("MouseDown exception: "+ex);}
     };
     this.mup=function(event){
+        event.preventDefault();
         if(pick) {
             if(document.releaseCapture)
                 document.releaseCapture();
