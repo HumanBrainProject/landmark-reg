@@ -30,6 +30,8 @@
         vm.items = items;
       }, function(error) {
         $log.error("cannot populate items from DatasetList: " + error);
+      }, function(items) {
+        vm.items = items;
       });
     }
 
