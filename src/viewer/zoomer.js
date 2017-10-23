@@ -195,6 +195,7 @@ function Zoomer(canvas,cfg){
     this.mdown=function(event){
         event.preventDefault();
         pick=true;
+        canvas.addEventListener("mousemove",mmove,true);
         dragging_distance=0;
         pickx=event.clientX;
         picky=event.clientY;
@@ -210,6 +211,7 @@ function Zoomer(canvas,cfg){
             if(document.releaseCapture)
                 document.releaseCapture();
             pick=false;
+            canvas.removeEventListener("mousemove",mmove,true);
 //            if(cfg.MouseUp)
 //                try{cfg.MouseUp(event,canvaswidth,canvasheight,view.cutx,view.cuty,view.cutw,view.cuth);}
 //                catch(ex){console.log("MouseUp exception: "+ex);}
@@ -220,7 +222,7 @@ function Zoomer(canvas,cfg){
             }
         }
     };
-    this.mmove=function(event){
+    function mmove(event){
 //        pickt=null;
         if(pick) {
             view.cutx+=(cfg.MirrorHoriz ? -1 : 1) * (pickx-event.clientX)*view.cutw/canvaswidth;
@@ -278,7 +280,6 @@ function Zoomer(canvas,cfg){
     
     canvas.addEventListener("mousedown",this.mdown,true);
     canvas.addEventListener("mouseup",this.mup,true);
-    canvas.addEventListener("mousemove",this.mmove,true);
     canvas.addEventListener("wheel",this.mwheel,true);
     canvas.addEventListener("keypress",this.kpress,true);
 
@@ -286,7 +287,7 @@ function Zoomer(canvas,cfg){
         cache.empty();
         canvas.removeEventListener("mousedown",this.mdown,true);
         canvas.removeEventListener("mouseup",this.mup,true);
-        canvas.removeEventListener("mousemove",this.mmove,true);
+        canvas.removeEventListener("mousemove",mmove,true);
         canvas.removeEventListener("wheel",this.mwheel,true);
         canvas.removeEventListener("keypress",this.kpress,true);
     };
