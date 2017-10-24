@@ -226,24 +226,30 @@
 
     function select_incoming() {
       var modalInstance = $uibModal.open({
-        component: "datasetSelectorModal"
+        component: "datasetSelectorModal",
+        resolve: {
+          initial_selection: vm.incoming_image
+        }
       });
       modalInstance.result.then(function(result) {
         if(result) {
           vm.incoming_image = result;
         }
-      });
+      }, function() {});
     }
 
     function select_template() {
       var modalInstance = $uibModal.open({
-        component: "datasetSelectorModal"
+        component: "datasetSelectorModal",
+        resolve: {
+          initial_selection: vm.template_image
+        }
       });
       modalInstance.result.then(function(result) {
         if(result) {
           vm.template_image = result;
         }
-      });
+      }, function() {});
     }
   }
 })(); /* IIFE */

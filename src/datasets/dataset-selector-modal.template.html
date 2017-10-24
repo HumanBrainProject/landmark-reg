@@ -2,16 +2,34 @@
   <h3 class="modal-title">Select a dataset</h3>
 </div>
 <div class="modal-body">
-  <ul>
-    <li ng-repeat="item in $ctrl.items"
-        ng-class="(item == $ctrl.selected.item) ? 'bg-primary' : ''">
-      <a href="#" ng-click="$event.preventDefault(); $ctrl.selected.item = item">
-        {{item.zoomer_url}}
-      </a>
-    </li>
-  </ul>
+  <table class="table table-condensed">
+    <thead class="sr-only">
+      <th scope="col">URL</th>
+      <th scope="col">Valid</th>
+    </thead>
+    <tbody>
+      <tr ng-repeat="dataset in $ctrl.datasets"
+          ng-class="$ctrl.same_dataset(dataset, $ctrl.selected.dataset) ? 'active' : ''">
+        <td>
+          <a href="#" ng-click="$event.preventDefault(); $ctrl.select(dataset)">
+            {{dataset.zoomer_url}}
+          </a>
+        </td>
+        <td>
+          <span ng-if="$ctrl.validation_status(dataset) == 'valid'" class="glyphicon glyphicon-ok-sign text-success" title="Valid"></span>
+          <span ng-if="$ctrl.validation_status(dataset) == 'pending'" title="Pending…">…</span>
+          <span ng-if="$ctrl.validation_status(dataset) == 'invalid'" class="glyphicon glyphicon-remove-sign text-danger" title="Invalid: {{$ctrl.validation_message(dataset)}}"></span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 <div class="modal-footer">
-  <button class="btn btn-primary" type="button" ng-click="$ctrl.ok()">Load</button>
-  <button class="btn btn-warning" type="button" ng-click="$ctrl.cancel()">Cancel</button>
+  <button class="btn btn-primary" type="button" ng-click="$ctrl.ok()"
+          ng-disabled="$ctrl.validation_status($ctrl.selected.dataset) == 'invalid'">
+    Load
+  </button>
+  <button class="btn btn-warning" type="button" ng-click="$ctrl.cancel()">
+    Cancel
+  </button>
 </div>
