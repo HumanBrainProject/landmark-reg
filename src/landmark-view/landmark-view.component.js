@@ -227,6 +227,7 @@
     function select_incoming() {
       var modalInstance = $uibModal.open({
         component: "datasetSelectorModal",
+        size: "lg",
         resolve: {
           initial_selection: vm.incoming_image
         }
@@ -241,6 +242,7 @@
     function select_template() {
       var modalInstance = $uibModal.open({
         component: "datasetSelectorModal",
+        size: "lg",
         resolve: {
           initial_selection: vm.template_image
         }

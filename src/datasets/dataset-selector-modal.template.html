@@ -2,13 +2,21 @@
   <h3 class="modal-title">Select a dataset</h3>
 </div>
 <div class="modal-body">
+  <form class="form-horizontal">
+    <div class="form-group">
+      <label for="dataset-search" class="control-label col-md-2">Search</label>
+      <div class="col-md-10">
+        <input id="dataset-search" type="text" ng-model="$ctrl.search_query" class="form-control" autofocus="autofocus"/>
+      </div>
+    </div>
+  </form>
   <table class="table table-condensed">
     <thead class="sr-only">
       <th scope="col">URL</th>
       <th scope="col">Valid</th>
     </thead>
     <tbody>
-      <tr ng-repeat="dataset in $ctrl.datasets"
+      <tr ng-repeat="dataset in $ctrl.datasets |filter: $ctrl.search_query"
           ng-class="$ctrl.same_dataset(dataset, $ctrl.selected.dataset) ? 'active' : ''">
         <td>
           <a href="#" ng-click="$event.preventDefault(); $ctrl.select(dataset)">
