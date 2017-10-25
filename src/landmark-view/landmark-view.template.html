@@ -12,16 +12,26 @@
     <div class="input-group input-group-sm">
       <input class="form-control" type="text" readonly="readonly"
              id="template" ng-model="$ctrl.template_image.zoomer_url" />
-      <span class="input-group-btn">
-        <button class="btn btn-default" ng-click="$ctrl.select_template()">
-          Select…
-        </button>
-      </span>
+      <div class="input-group-btn" uib-dropdown>
+        <button type="button" class="btn btn-default" uib-dropdown-toggle aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>
+        <ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu role="menu">
+          <li role="menuitem">
+            <a target="_blank"
+               href="{{$ctrl.neuroglancer_instance_url}}#!{'layers':{'template':{'type':'image'_'source':'{{$ctrl.template_image.neuroglancer_url}}'}}}">
+              Show in Neuroglancer
+            </a>
+          </li>
+          <li role="separator" class="divider"></li>
+          <li role="menuitem">
+            <a href="#" ng-click="$event.preventDefault(); $ctrl.select_template()">Select…</a>
+          </li>
+        </ul>
+      </div>
     </div>
 
     <hr/>
-    <p>Template image cursor: <coordinates coords="$ctrl.template_cursor"/></p>
-    <p>Incoming image cursor: <coordinates coords="$ctrl.incoming_cursor"/></p>
+    <small>Template cursor: <coordinates coords="$ctrl.template_cursor"/></small><br/>
+    <small>Incoming cursor: <coordinates coords="$ctrl.incoming_cursor"/></small>
     <hr/>
     <h4>Landmark pairs</h4>
     <landmark-list on-update="$ctrl.updateLandmarkList(landmark_pairs)"
@@ -44,11 +54,21 @@
     <div class="input-group input-group-sm">
       <input class="form-control" type="text" readonly="readonly"
              id="incoming" ng-model="$ctrl.incoming_image.zoomer_url" />
-      <span class="input-group-btn">
-        <button class="btn btn-default" ng-click="$ctrl.select_incoming()">
-          Select…
-        </button>
-      </span>
+      <div class="input-group-btn" uib-dropdown>
+        <button type="button" class="btn btn-default" uib-dropdown-toggle aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>
+        <ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu role="menu">
+          <li role="menuitem">
+            <a target="_blank"
+               href="{{$ctrl.neuroglancer_instance_url}}#!{'layers':{'incoming':{'type':'image'_'source':'{{$ctrl.incoming_image.neuroglancer_url}}'}}}">
+              Show in Neuroglancer
+            </a>
+          </li>
+          <li role="separator" class="divider"></li>
+          <li role="menuitem">
+            <a href="#" ng-click="$event.preventDefault(); $ctrl.select_incoming()">Select…</a>
+          </li>
+        </ul>
+      </div>
     </div>
     <label>
       <input type="checkbox"
@@ -110,7 +130,7 @@
     </p>
     <a class="btn btn-primary" ng-disabled="!$ctrl.transformationAvailable()"
        target="_blank"
-       href="{{$ctrl.neuroglancer_instance_url}}#!{%27layers%27:{%27template%27:{%27type%27:%27image%27_%27source%27:%27{{$ctrl.template_image.neuroglancer_url}}%27}_%27incoming%27:{%27type%27:%27image%27_%27source%27:%27{{$ctrl.incoming_image.neuroglancer_url}}%27_%27shader%27:%27void%20main()%20{\n%20%20emitRGB(vec3(0.,%20toNormalized(getDataValue()),%200.));\n}\n%27_%27transform%27:{{$ctrl.neuroglancer_transform_urljson()}}}}_'navigation':{'pose':{'position':{'spatialCoordinates':{{$ctrl.template_barycentre_urljson()}}}}}}">
+       href="{{$ctrl.neuroglancer_instance_url}}#!{'layers':{'template':{'type':'image'_'source':'{{$ctrl.template_image.neuroglancer_url}}'}_'incoming':{'type':'image'_'source':'{{$ctrl.incoming_image.neuroglancer_url}}'_'shader':'void%20main()%20{\n%20%20emitRGB(vec3(0.,%20toNormalized(getDataValue()),%200.));\n}\n'_'transform':{{$ctrl.neuroglancer_transform_urljson()}}}}_'navigation':{'pose':{'position':{'spatialCoordinates':{{$ctrl.template_barycentre_urljson()}}}}}}">
       Display result
     </a>
   </div>
