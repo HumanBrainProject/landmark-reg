@@ -17,7 +17,7 @@
         <ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu role="menu">
           <li role="menuitem">
             <a target="_blank"
-               href="{{$ctrl.neuroglancer_instance_url}}#!{'layers':{'template':{'type':'image'_'source':'{{$ctrl.template_image.neuroglancer_url}}'}}}">
+               href="{{$ctrl.neuroglancer_instance_url}}#!%7B'layers':%7B'template':%7B'type':'image'_'source':'{{$ctrl.template_image.neuroglancer_url}}'%7D%7D%7D">
               Show in Neuroglancer
             </a>
           </li>
@@ -59,7 +59,7 @@
         <ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu role="menu">
           <li role="menuitem">
             <a target="_blank"
-               href="{{$ctrl.neuroglancer_instance_url}}#!{'layers':{'incoming':{'type':'image'_'source':'{{$ctrl.incoming_image.neuroglancer_url}}'}}}">
+               href="{{$ctrl.neuroglancer_instance_url}}#!%7B'layers':%7B'incoming':%7B'type':'image'_'source':'{{$ctrl.incoming_image.neuroglancer_url}}'%7D%7D%7D">
               Show in Neuroglancer
             </a>
           </li>
@@ -130,7 +130,8 @@
     </p>
     <a class="btn btn-primary" ng-disabled="!$ctrl.transformationAvailable()"
        target="_blank"
-       href="{{$ctrl.neuroglancer_instance_url}}#!{'layers':{'template':{'type':'image'_'source':'{{$ctrl.template_image.neuroglancer_url}}'}_'incoming':{'type':'image'_'source':'{{$ctrl.incoming_image.neuroglancer_url}}'_'shader':'void%20main()%20{\n%20%20emitRGB(vec3(0.,%20toNormalized(getDataValue()),%200.));\n}\n'_'transform':{{$ctrl.neuroglancer_transform_urljson()}}}}_'navigation':{'pose':{'position':{'spatialCoordinates':{{$ctrl.template_barycentre_urljson()}}}}}}">
+       href="{{$ctrl.neuroglancer_instance_url}}#!%7B'layers':%7B'template':%7B'type':'image'_'source':'{{$ctrl.template_image.neuroglancer_url}}'%7D_'incoming':%7B'type':'image'_'source':'{{$ctrl.incoming_image.neuroglancer_url}}'_'shader':'void%20main()%20%7B%5Cn%20%20emitRGB(vec3(0.,%20toNormalized(getDataValue()),%200.));%5Cn%7D%5Cn'_'transform':{{$ctrl.neuroglancer_transform_urljson()}}%7D%7D_'navigation':%7B'pose':%7B'position':%7B'spatialCoordinates':{{$ctrl.template_barycentre_urljson()}}%7D%7D%7D%7D"
+       >
       Display result
     </a>
   </div>
