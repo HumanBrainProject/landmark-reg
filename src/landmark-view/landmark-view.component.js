@@ -19,13 +19,7 @@
 
     vm.neuroglancer_instance_url = CONFIG.neuroglancer_instance_url;
 
-    vm.landmark_pairs = [];
-    vm.incomingLandmarks = [];
-    vm.templateLandmarks = [];
-    vm.transformation_type = "similarity";
-    vm.registration_result = {};
-    vm.synchronize_cursors = false;
-    vm.synchronize_zoom = false;
+    reset();
 
     vm.goToLandmarkPair = goToLandmarkPair;
     vm.matrix_det = matrix_det;
@@ -45,6 +39,17 @@
     vm.zoomSynchronizationToggled = zoomSynchronizationToggled;
 
     ////////////
+
+    function reset() {
+      $log.debug("resetting");
+      vm.landmark_pairs = [];
+      vm.incomingLandmarks = [];
+      vm.templateLandmarks = [];
+      vm.transformation_type = "similarity";
+      vm.registration_result = {};
+      vm.synchronize_cursors = false;
+      vm.synchronize_zoom = false;
+    }
 
     function goToLandmarkPair(pair) {
       vm.template_cursor = pair.target_point.slice();
@@ -229,6 +234,7 @@
       modalInstance.result.then(function(result) {
         if(result) {
           vm.incoming_image = result;
+          reset();  // TODO fix synchronization of landmark-list component and enable
         }
       }, function() {});
     }
@@ -244,6 +250,7 @@
       modalInstance.result.then(function(result) {
         if(result) {
           vm.template_image = result;
+          // reset();  // TODO fix synchronization of landmark-list component and enable
         }
       }, function() {});
     }
