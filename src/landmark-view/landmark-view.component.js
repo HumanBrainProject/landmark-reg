@@ -22,7 +22,7 @@
     vm.landmark_pairs = [];
     vm.incomingLandmarks = [];
     vm.templateLandmarks = [];
-    vm.transformation_type = "rigid";
+    vm.transformation_type = "similarity";
     vm.registration_result = {};
     vm.synchronize_cursors = false;
     vm.synchronize_zoom = false;
