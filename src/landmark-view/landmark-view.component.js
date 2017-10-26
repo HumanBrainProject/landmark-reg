@@ -8,22 +8,16 @@
       controller: LandmarkViewController
     });
 
-  function LandmarkViewController(LeastSquares, $log, $uibModal) {
+  function LandmarkViewController(LeastSquares, CONFIG, $log, $uibModal) {
     var vm = this;
 
     vm.incoming_cursor = [0, 0, 0];
-    vm.incoming_image = {
-      zoomer_url: "https://www.jubrain.fz-juelich.de/apps/landmark-reg/data/B20_stn_l",
-      neuroglancer_url: "precomputed://https://www.jubrain.fz-juelich.de/apps/neuroglancer/B20_stn_l/isotropic-raw"
-    };
+    vm.incoming_image = CONFIG.default_template;
 
     vm.template_cursor = [0, 0, 0];
-    vm.template_image = {
-      zoomer_url: "https://www.jubrain.fz-juelich.de/apps/landmark-reg/data/BigBrain-160um",
-      neuroglancer_url: "precomputed://https://www.jubrain.fz-juelich.de/apps/neuroglancer/BigBrainRelease.2015/image"
-    };
+    vm.template_image = CONFIG.default_incoming;
 
-    vm.neuroglancer_instance_url = "https://jubrain.fz-juelich.de/apps/neuroglancer/";
+    vm.neuroglancer_instance_url = CONFIG.neuroglancer_instance_url;
 
     vm.landmark_pairs = [];
     vm.incomingLandmarks = [];

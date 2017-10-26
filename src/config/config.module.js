@@ -1,0 +1,3 @@
+angular
+  .module("landmarkRegApp.config", [
+  ]);
