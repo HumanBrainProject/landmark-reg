@@ -113,15 +113,15 @@
 
         // TODO validate the axis_orientations string
       }
-}
-
-    function ValidationError(message) {
-      this.message = message;
     }
-    ValidationError.prototype = {
-      toString: function() {
-        return this.message;
-      }
-    };
+  }
+
+  ValidationError.prototype = {
+    toString: function() {
+      return this.message;
+    }
+  };
+  function ValidationError(message) {
+    this.message = message;
   }
 })(); /* IIFE */
