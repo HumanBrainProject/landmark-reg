@@ -3,7 +3,8 @@
 /frontend/modernizr.js
 /frontend/templates.js
 
-# Large files which should not be committed to git
+# Instance-specific static data
+/frontend/datasets.json
 /frontend/zoomer-data
 
 # From angular-seed
