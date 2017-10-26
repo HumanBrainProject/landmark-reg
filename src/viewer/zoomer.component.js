@@ -149,8 +149,8 @@
       }
 
       function draw_landmark(x,y,ctx,cnvw,cnvh,cutx,cuty,cutw,cuth,colour){
-        var lx=Math.round((x-cutx)*cnvw/cutw)+0.5;
-        var ly=Math.round((y-cuty)*cnvh/cuth)+0.5;
+        var lx=(x-cutx)*cnvw/cutw+0.5;
+        var ly=(y-cuty)*cnvh/cuth+0.5;
         ctx.beginPath();
         var landmark_size = 7;
         var landmark_hole_size = 2;
@@ -163,9 +163,24 @@
         ctx.moveTo(lx + landmark_size, ly + landmark_size);
         ctx.lineTo(lx + landmark_hole_size, ly + landmark_hole_size);
         ctx.closePath();
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 4;
         ctx.lineCap = "round";
         ctx.strokeStyle = colour;
+        ctx.stroke();
+        // Now, draw smaller cross in black to make the landmark more contrasted
+        ctx.beginPath();
+        ctx.moveTo(lx - landmark_size, ly - landmark_size);
+        ctx.lineTo(lx - landmark_hole_size, ly - landmark_hole_size);
+        ctx.moveTo(lx + landmark_size, ly - landmark_size);
+        ctx.lineTo(lx + landmark_hole_size, ly - landmark_hole_size);
+        ctx.moveTo(lx - landmark_size, ly + landmark_size);
+        ctx.lineTo(lx - landmark_hole_size, ly + landmark_hole_size);
+        ctx.moveTo(lx + landmark_size, ly + landmark_size);
+        ctx.lineTo(lx + landmark_hole_size, ly + landmark_hole_size);
+        ctx.closePath();
+        ctx.lineWidth = 1;
+        ctx.lineCap = "round";
+        ctx.strokeStyle = "#000";
         ctx.stroke();
       }
 
