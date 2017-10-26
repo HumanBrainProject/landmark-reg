@@ -41,7 +41,6 @@
     ////////////
 
     function reset() {
-      $log.debug("resetting");
       vm.landmark_pairs = [];
       vm.incomingLandmarks = [];
       vm.templateLandmarks = [];
