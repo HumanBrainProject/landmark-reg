@@ -12,10 +12,10 @@
     var vm = this;
 
     vm.incoming_cursor = [0, 0, 0];
-    vm.incoming_image = CONFIG.default_template;
+    vm.incoming_image = CONFIG.default_incoming;
 
     vm.template_cursor = [0, 0, 0];
-    vm.template_image = CONFIG.default_incoming;
+    vm.template_image = CONFIG.default_template;
 
     vm.neuroglancer_instance_url = CONFIG.neuroglancer_instance_url;
 
