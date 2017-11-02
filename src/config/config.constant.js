@@ -7,7 +7,7 @@
       backend_url: "https://ylep.pythonanywhere.com/api",
       neuroglancer_instance_url: "https://jubrain.fz-juelich.de/apps/neuroglancer/",
       dataset_list_sources: [
-        "/datasets.json",
+        "datasets.json",
         "https://www.jubrain.fz-juelich.de/apps/landmark-reg/data/datasets.json"
       ],
       default_template: {
