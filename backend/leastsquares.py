@@ -27,10 +27,38 @@ def affine(src, dst):
     return mat
 
 
-# This function is from scikit-image
-# (https://github.com/scikit-image/scikit-image/blob/v0.13.0/skimage/transform/_geometric.py)
-# See licence at the end of this file.
-def umeyama(src, dst, estimate_scale):
+# This function is mostly from scikit-image, copyright and licence below:
+# (https://github.com/scikit-image/scikit-image/blob/8022d048bbcb74ef072e45faf925a4106414308e/skimage/transform/_geometric.py#L72)
+#
+# Copyright (C) 2011, the scikit-image team
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in
+#     the documentation and/or other materials provided with the
+#     distribution.
+#  3. Neither the name of skimage nor the names of its contributors may be
+#     used to endorse or promote products derived from this software without
+#     specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+# IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
+# INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+# HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+# STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+# IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+def umeyama(src, dst, estimate_scale=False, allow_reflection=False):
     """Estimate N-D similarity transformation with or without scaling.
     Parameters
     ----------
@@ -65,29 +93,27 @@ def umeyama(src, dst, estimate_scale):
     # Eq. (38).
     A = np.dot(dst_demean.T, src_demean) / num
 
-    # Eq. (39).
-    d = np.ones((dim,), dtype=np.double)
-    if np.linalg.det(A) < 0:
-        d[dim - 1] = -1
-
     T = np.eye(dim + 1, dtype=np.double)
 
     U, S, V = np.linalg.svd(A)
 
-    # Eq. (40) and (43).
-    rank = np.linalg.matrix_rank(A)
+    rank = np.count_nonzero(S)
+
     if rank == 0:
         return np.nan * T
-    elif rank == dim - 1:
-        if np.linalg.det(U) * np.linalg.det(V) > 0:
-            T[:dim, :dim] = np.dot(U, V)
-        else:
-            s = d[dim - 1]
-            d[dim - 1] = -1
-            T[:dim, :dim] = np.dot(U, np.dot(np.diag(d), V))
-            d[dim - 1] = s
-    else:
-        T[:dim, :dim] = np.dot(U, np.dot(np.diag(d), V.T))
+    # TODO return error or warning if the solution is ambiguous (rank < dim - 1)
+    # TODO handle ill-conditioned matrix
+
+    # Eq. (39).
+    # assert ((np.linalg.det(U) * np.linalg.det(V)) * np.linalg.det(A) >= 0
+    #         or np.isclose(np.linalg.det(A), 0))
+    d = np.ones((dim,), dtype=np.double)
+    if ((not allow_reflection or rank < dim)
+        and np.linalg.det(U) * np.linalg.det(V) < 0):
+        d[dim - 1] = -1
+
+    # Eq. (40) and (43).
+    T[:dim, :dim] = np.dot(U, np.dot(np.diag(d), V))
 
     if estimate_scale:
         # Eq. (41) and (42).
@@ -99,32 +125,3 @@ def umeyama(src, dst, estimate_scale):
     T[:dim, :dim] *= scale
 
     return T
-
-# Copyright (C) 2011, the scikit-image team
-# All rights reserved.
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are
-# met:
-#
-#  1. Redistributions of source code must retain the above copyright
-#     notice, this list of conditions and the following disclaimer.
-#  2. Redistributions in binary form must reproduce the above copyright
-#     notice, this list of conditions and the following disclaimer in
-#     the documentation and/or other materials provided with the
-#     distribution.
-#  3. Neither the name of skimage nor the names of its contributors may be
-#     used to endorse or promote products derived from this software without
-#     specific prior written permission.
-#
-# THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
-# IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-# DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
-# INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-# HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
-# STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
-# IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-# POSSIBILITY OF SUCH DAMAGE.

@@ -96,10 +96,10 @@
         <label>
           Transformation type
           <select ng-model="$ctrl.transformation_type" class="form-control">
-            <!-- TODO un-hide transformation types when they are functional -->
-            <!--<option value="translation">Translation</option>-->
             <option value="rigid">Rigid</option>
+            <option value="rigid+reflection">Rigid (allow reflection)</option>
             <option value="similarity">Similarity</option>
+            <option value="similarity+reflection">Similarity (allow reflection)</option>
             <option value="affine">Affine</option>
           </select>
         </label>

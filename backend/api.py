@@ -31,12 +31,22 @@ class LeastSquaresAPI(flask_restful.Resource):
         target_points = np.array([pair["target_point"]
                                   for pair in landmark_pairs])
 
-        if transformation_type == "translation":
-            return {"error": "not implemented yet"}, HTTP_200_OK
-        elif transformation_type == "rigid":
-            mat = leastsquares.umeyama(source_points, target_points, False)
+        if transformation_type == "rigid":
+            mat = leastsquares.umeyama(source_points, target_points,
+                                       estimate_scale=False,
+                                       allow_reflection=False)
+        elif transformation_type == "rigid+reflection":
+            mat = leastsquares.umeyama(source_points, target_points,
+                                       estimate_scale=False,
+                                       allow_reflection=True)
         elif transformation_type == "similarity":
-            mat = leastsquares.umeyama(source_points, target_points, True)
+            mat = leastsquares.umeyama(source_points, target_points,
+                                       estimate_scale=True,
+                                       allow_reflection=False)
+        elif transformation_type == "similarity+reflection":
+            mat = leastsquares.umeyama(source_points, target_points,
+                                       estimate_scale=True,
+                                       allow_reflection=True)
         elif transformation_type == "affine":
             mat = leastsquares.affine(source_points, target_points)
         else:

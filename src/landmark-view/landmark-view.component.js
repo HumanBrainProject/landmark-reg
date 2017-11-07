@@ -104,12 +104,13 @@
     function readyToTransform() {
       var active_pairs = active_landmark_pairs();
       switch(vm.transformation_type) {
-      case "translation":
-        return active_pairs.length >= 1;
       case "rigid":
+      case "rigid+reflection":
       case "similarity":
-      case "affine":
+      case "similarity+reflection":
         return active_pairs.length >= 3;
+      case "affine":
+        return active_pairs.length >= 4;
       default:
         $log.error("unknown transformation type");
         return false;
