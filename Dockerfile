@@ -6,7 +6,9 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY run-flask.sh .
-COPY ./backend backend
+COPY ./landmark-reg-compiled-backend.tar.gz .
+RUN tar -zxf landmark-reg-compiled-backend.tar.gz && rm landmark-reg-compiled-backend.tar.gz
+
 COPY ./frontend frontend
 RUN ln -sfn /zoomer-data/ frontend/zoomer-data
 
