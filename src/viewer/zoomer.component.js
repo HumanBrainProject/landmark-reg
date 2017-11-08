@@ -99,9 +99,7 @@
     function set_view() {
       // FIXME: this displayPixelSize is approximate because Zoomer does not
       // yet support anisotropic pixels
-      var zoom = vm.displayPixelSize / (vm.image_info.voxel_size[0]
-                                        + vm.image_info.voxel_size[1]
-                                        + vm.image_info.voxel_size[2]) * 3;
+      var zoom = get_current_zoom();
       vm.top_left_zoomer.setmidzoom(vm.mid.X,vm.mid.Y,zoom);
       vm.top_right_zoomer.setmidzoom(vm.mid.Z,vm.mid.Y,zoom);
       vm.bottom_left_zoomer.setmidzoom(vm.mid.X,vm.mid.Z,zoom);
@@ -241,9 +239,11 @@
           redraw();
         },
         Dispatch:function(){
+          var old_zoom = get_current_zoom();
           var zoom = top_left_zoomer.getzoom();
           vm.mid.X = top_left_zoomer.getmidx();
           vm.mid.Y = top_left_zoomer.getmidy();
+          vm.mid.Z = vm.cut.Z + (zoom / old_zoom) * (vm.mid.Z - vm.cut.Z);
           top_right_zoomer.setmidzoom(vm.mid.Z, vm.mid.Y, zoom);
           bottom_left_zoomer.setmidzoom(vm.mid.X, vm.mid.Z, zoom);
           zoom_updated_by_zoomer(zoom);
@@ -298,9 +298,11 @@
           redraw();
         },
         Dispatch:function(){
+          var old_zoom = get_current_zoom();
           var zoom = top_right_zoomer.getzoom();
           vm.mid.Z = top_right_zoomer.getmidx();
           vm.mid.Y = top_right_zoomer.getmidy();
+          vm.mid.X = vm.cut.X + (zoom / old_zoom) * (vm.mid.X - vm.cut.X);
           top_left_zoomer.setmidzoom(vm.mid.X, vm.mid.Y, zoom);
           bottom_left_zoomer.setmidzoom(vm.mid.X, vm.mid.Z, zoom);
           zoom_updated_by_zoomer(zoom);
@@ -355,9 +357,11 @@
           redraw();
         },
         Dispatch:function(){
+          var old_zoom = get_current_zoom();
           var zoom = bottom_left_zoomer.getzoom();
           vm.mid.X = bottom_left_zoomer.getmidx();
           vm.mid.Z = bottom_left_zoomer.getmidy();
+          vm.mid.Y = vm.cut.Y + (zoom / old_zoom) * (vm.mid.Y - vm.cut.Y);
           top_left_zoomer.setmidzoom(vm.mid.X, vm.mid.Y, zoom);
           top_right_zoomer.setmidzoom(vm.mid.Z, vm.mid.Y, zoom);
           zoom_updated_by_zoomer(zoom);
@@ -587,6 +591,14 @@
                                       + vm.image_info.voxel_size[2]) / 3;
         display_pixel_size_updated();
       });
+    }
+
+    function get_current_zoom() {
+      // FIXME: this displayPixelSize is approximate because Zoomer does not
+      // yet support anisotropic pixels
+      return vm.displayPixelSize / (vm.image_info.voxel_size[0]
+                                    + vm.image_info.voxel_size[1]
+                                    + vm.image_info.voxel_size[2]) * 3;
     }
 
     // The following objects are constant, they describe the filename lay-out
