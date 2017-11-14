@@ -3,13 +3,14 @@
 import numpy as np
 
 def per_landmark_mismatch(src, dst, matrix):
-    src_block = np.concatenate((src.T, np.ones((1, src.shape[0]))), axis=0)
+    src_block = np.r_[src.T, np.ones((1, len(src)))]
     transformed_src_block = np.dot(matrix, src_block)
     distances = np.sqrt(np.sum((dst - transformed_src_block[:3].T) ** 2, axis=1))
     return distances
 
 
 def affine(src, dst):
+    """Estimate the best affine matrix by least-squares in target space"""
     flat_dst = dst.flatten(order="C")  # order: dst1x, dst1y, dst1z, dst2x...
 
     src_mat = np.zeros((len(flat_dst), 12))
@@ -24,6 +25,17 @@ def affine(src, dst):
     flat_mat, _, _, _ = np.linalg.lstsq(src_mat, flat_dst)
     mat = flat_mat.reshape((3, 4), order="C")
     mat = np.concatenate((mat, [[0, 0, 0, 1]]), axis=0)
+    return mat
+
+
+def affine_gergely(src, dst):
+    """Estimate the best affine matrix by least-squares in source space"""
+    hsrc = np.c_[src, np.ones(len(src))]
+    hdst = np.c_[dst, np.ones(len(dst))]
+    # TODO handle LinAlgError (non-invertible matrix)
+    mat = np.dot(np.dot(hdst.T, hdst), np.linalg.inv(np.dot(hsrc.T, hdst)))
+    assert np.allclose(mat[3], [0, 0, 0, 1])
+    mat[3, :] = [0, 0, 0, 1]
     return mat
 
 
