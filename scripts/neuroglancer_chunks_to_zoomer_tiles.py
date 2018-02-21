@@ -6,66 +6,61 @@
 # This software is made available under the MIT licence, see LICENCE.txt.
 
 
-import gzip
+import io
 import json
 import os
-import pathlib
 import sys
 
 import numpy as np
 import PIL.Image
 from tqdm import tqdm, trange
 
-RAW_CHUNK_PATTERN = "{key}/{0}-{1}/{2}-{3}/{4}-{5}"
+import neuroglancer_scripts.accessor
+import neuroglancer_scripts.data_types
+import neuroglancer_scripts.precomputed_io
+from neuroglancer_scripts.utils import ceil_div
+
 
 TILE_SIZE = 256
 TILE_PATTERN = "{level:d}/{slice_axis}/{slice_number:04d}/{0}{1:02d}_{2}{3:02d}.png"
 
 
-def convert_scale(info, level, input_dir, output_dir):
+def convert_scale(pyramid_io, level, zoomer_accessor):
     # Key is the resolution in micrometres
-    scale_info = info["scales"][level]
+    key = pyramid_io.info["scales"][level]["key"]
+    scale_info = pyramid_io.scale_info(key)
     chunk_size = scale_info["chunk_sizes"][0]
     key = scale_info["key"]
     size = scale_info["size"]
-    dtype = np.dtype(info["data_type"]).newbyteorder("<")
-    num_channels = info["num_channels"]
+    dtype = np.dtype(pyramid_io.info["data_type"]).newbyteorder("<")
+    num_channels = pyramid_io.info["num_channels"]
     assert num_channels == 1
 
-    def load_chunk(xmin, xmax, ymin, ymax, zmin, zmax):
-        chunk_path = input_dir / RAW_CHUNK_PATTERN.format(
-            xmin, xmax, ymin, ymax, zmin, zmax, key=key)
-
-        try:
-            f = chunk_path.open("rb")
-        except OSError:
-            gz_name = str(chunk_path.with_name(chunk_path.name + ".gz"))
-            f = gzip.open(gz_name, "rb")
-        with f:
-            chunk = np.frombuffer(f.read(), dtype=dtype).reshape(
-                [num_channels, zmax - zmin, ymax - ymin, xmax - xmin])
-        return chunk
+    scale_chunk_to_uint8 = neuroglancer_scripts.data_types.get_chunk_scaler_to_uint8(dtype)
 
     def load_tilechunk(xmin, xmax, ymin, ymax, zmin, zmax):
         ret = np.empty(
             [num_channels, zmax - zmin, ymax - ymin, xmax - xmin],
-            dtype=dtype
+            dtype=np.uint8
         )
         for x_idx in range(xmin // chunk_size[0],
-                           (xmax - 1) // chunk_size[0] + 1):
+                           ceil_div(xmax, chunk_size[0])):
             for y_idx in range(ymin // chunk_size[1],
-                               (ymax - 1) // chunk_size[1] + 1):
+                               ceil_div(ymax, chunk_size[1])):
                 for z_idx in range(zmin // chunk_size[2],
-                                   (zmax - 1) // chunk_size[2] + 1):
+                                   ceil_div(zmax, chunk_size[2])):
                     chunk_xmin = chunk_size[0] * x_idx
                     chunk_xmax = min(chunk_size[0] * (x_idx + 1), size[0])
                     chunk_ymin = chunk_size[1] * y_idx
                     chunk_ymax = min(chunk_size[1] * (y_idx + 1), size[1])
                     chunk_zmin = chunk_size[2] * z_idx
                     chunk_zmax = min(chunk_size[2] * (z_idx + 1), size[2])
-                    chunk = load_chunk(chunk_xmin, chunk_xmax,
-                                       chunk_ymin, chunk_ymax,
-                                       chunk_zmin, chunk_zmax)
+                    chunk = pyramid_io.read_chunk(
+                        key, (chunk_xmin, chunk_xmax,
+                              chunk_ymin, chunk_ymax,
+                              chunk_zmin, chunk_zmax)
+                    )
+                    chunk = scale_chunk_to_uint8(chunk)
                     ret[:,
                         chunk_zmin - zmin:chunk_zmax - zmin,
                         chunk_ymin - ymin:chunk_ymax - ymin,
@@ -75,7 +70,7 @@ def convert_scale(info, level, input_dir, output_dir):
     def write_x_tiles(tilechunk):
         for x in range(tilechunk.shape[3]):
             tile = tilechunk[0, :, :, x].T
-            tile_path = output_dir / TILE_PATTERN.format(
+            tile_path = TILE_PATTERN.format(
                 "y", y_idx, "z", z_idx,
                 level=level, slice_axis="x", slice_number=x_idx * TILE_SIZE + x
             )
@@ -84,7 +79,7 @@ def convert_scale(info, level, input_dir, output_dir):
     def write_y_tiles(tilechunk):
         for y in range(tilechunk.shape[2]):
             tile = tilechunk[0, :, y, :]
-            tile_path = output_dir / TILE_PATTERN.format(
+            tile_path = TILE_PATTERN.format(
                 "z", z_idx, "x", x_idx,
                 level=level, slice_axis="y", slice_number=y_idx * TILE_SIZE + y
             )
@@ -93,58 +88,71 @@ def convert_scale(info, level, input_dir, output_dir):
     def write_z_tiles(tilechunk):
         for z in range(tilechunk.shape[1]):
             tile = tilechunk[0, z, :, :]
-            tile_path = output_dir / TILE_PATTERN.format(
+            tile_path = TILE_PATTERN.format(
                 "y", y_idx, "x", x_idx,
                 level=level, slice_axis="z", slice_number=z_idx * TILE_SIZE + z
             )
             write_tile(tile, tile_path)
 
     def write_tile(tile, tile_path):
-        os.makedirs(str(tile_path.parent), exist_ok=True)
         img = PIL.Image.fromarray(tile)
-        img.save(tile_path)
+        io_buf = io.BytesIO()
+        img.save(io_buf, format="png")
+        zoomer_accessor.store_file(tile_path, io_buf.getvalue(),
+                                   mime_type="image/png")
 
     progress_bar = tqdm(
-        total=(((size[0] - 1) // TILE_SIZE + 1)
-               * ((size[1] - 1) // TILE_SIZE + 1)
-               * ((size[2] - 1) // TILE_SIZE + 1)),
+        total=(ceil_div(size[0], TILE_SIZE)
+               * ceil_div(size[1], TILE_SIZE)
+               * ceil_div(size[2], TILE_SIZE)),
         desc="converting scale {}".format(key), unit="tilechunk", leave=True)
-    for x_idx in range((size[0] - 1) // TILE_SIZE + 1):
-        for y_idx in range((size[1] - 1) // TILE_SIZE + 1):
-            for z_idx in range((size[2] - 1) // TILE_SIZE + 1):
-                xmin = TILE_SIZE * x_idx
-                xmax = min(TILE_SIZE * (x_idx + 1), size[0])
-                ymin = TILE_SIZE * y_idx
-                ymax = min(TILE_SIZE * (y_idx + 1), size[1])
-                zmin = TILE_SIZE * z_idx
-                zmax = min(TILE_SIZE * (z_idx + 1), size[2])
+    for x_idx, y_idx, z_idx in np.ndindex((ceil_div(size[0], TILE_SIZE),
+                                               ceil_div(size[1], TILE_SIZE),
+                                               ceil_div(size[2], TILE_SIZE))):
+            xmin = TILE_SIZE * x_idx
+            xmax = min(TILE_SIZE * (x_idx + 1), size[0])
+            ymin = TILE_SIZE * y_idx
+            ymax = min(TILE_SIZE * (y_idx + 1), size[1])
+            zmin = TILE_SIZE * z_idx
+            zmax = min(TILE_SIZE * (z_idx + 1), size[2])
 
-                tilechunk = load_tilechunk(xmin, xmax, ymin, ymax, zmin, zmax)
+            tilechunk = load_tilechunk(xmin, xmax, ymin, ymax, zmin, zmax)
 
-                write_x_tiles(tilechunk)
-                write_y_tiles(tilechunk)
-                write_z_tiles(tilechunk)
+            write_x_tiles(tilechunk)
+            write_y_tiles(tilechunk)
+            write_z_tiles(tilechunk)
 
-                progress_bar.update()
+            progress_bar.update()
 
 
-def convert_scales(input_dir, output_dir):
+def convert_scales(source_url, output_url, options={}):
     """Convert all scales from an input info file"""
-    with (input_dir / "info").open() as f:
-        info = json.load(f)
+    accessor = neuroglancer_scripts.accessor.get_accessor_for_url(
+        source_url, options)
 
     # TODO ensure that factor of 2 downscaling happens for every axis at every
     # level (Zoomer assumption)
 
-    with (output_dir / "zoomer-info.json").open("w") as f:
-        json.dump({
+    pyramid_io = neuroglancer_scripts.precomputed_io.get_IO_for_existing_dataset(
+        accessor
+    )
+    info = pyramid_io.info
+
+    zoomer_accessor = neuroglancer_scripts.accessor.get_accessor_for_url(
+        output_url, options
+    )
+    zoomer_accessor.store_file(
+        "zoomer-info.json",
+        json.dumps({
             "size": info["scales"][0]["size"],
             "voxel_size": [sz * 1e-6 for sz in info["scales"][0]["resolution"]],
             "max_level": len(info["scales"]) - 1,
             "tile_size": TILE_SIZE
-        }, f)
+        }).encode("utf-8"),
+        mime_type="application/json"
+    )
     for level in range(len(info["scales"])):
-        convert_scale(info, level, input_dir, output_dir)
+        convert_scale(pyramid_io, level, zoomer_accessor)
 
 
 def parse_command_line(argv):
@@ -154,19 +162,23 @@ def parse_command_line(argv):
         description="""\
 Convert Neuroglancer raw chunks to Zoomer tiles.
 
-The list of scales is read from a file named "info" in the current directory.
+The list of scales is read from a file named "info" in the source directory.
 """)
-    args = parser.add_argument("input_dir", type=pathlib.Path)
-    args = parser.add_argument("output_dir", type=pathlib.Path)
+    args = parser.add_argument("source_url")
+    args = parser.add_argument("output_url")
+
+    neuroglancer_scripts.accessor.add_argparse_options(parser, write=False)
+
     args = parser.parse_args(argv[1:])
     # TODO sanity checks on paths
     return args
 
 
-def main(argv):
+def main(argv=sys.argv):
     """The script's entry point."""
     args = parse_command_line(argv)
-    return convert_scales(args.input_dir, args.output_dir) or 0
+    return convert_scales(args.source_url, args.output_url,
+                          options=vars(args)) or 0
 
 
 if __name__ == "__main__":
