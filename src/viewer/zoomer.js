@@ -108,6 +108,24 @@ function Zoomer(canvas,cfg){
 
         var loading=[];
 
+        function drawCoarserTile(ex,ey,level) {
+            var ox=ex,oy=ey;
+            var size=tilesize;
+            var mask=0;
+            var tile=null;
+            while(!tile && level<maxlevel){
+                size >>= 1;
+                mask=(mask<<1)+1;
+                ex >>= 1;
+                ey >>= 1;
+                level++;
+                key=cfg.Key(level,ex,ey);
+                tile=cache.get(key);
+            }
+            if(tile)
+                ctx.drawImage(tile,(ox&mask)*size,(oy&mask)*size,size,size,x*tilesize,y*tilesize,tilesize,tilesize);
+        }
+
         for(var y=th-1;y>=0;y--)
             for(var x=tw-1;x>=0;x--){
                 var ex=tx+x;
@@ -117,22 +135,7 @@ function Zoomer(canvas,cfg){
                     var tile=cache.get(key);
                     if(!tile){
                         loading.push({x:x,y:y,ex:ex,ey:ey,key:key});
-                        (function(ex,ey,level){
-                            var ox=ex,oy=ey;
-                            var size=tilesize;
-                            var mask=0;
-                            while(!tile && level<maxlevel){
-                                size >>= 1;
-                                mask=(mask<<1)+1;
-                                ex >>= 1;
-                                ey >>= 1;
-                                level++;
-                                key=cfg.Key(level,ex,ey);
-                                tile=cache.get(key);
-                            }
-                            if(tile)
-                                ctx.drawImage(tile,(ox&mask)*size,(oy&mask)*size,size,size,x*tilesize,y*tilesize,tilesize,tilesize);
-                        })(ex,ey,level);
+                        drawCoarserTile(ex,ey,level);
                     }
                     else
                         drawTile(tile,x,y);
@@ -240,7 +243,7 @@ function Zoomer(canvas,cfg){
         if(cfg.MouseMove)
             try{cfg.MouseMove(event,canvaswidth,canvasheight,view.cutx,view.cuty,view.cutw,view.cuth);}
             catch(ex){console.log("MouseMove exception: "+ex);}
-    };
+    }
     this.mwheel=function(event){
         if(event.shiftKey){
             var slices_to_scroll = Math.sign(event.deltaY);

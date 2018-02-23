@@ -1,3 +1,5 @@
+"use strict";
+
 angular
   .module("landmarkRegApp.landmarkView", [
     /* App-specific modules */

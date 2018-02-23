@@ -1,5 +1,6 @@
 {
   "strict": "global",
+  "laxbreak": true,
   "globals": {
     // Angular
     "angular": false,

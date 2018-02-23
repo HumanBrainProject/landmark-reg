@@ -8,6 +8,8 @@ var pump = require("pump");
 var sourcemaps = require('gulp-sourcemaps');
 var templateCache = require('gulp-angular-templatecache');
 var uglify = require("gulp-uglify");
+var jshint = require('gulp-jshint');
+var stylish = require('jshint-stylish');
 
 var js_sources = [
   "src/*.module.js",
@@ -23,7 +25,7 @@ gulp.task("default", ["js", "modernizr", "css", "template-cache"]);
 gulp.task("min", ["js-min", "modernizr", "css", "template-cache"]);
 
 gulp.task("watch", ["default"], function () {
-  gulp.watch(js_sources, ["js"]);
+  gulp.watch(js_sources, ["js", "lint"]);
   gulp.watch(angular_templates, ["template-cache"]);
   gulp.watch(css_sources, ["css"]);
 });
@@ -82,4 +84,10 @@ gulp.task("template-cache", function (cb) {
                     module: "landmarkRegApp.templates"
                   }),
     gulp.dest("frontend")], cb);
+});
+
+gulp.task("lint", function () {
+  return gulp.src(js_sources)
+    .pipe(jshint())
+    .pipe(jshint.reporter(stylish));
 });

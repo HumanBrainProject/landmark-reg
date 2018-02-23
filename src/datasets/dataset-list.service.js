@@ -30,11 +30,11 @@
         concatenated_list = concatenated_list.concat(success_response.data);
         deferred.notify(concatenated_list);
         handle_any_response(success_response);
-      };
+      }
 
       function error_handler(error_response) {
         handle_any_response(error_response);
-      };
+      }
 
       fetch_file_list.forEach(function(url) {
         $http.get(url).then(receive_handler, error_handler);

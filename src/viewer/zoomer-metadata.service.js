@@ -68,6 +68,7 @@
         throw new ValidationError(
           "size must be an array of 3 non-negative integers");
       }
+      /* jshint -W018 */
       metadata_object.size.forEach(function(element) {
         if(!Number.isInteger(element)
            || !(element > 0)) {

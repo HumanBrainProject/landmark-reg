@@ -20,8 +20,9 @@
         var reader = new FileReader();
         reader.onload = function(event) {
           var text_contents = event.target.result;
+          var landmark_pairs;
           try {
-            var landmark_pairs = angular.fromJson(text_contents);
+            landmark_pairs = angular.fromJson(text_contents);
           } catch(e) {
             reject(e);
           }
@@ -30,10 +31,10 @@
         };
         reader.onerror = function() {
           reject("error reading file: " + reader.error.name);
-        }
+        };
         reader.readAsText(blob, "UTF-8");
       });
-    };
+    }
 
     function open_with_file_dialog() {
       return $q(function(resolve, reject) {
@@ -69,6 +70,6 @@
 
       $window.document.body.appendChild(link);
       link.click();
-    };
+    }
   }
 })(); /* IIFE */

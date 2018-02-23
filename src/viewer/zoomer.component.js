@@ -391,7 +391,7 @@
           .then(initialize_zoomer,
                 function(reason) {
                   $log.error("cannot fetch metadata for image " + vm.imageUrl
-                             + ": " + reason.statusText)
+                             + ": " + reason.statusText);
                 });
        }
 
