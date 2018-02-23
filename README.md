@@ -6,7 +6,7 @@ Interactive tool for landmark-based spatial alignment of volumetric images
 
 Prerequisites:
 * Python version 3.4 or later;
-* Nodejs and the NPM package manager.
+* Nodejs and the [yarn](https://yarnpkg.com/) package manager.
 
 First, set up a virtual environment for the back-end under `venv/`, and install
 the dependencies there:
@@ -16,10 +16,11 @@ the dependencies there:
     python -m pip install -r requirements.txt
 
 
-Once this is done, you can use `npm start` to install the dependencies, build
-the front-end, and start the backend in debug mode.
+Once this is done, you can use `yarn install` to install the dependencies, `npm
+start` to build the front-end, and start the backend in debug mode.
 
     . venv/bin/activate
+    yarn install
     npm start
 
 The app should be accessible on http://localhost:5000/ .
