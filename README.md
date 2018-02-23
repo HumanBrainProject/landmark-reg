@@ -16,17 +16,17 @@ the dependencies there:
     python -m pip install -r requirements.txt
 
 
-Once this is done, you can use `yarn install` to install the dependencies, `npm
+Once this is done, you can use `yarn install` to install the dependencies, `yarn
 start` to build the front-end, and start the backend in debug mode.
 
     . venv/bin/activate
     yarn install
-    npm start
+    yarn start
 
 The app should be accessible on http://localhost:5000/ .
 
-If you make changes to the front-end you may want to use `npm run test:watch`
-to automatically run tests on every change, and `npm run build:watch` to
+If you make changes to the front-end you may want to use `yarn run test:watch`
+to automatically run tests on every change, and `yarn run build:watch` to
 automatically re-build the JavaScript bundle that is served to the browser
 (`frontend/bundle`).
 
@@ -35,7 +35,7 @@ automatically re-build the JavaScript bundle that is served to the browser
 
 ## Unit-tests for the frontend
 
-    npm run test
+    yarn run test
 
 ## Unit-tests for the backend
 
