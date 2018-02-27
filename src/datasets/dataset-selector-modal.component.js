@@ -13,10 +13,12 @@
       }
     });
 
-  function DatasetSelectorModalController(DatasetList, DatasetValidator, $log) {
+  function DatasetSelectorModalController(DatasetList, DatasetValidator,
+                                          $uibModal, $log) {
     var vm = this;
 
     vm.$onInit = $onInit;
+    vm.open_upload_modal = open_upload_modal;
     vm.same_dataset = same_dataset;
     vm.select = select;
     vm.validate = validate;
@@ -86,5 +88,19 @@
           vm.validation_results[dataset.zoomer_url] = {status: "invalid", message: reason};
         });
     }
+
+    function open_upload_modal() {
+      var modalInstance = $uibModal.open({
+        component: "datasetUploadModal",
+        size: "md"
+      });
+      modalInstance.result.then(function(result) {
+        if(result) {
+          vm.select(result);
+          // TODO refresh list?
+        }
+      }, function() {});
+    }
+
   }
 })(); /* IIFE */

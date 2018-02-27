@@ -1,0 +1,91 @@
+<div class="modal-header">
+  <h3 class="modal-title">Upload a dataset</h3>
+</div>
+<div class="modal-body">
+  <!-- File upload and progress bar, maybe also fields for the conversion -->
+  <div class="form-inline">
+    <div class="form-group">
+      <label for="file-selector">Nifti file (.nii or .nii.gz)</label>
+      <input id="file-selector" type="file" accept=".nii,.nii.gz"
+             lreg-on-file-change="$ctrl.file = $event.target.files[0]">
+    </div>
+    <button class="btn" ng-click="$ctrl.uploadFile()"
+            ng-disable="!$ctrl.file || $ctrl.conversion_status_url">
+      Upload
+    </button>
+  </div>
+</div>
+
+<!-- Conversion status -->
+<div>
+  <table class="table">
+    <thead class="sr-only">
+      <th scope="col">Step</th>
+      <th scope="col">Status</th>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          File upload
+        </td>
+        <td>
+          <div class="progress" ng-show="$ctrl.upload_progress_percent !== null">
+            <div class="progress-bar" role="progressbar"
+                 aria-valuenow="{{$ctrl.upload_progress_percent}}"
+                 aria-valuemin="0" aria-valuemax="100"
+                 style="width: {{$ctrl.upload_progress_percent}}%;">
+              <span class="sr-only">{{$ctrl.upload_progress_percent|number: 0}}% Complete</span>
+            </div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Conversion to Neuroglancer
+        </td>
+        <td>
+          <span ng-if="$ctrl.conversion_status_neuroglancer(dataset) == 'success'"
+                class="glyphicon glyphicon-ok-sign text-success" title="Successful"></span>
+          <span ng-if="$ctrl.conversion_status_neuroglancer(dataset) == 'pending'"
+                class="glyphicon glyphicon-time" title="Pending…"></span>
+          <span ng-if="$ctrl.conversion_status_neuroglancer(dataset) == 'in_progress'"
+                class="glyphicon glyphicon-cog" title="In progress…"></span>
+          <span ng-if="$ctrl.conversion_status_neuroglancer(dataset) == 'error'"
+                class="glyphicon glyphicon-remove-sign text-danger"
+                title="Error"></span>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Conversion to Zoomer
+        </td>
+        <td>
+          <span ng-if="$ctrl.conversion_status_zoomer(dataset) == 'success'"
+                class="glyphicon glyphicon-ok-sign text-success" title="Successful"></span>
+          <span ng-if="$ctrl.conversion_status_zoomer(dataset) == 'pending'"
+                class="glyphicon glyphicon-time" title="Pending…"></span>
+          <span ng-if="$ctrl.conversion_status_zoomer(dataset) == 'in_progress'"
+                class="glyphicon glyphicon-cog" title="In progress…"></span>
+          <span ng-if="$ctrl.conversion_status_zoomer(dataset) == 'error'"
+                class="glyphicon glyphicon-remove-sign text-danger"
+                title="Error"></span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="alert alert-danger" ng-if="$ctrl.error_message">
+  {{$ctrl.error_message}}
+</div>
+
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary" type="button" ng-click="$ctrl.ok()"
+          ng-disabled="!$ctrl.dataset_ready()">
+    Load
+  </button>
+  <button class="btn btn-warning" type="button" ng-click="$ctrl.cancel()">
+    Cancel
+  </button>
+</div>
