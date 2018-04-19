@@ -21,7 +21,7 @@ var css_sources = [
   "src/!(bower_components)/**/*.css"];
 var angular_templates = "src/**/*.html";
 
-gulp.task("default", ["js", "modernizr", "css", "template-cache"]);
+gulp.task("default", ["js", "modernizr", "css", "template-cache", "lint"]);
 gulp.task("min", ["js-min", "modernizr", "css", "template-cache"]);
 
 gulp.task("watch", ["default"], function () {
