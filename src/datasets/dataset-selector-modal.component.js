@@ -96,8 +96,7 @@
       });
       modalInstance.result.then(function(result) {
         if(result) {
-          vm.select(result);
-          // TODO refresh list?
+          vm.close({$value: result});
         }
       }, function() {});
     }
