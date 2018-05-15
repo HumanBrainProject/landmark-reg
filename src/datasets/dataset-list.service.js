@@ -17,7 +17,7 @@
       var deferred = $q.defer();
       var concatenated_list = [];
       var responses_received = 0;
-      var fetch_file_list = CONFIG.dataset_list_sources;
+      var fetch_file_list = CONFIG.dataset_list_sources.slice();
       if(CONFIG.image_upload_service) {
         fetch_file_list.push(CONFIG.image_upload_service + "uploads");
       }
