@@ -19,8 +19,8 @@
                ng-model="pair.active"/>
       </td>
       <td>
-        <span class="glyphicon glyphicon-remove"
-              style="color: {{pair.colour}}"
+        <span class="glyphicon glyphicon-map-marker"
+              ng-style="$ctrl.getLandmarkStyle(pair)"
               aria-hidden="true"></span>
       </td>
       <td>
@@ -46,7 +46,7 @@
         </button>
         <button title="Delete" class="btn btn-xs btn-danger"
                 ng-click="$ctrl.deleteLandmarkPair(pair)">
-          <span class="glyphicon glyphicon-remove"></span>
+          <span class="glyphicon glyphicon-trash"></span>
         </button>
       </td>
     </tr>

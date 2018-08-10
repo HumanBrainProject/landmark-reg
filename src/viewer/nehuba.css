@@ -1,0 +1,84 @@
+nehuba
+{
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+div.scale-bar-container
+{
+  text-align: center;
+  background-color: rgba(0,0,0,.3);
+  position: absolute;
+  left: 1em;
+  bottom: 1em;
+  padding: 2px;
+  font-weight: 700;
+  pointer-events: none;
+
+  font-weight:500;
+  color: #1a1a1a;
+  background-color:hsla(0,0%,80%,0.5);
+}
+
+div.scale-bar
+{
+  min-height: 1ex;
+  background-color: #fff;
+  padding: 0;
+  margin: 0;
+  margin-top: 2px;
+}
+
+div.nehuba-container
+{
+  width:100%;
+  height:100%;
+  position:absolute;
+  left:0;
+  top:0;
+}
+
+div.viewer-container
+{
+  z-index:0;
+}
+
+div.overlay-container
+{
+  z-index:1;
+  pointer-events: none;
+  display:flex;
+  flex-direction: column;
+}
+
+div.overlay-row
+{
+  display:flex;
+  flex: 0 0 50%;
+}
+
+div.overlay-cell
+{
+  flex: 0 0 50%;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(128,128,128,0.2);
+}
+
+div.nehuba-controller-btns
+{
+  position: absolute;
+  z-index: 2;
+  left: 5px;
+  top: 5px;
+  pointer-events: all;
+}
+
+#statusContainer
+{
+  display: none;
+}

@@ -25,6 +25,7 @@
     vm.resetLandmarkPair = resetLandmarkPair;
     vm.loadLandmarks = loadLandmarks;
     vm.saveLandmarks = saveLandmarks;
+    vm.getLandmarkStyle = getLandmarkStyle;
 
     ////////////
 
@@ -59,6 +60,12 @@
       });
       least_used_colours.sort(function(a, b) { return a.count - b.count; });
       return least_used_colours[0].colour;
+    }
+
+    function getLandmarkStyle(landmark){
+      return {
+        color : landmark.colour
+      };
     }
 
     function addLandmarkPair() {

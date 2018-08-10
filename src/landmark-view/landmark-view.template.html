@@ -1,15 +1,16 @@
 <div id="template_viewer">
-  <zoomer image-url="{{$ctrl.template_image.zoomer_url}}"
-          cursor="$ctrl.template_cursor"
-          on-cursor-update="$ctrl.updateTemplateCursor(cursor)"
-          display-pixel-size="$ctrl.template_pixel_size"
-          on-display-pixel-size-update="$ctrl.templatePixelSizeUpdated(pixel_size)"
-          landmarks="$ctrl.templateLandmarks"
-          />
+  <nehuba 
+    goto-coord = "$ctrl.templateGotoCoord"
+    landmarks = "$ctrl.templateLandmarks" 
+    nehuba-config = "$ctrl.template_nehuba_config" 
+    secondary-ng-layer = "$ctrl.secondary_ng_layer"
+    nehuba-id = "'nehuba-template'" 
+    on-viewer-pose-update = "$ctrl.updateTemplatePose(state)" />
+
 
   <div class="control_panel"> <!-- TODO decide in which CSS this class should go -->
     <label for="template">Template:</label>
-    <div class="input-group input-group-sm">
+    <div ng-if = "$ctrl._beta" class="input-group input-group-sm">
       <input class="form-control" type="text" readonly="readonly"
              id="template" ng-model="$ctrl.template_image.zoomer_url" />
       <div class="input-group-btn" uib-dropdown>
@@ -41,17 +42,30 @@
   </div>
 </div>
 <div id="incoming_viewer">
-  <zoomer image-url="{{$ctrl.incoming_image.zoomer_url}}"
+    <!-- <zoomer image-url="{{$ctrl.template_image.zoomer_url}}"
+          cursor="$ctrl.template_cursor"
+          on-cursor-update="$ctrl.updateTemplateCursor(cursor)"
+          display-pixel-size="$ctrl.template_pixel_size"
+          on-display-pixel-size-update="$ctrl.templatePixelSizeUpdated(pixel_size)"
+          landmarks="$ctrl.templateLandmarks"
+          /> -->
+  <nehuba 
+    goto-coord = "$ctrl.incomingGotoCoord"
+    landmarks = "$ctrl.incomingLandmarks" 
+    nehuba-config = "$ctrl.incoming_nehuba_config" 
+    nehuba-id = "'nehuba-incoming'" 
+    on-viewer-pose-update = "$ctrl.updateIncomingPose(state)" />
+  <!-- <zoomer image-url="{{$ctrl.incoming_image.zoomer_url}}"
           cursor="$ctrl.incoming_cursor"
           on-cursor-update="$ctrl.updateIncomingCursor(cursor)"
           display-pixel-size="$ctrl.incoming_pixel_size"
           on-display-pixel-size-update="$ctrl.incomingPixelSizeUpdated(pixel_size)"
           landmarks="$ctrl.incomingLandmarks"
-          />
+          /> -->
 
   <div class="control_panel">
     <label for="incoming">Incoming image:</label>
-    <div class="input-group input-group-sm">
+    <div ng-if = "$ctrl._beta" class="input-group input-group-sm">
       <input class="form-control" type="text" readonly="readonly"
              id="incoming" ng-model="$ctrl.incoming_image.zoomer_url" />
       <div class="input-group-btn" uib-dropdown>
@@ -70,7 +84,7 @@
         </ul>
       </div>
     </div>
-    <label>
+    <label ng-if = "$ctrl._beta" >
       <input type="checkbox"
              ng-model="$ctrl.synchronize_zoom"
              ng-change="$ctrl.zoomSynchronizationToggled()"/>
@@ -122,7 +136,7 @@
       <p>RMSE: {{$ctrl.registration_result.RMSE | number: 4}} mm</p>
     </div>
     <p>
-      <label>
+      <label ng-if = "$ctrl._beta">
         <input ng-model="$ctrl.synchronize_cursors" type="checkbox"
                ng-disabled="!$ctrl.transformationAvailable()"/>
         Synchronize cursors
@@ -130,7 +144,7 @@
     </p>
     <a class="btn btn-primary" ng-disabled="!$ctrl.transformationAvailable()"
        target="_blank"
-       href="{{$ctrl.neuroglancer_instance_url}}#!%7B'layers':%7B'template':%7B'type':'image'_'source':'{{$ctrl.template_image.neuroglancer_url}}'%7D_'incoming':%7B'type':'image'_'source':'{{$ctrl.incoming_image.neuroglancer_url}}'_'shader':'void%20main()%20%7B%5Cn%20%20emitRGB(vec3(0.,%20toNormalized(getDataValue()),%200.));%5Cn%7D%5Cn'_'transform':{{$ctrl.neuroglancer_transform_urljson()}}%7D%7D_'navigation':%7B'pose':%7B'position':%7B'spatialCoordinates':{{$ctrl.template_barycentre_urljson()}}%7D%7D%7D%7D"
+       ng-click = "$ctrl.displayResult()"
        >
       Display result
     </a>

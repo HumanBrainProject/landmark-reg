@@ -38,3 +38,8 @@ div#incoming_viewer {
     height: 1em;
     border: 1px;
 }
+
+.control_panel
+{
+    background-color:white;
+}

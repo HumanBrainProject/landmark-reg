@@ -1,0 +1,52 @@
+<div class = "nehuba-container viewer-container" ng-attr-id = "{{$ctrl.nehubaId}}">
+</div>
+<div class = "nehuba-container overlay-container">
+  <div class = "overlay-row">
+    <div class = "overlay-cell">
+      <div class = "nehuba-controller-btns btn-group">
+        <div ng-click = "$ctrl.resetRotation()" class = "btn btn-sm btn-default">
+          reset rotation
+        </div>
+        <div ng-click = "$ctrl.gotoRotation(0)" class = "btn btn-sm btn-default">
+          0
+        </div>
+        <div ng-click = "$ctrl.gotoRotation(1)" class = "btn btn-sm btn-default">
+          1
+        </div>
+        <div ng-click = "$ctrl.gotoRotation(2)" class = "btn btn-sm btn-default">
+          2
+        </div>
+      </div>
+
+      <landmark 
+        coord = "landmark.coords" 
+        colour = "landmark.colour" 
+        nm-to-pixel-fn = "$ctrl.transformCoordFn[0]" 
+        ng-repeat = "landmark in $ctrl.landmarks" />
+        
+    </div>
+    <div class = "overlay-cell">
+
+      <landmark 
+        coord = "landmark.coords" 
+        colour = "landmark.colour" 
+        nm-to-pixel-fn = "$ctrl.transformCoordFn[1]" 
+        ng-repeat = "landmark in $ctrl.landmarks" />
+
+    </div>
+  </div>
+  <div class = "overlay-row">
+    <div class = "overlay-cell">
+
+      <landmark 
+        coord = "landmark.coords" 
+        colour = "landmark.colour" 
+        nm-to-pixel-fn = "$ctrl.transformCoordFn[2]" 
+        ng-repeat = "landmark in $ctrl.landmarks" />
+
+    </div>
+    <div class = "overlay-cell">
+
+    </div>
+  </div>
+</div>

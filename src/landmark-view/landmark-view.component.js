@@ -8,14 +8,19 @@
       controller: LandmarkViewController
     });
 
-  function LandmarkViewController(LeastSquares, CONFIG, $log, $uibModal) {
+  function LandmarkViewController(LeastSquares, CONFIG, $scope, $log, $uibModal) {
     var vm = this;
 
     vm.incoming_cursor = [0, 0, 0];
     vm.incoming_image = CONFIG.default_incoming;
+    vm.incoming_nehuba_config = CONFIG.default_incoming_nehuba;
+    vm.incoming_nehuba_config.dataset.initialNgState = CONFIG.default_incoming_nehuba_initialNgState;
 
     vm.template_cursor = [0, 0, 0];
+    vm.template_orientation = [0, 0, 0, 1];
     vm.template_image = CONFIG.default_template;
+    vm.template_nehuba_config = CONFIG.default_template_nehuba;
+    vm.template_nehuba_config.dataset.initialNgState = CONFIG.default_template_nehuba_initialNgState;
 
     vm.neuroglancer_instance_url = CONFIG.neuroglancer_instance_url;
 
@@ -38,6 +43,24 @@
     vm.template_barycentre_urljson = template_barycentre_urljson;
     vm.zoomSynchronizationToggled = zoomSynchronizationToggled;
 
+    vm.updateTemplatePose = updateTemplatePose;
+    vm.updateIncomingPose = updateIncomingPose;
+    vm.displayResult = displayResult;
+
+    /* patching NG url hash binding */
+    var nehubaUrlHashBinding = exportNehubaFn.getNgPatchableObj();
+    nehubaUrlHashBinding.UrlHashBinding.prototype.setUrlHash = function(){
+      
+    };
+    nehubaUrlHashBinding.UrlHashBinding.prototype.updateFromUrlHash = function(){
+      
+    };
+
+    vm.secondary_ng_layer = null;
+    vm.templateGotoCoord = null;
+    vm.incomingGotoCoord = null;
+    vm._beta = false;
+
     ////////////
 
     function reset() {
@@ -53,6 +76,9 @@
     function goToLandmarkPair(pair) {
       vm.template_cursor = pair.target_point.slice();
       vm.incoming_cursor = pair.source_point.slice();
+
+      vm.templateGotoCoord = pair.target_point.slice();
+      vm.incomingGotoCoord = pair.source_point.slice();
     }
 
     function active_landmark_pairs() {
@@ -221,6 +247,46 @@
           homogeneous_coords);
         vm.incoming_cursor = homogeneous_result.slice(0, 3);
       }
+    }
+
+    function updateIncomingPose(state){
+
+      $scope.$apply(function(){
+        vm.incoming_cursor = Array.from(state.position).map(function(value){
+          return (value/1e6);
+        });
+      });
+    }
+
+    function updateTemplatePose(state){
+      $scope.$apply(function(){
+        vm.template_cursor = Array.from(state.position).map(function(value){
+          return (value/1e6);
+        });
+        vm.template_orientation = Array.from(state.orientation).map(function(value){
+          return  value;
+        });
+      });
+
+      // $scope.$apply();
+    }
+
+    function displayResult(){
+      var incoming_src, incoming_transformation_matrix, shader;
+      shader = 'void main() { emitRGB(vec3(0., toNormalized(getDataValue()), 0.));}';
+      incoming_transformation_matrix = vm.registration_result.transformation_matrix;
+
+      incoming_transformation_matrix[0][3] *= 1e6;
+      incoming_transformation_matrix[1][3] *= 1e6;
+      incoming_transformation_matrix[2][3] *= 1e6;
+
+      incoming_src = CONFIG.default_incoming_nehuba_initialNgState.layers.incoming.source;
+      vm.secondary_ng_layer = {
+        type : 'image',
+        source : incoming_src,
+        transform : incoming_transformation_matrix,
+        shader : shader
+      };
     }
 
     function select_incoming() {
