@@ -1,4 +1,12 @@
 <div id="template_viewer">
+
+    <!-- <zoomer image-url="{{$ctrl.template_image.zoomer_url}}"
+          cursor="$ctrl.template_cursor"
+          on-cursor-update="$ctrl.updateTemplateCursor(cursor)"
+          display-pixel-size="$ctrl.template_pixel_size"
+          on-display-pixel-size-update="$ctrl.templatePixelSizeUpdated(pixel_size)"
+          landmarks="$ctrl.templateLandmarks"
+          /> -->
   <nehuba 
     goto-coord = "$ctrl.templateGotoCoord"
     landmarks = "$ctrl.templateLandmarks" 
@@ -42,13 +50,6 @@
   </div>
 </div>
 <div id="incoming_viewer">
-    <!-- <zoomer image-url="{{$ctrl.template_image.zoomer_url}}"
-          cursor="$ctrl.template_cursor"
-          on-cursor-update="$ctrl.updateTemplateCursor(cursor)"
-          display-pixel-size="$ctrl.template_pixel_size"
-          on-display-pixel-size-update="$ctrl.templatePixelSizeUpdated(pixel_size)"
-          landmarks="$ctrl.templateLandmarks"
-          /> -->
   <nehuba 
     goto-coord = "$ctrl.incomingGotoCoord"
     landmarks = "$ctrl.incomingLandmarks" 

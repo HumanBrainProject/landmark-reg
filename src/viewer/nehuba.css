@@ -75,6 +75,10 @@ div.nehuba-controller-btns
   z-index: 2;
   left: 5px;
   top: 5px;
+}
+
+div.nehuba-controller-btns > .btn-group
+{
   pointer-events: all;
 }
 

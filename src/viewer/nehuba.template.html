@@ -3,18 +3,31 @@
 <div class = "nehuba-container overlay-container">
   <div class = "overlay-row">
     <div class = "overlay-cell">
-      <div class = "nehuba-controller-btns btn-group">
-        <div ng-click = "$ctrl.resetRotation()" class = "btn btn-sm btn-default">
-          reset rotation
+      <div class="nehuba-controller-btns">
+        <div class = "btn-group">
+          <div ng-click = "$ctrl.resetRotation()" class = "btn btn-sm btn-default">
+            reset rotation
+          </div>
+          <div ng-click = "$ctrl.gotoRotation(0)" class = "btn btn-sm btn-default">
+            0
+          </div>
+          <div ng-click = "$ctrl.gotoRotation(1)" class = "btn btn-sm btn-default">
+            1
+          </div>
+          <div ng-click = "$ctrl.gotoRotation(2)" class = "btn btn-sm btn-default">
+            2
+          </div>
         </div>
-        <div ng-click = "$ctrl.gotoRotation(0)" class = "btn btn-sm btn-default">
-          0
-        </div>
-        <div ng-click = "$ctrl.gotoRotation(1)" class = "btn btn-sm btn-default">
-          1
-        </div>
-        <div ng-click = "$ctrl.gotoRotation(2)" class = "btn btn-sm btn-default">
-          2
+        <div class = "btn-group">
+          <div ng-click = "$ctrl.swapAxis('ap')" class = "btn btn-sm btn-default">
+            swap a/p
+          </div>
+          <div ng-click = "$ctrl.swapAxis('lr')" class = "btn btn-sm btn-default">
+            swap l/r
+          </div>
+          <div ng-click = "$ctrl.swapAxis('si')" class = "btn btn-sm btn-default">
+            swap s/i
+          </div>
         </div>
       </div>
 

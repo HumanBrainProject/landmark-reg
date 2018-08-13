@@ -24,6 +24,9 @@
     vm.position = [0, 0, 0]; // in nm
     vm.orientation = [0, 0, 0, 1];
     vm.secondary_layer = null;
+    vm.swapAP = false;
+    vm.swapLR = false;
+    vm.swapSI = false;
 
     vm.$onChanges = function(){
       if(vm.secondaryNgLayer && !vm.secondary_layer){
@@ -61,6 +64,55 @@
         }
       }
     };
+
+    /**
+     * 
+     * @param {string} axis 
+     * @returns {void} 
+     */
+    function rotateQuat(){
+      
+      const quat = exportNehubaFn.quat
+      const views = vm.nehubaConfig.layout.views
+
+      views.slice1 = quat.rotateX(quat.create(), quat.create(), -Math.PI / 2)
+      views.slice2 = quat.rotateY(quat.create(), quat.rotateX(quat.create(), quat.create(), -Math.PI / 2), -Math.PI / 2)
+      views.slice3 = quat.rotateX(quat.create(), quat.create(), Math.PI)
+
+      if(vm.swapAP){
+        quat.mul(views.slice2, quat.rotateZ(quat.create(), quat.create(), Math.PI ), views.slice2)
+        quat.mul(views.slice3, quat.rotateX(quat.create(), quat.create(), -Math.PI), views.slice3)
+      }
+
+      if(vm.swapLR){
+        quat.mul(views.slice1, quat.rotateZ(quat.create(), quat.create(), Math.PI), views.slice1)
+        quat.mul(views.slice3, quat.rotateY(quat.create(), quat.create(), Math.PI), views.slice3)
+      }
+
+      if(vm.swapSI){
+        quat.mul(views.slice1, quat.rotateX(quat.create(), quat.create(), Math.PI), views.slice1)
+        quat.mul(views.slice2, quat.rotateY(quat.create(), quat.create(), Math.PI ), views.slice2)
+      }
+      
+      /* required to apply the relayout */
+      vm.viewer.relayout();
+    }
+
+    vm.swapAxis = function(axis){
+      if(vm.viewer){
+        if(axis === 'ap'){
+          vm.swapAP = !vm.swapAP
+        }
+        if(axis === 'lr'){
+          vm.swapLR = !vm.swapLR
+        }
+        if(axis === 'si'){
+          vm.swapSI = !vm.swapSI
+        }
+
+        rotateQuat()
+      }
+    }
 
     vm.gotoPosition = function(pos){
       var prevPosition = vm.position.map(function(value){
