@@ -27,6 +27,7 @@
     vm.swapAP = false;
     vm.swapLR = false;
     vm.swapSI = false;
+    vm.nehubaElement = null;
 
     vm.$onChanges = function(){
       if(vm.secondaryNgLayer && !vm.secondary_layer){
@@ -48,18 +49,19 @@
       if(vm.viewer === null && vm.nehubaConfig !== null){
         var container = document.getElementById(vm.nehubaId);
         if(container){
-          var nehubaContainer = document.createElement('div');
-          nehubaContainer.setAttribute('id', 'neuroglancer-container');
-          nehubaContainer.setAttribute('class','nehuba-container');
-          container.appendChild(nehubaContainer);
+          var nehubaElement = document.createElement('div');
+          nehubaElement.setAttribute('id', 'neuroglancer-container');
+          nehubaElement.setAttribute('class','nehuba-container');
+          container.appendChild(nehubaElement);
 
           vm.viewer = exportNehubaFn.createNehubaViewer(vm.nehubaConfig, console.warn);
 
-          nehubaContainer.setAttribute('id', vm.nehubaId + '-nehuba-container');
+          nehubaElement.setAttribute('id', vm.nehubaId + '-nehuba-container');
           
           $timeout(function(){
             setupViewerListeners(vm.viewer);
-            setupContainerListeners(nehubaContainer);
+            setupContainerListeners(nehubaElement);
+            vm.nehubaElement = nehubaElement;
           });
         }
       }
@@ -72,26 +74,26 @@
      */
     function rotateQuat(){
       
-      const quat = exportNehubaFn.quat
-      const views = vm.nehubaConfig.layout.views
+      var quat = exportNehubaFn.quat;
+      var views = vm.nehubaConfig.layout.views;
 
-      views.slice1 = quat.rotateX(quat.create(), quat.create(), -Math.PI / 2)
-      views.slice2 = quat.rotateY(quat.create(), quat.rotateX(quat.create(), quat.create(), -Math.PI / 2), -Math.PI / 2)
-      views.slice3 = quat.rotateX(quat.create(), quat.create(), Math.PI)
+      views.slice1 = quat.rotateX(quat.create(), quat.create(), -Math.PI / 2);
+      views.slice2 = quat.rotateY(quat.create(), quat.rotateX(quat.create(), quat.create(), -Math.PI / 2), -Math.PI / 2);
+      views.slice3 = quat.rotateX(quat.create(), quat.create(), Math.PI);
 
       if(vm.swapAP){
-        quat.mul(views.slice2, quat.rotateZ(quat.create(), quat.create(), Math.PI ), views.slice2)
-        quat.mul(views.slice3, quat.rotateX(quat.create(), quat.create(), -Math.PI), views.slice3)
+        quat.mul(views.slice2, quat.rotateZ(quat.create(), quat.create(), Math.PI ), views.slice2);
+        quat.mul(views.slice3, quat.rotateX(quat.create(), quat.create(), -Math.PI), views.slice3);
       }
 
       if(vm.swapLR){
-        quat.mul(views.slice1, quat.rotateZ(quat.create(), quat.create(), Math.PI), views.slice1)
-        quat.mul(views.slice3, quat.rotateY(quat.create(), quat.create(), Math.PI), views.slice3)
+        quat.mul(views.slice1, quat.rotateZ(quat.create(), quat.create(), Math.PI), views.slice1);
+        quat.mul(views.slice3, quat.rotateY(quat.create(), quat.create(), Math.PI), views.slice3);
       }
 
       if(vm.swapSI){
-        quat.mul(views.slice1, quat.rotateX(quat.create(), quat.create(), Math.PI), views.slice1)
-        quat.mul(views.slice2, quat.rotateY(quat.create(), quat.create(), Math.PI ), views.slice2)
+        quat.mul(views.slice1, quat.rotateX(quat.create(), quat.create(), Math.PI), views.slice1);
+        quat.mul(views.slice2, quat.rotateY(quat.create(), quat.create(), Math.PI ), views.slice2);
       }
       
       /* required to apply the relayout */
@@ -101,18 +103,20 @@
     vm.swapAxis = function(axis){
       if(vm.viewer){
         if(axis === 'ap'){
-          vm.swapAP = !vm.swapAP
+          vm.swapAP = !vm.swapAP;
         }
         if(axis === 'lr'){
-          vm.swapLR = !vm.swapLR
+          vm.swapLR = !vm.swapLR;
         }
         if(axis === 'si'){
-          vm.swapSI = !vm.swapSI
+          vm.swapSI = !vm.swapSI;
         }
 
-        rotateQuat()
+        vm.transformCoordFn = [null, null, null]
+        rotateQuat();
+        setupContainerListeners();
       }
-    }
+    };
 
     vm.gotoPosition = function(pos){
       var prevPosition = vm.position.map(function(value){
@@ -205,20 +209,30 @@
       }
     }
 
-    function setupContainerListeners(element){
-      element.addEventListener('sliceRenderEvent', handleSliceEvent);
-
-      function handleSliceEvent(event){
-        var index = 0;
-        while(vm.transformCoordFn[index] !== null && index <= 2){
-          index += 1;
-        }
-        if(index <= 2){
-          vm.transformCoordFn[index] = event.detail.nanometersToOffsetPixels;
-        }else{
-          element.removeEventListener('sliceRenderEvent', handleSliceEvent);
+    function handleSliceEvent(event){
+      var index = 0;
+      while(vm.transformCoordFn[index] !== null && index <= 2){
+        index += 1;
+      }
+      if(index <= 2){
+        vm.transformCoordFn[index] = event.detail.nanometersToOffsetPixels;
+      }else{
+        if(vm.nehubaElement){
+          vm.nehubaElement.removeEventListener('sliceRenderEvent', handleSliceEvent);
         }
       }
+    }
+
+    function setupContainerListeners(element){
+      var target;
+      if(element){
+        target = element;
+      }else if(vm.nehubaElement){
+        target = vm.nehubaElement;
+      }else{
+        throw new Error('neither element nor vm.nehubaElement is defined');
+      }
+      target.addEventListener('sliceRenderEvent', handleSliceEvent);
     }
 
     function setupViewerListeners(viewer){
