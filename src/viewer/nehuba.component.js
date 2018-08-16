@@ -112,9 +112,12 @@
           vm.swapSI = !vm.swapSI;
         }
 
-        vm.transformCoordFn = [null, null, null]
         rotateQuat();
+        vm.transformCoordFn = [null, null, null];
         setupContainerListeners();
+        setPosition(vm.position.map(function(value){
+          return value/1e6;
+        }));
       }
     };
 
