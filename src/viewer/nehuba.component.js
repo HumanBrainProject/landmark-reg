@@ -28,15 +28,31 @@
     vm.swapLR = false;
     vm.swapSI = false;
     vm.nehubaElement = null;
+    vm.overlayOpacity = 0.5;
+    vm.secondary_layer_fragmentmain = null;
 
     vm.$onChanges = function(){
       if(vm.secondaryNgLayer && !vm.secondary_layer){
         $timeout(function(){
-          vm.viewer.ngviewer.layerManager.addManagedLayer(
+          var _layer = vm.viewer.ngviewer.layerManager.addManagedLayer(
             vm.viewer.ngviewer.layerSpecification.getLayer('incoming', vm.secondaryNgLayer)
           );
+          vm.secondary_layer_fragmentmain = _layer.layer.fragmentMain
         });
         vm.secondary_layer = true;
+      }
+
+      if(!vm.secondaryNgLayer && vm.secondary_layer){
+        $timeout(function(){
+          var secondaryLayer = vm.viewer.ngviewer.layerManager.getLayerByName('incoming');
+          if(secondaryLayer){
+            vm.viewer.ngviewer.layerManager.removeManagedLayer(secondaryLayer);
+            vm.secondary_layer = null
+            vm.secondary_layer_fragmentmain = null
+          }else{
+            console.warn('could not find incoming layer');
+          }
+        })
       }
 
       if(vm.gotoCoord){
@@ -57,7 +73,7 @@
           vm.viewer = exportNehubaFn.createNehubaViewer(vm.nehubaConfig, console.warn);
 
           nehubaElement.setAttribute('id', vm.nehubaId + '-nehuba-container');
-          
+          window['nehuba' + vm.nehubaId] = vm.viewer
           $timeout(function(){
             setupViewerListeners(vm.viewer);
             setupContainerListeners(nehubaElement);
@@ -145,6 +161,19 @@
       requestAnimationFrame(getFraction);
     };
 
+    var _timeout;
+    vm.updateOpacity = function(){
+      if(_timeout){
+        return
+      }
+      _timeout = $timeout(function(){
+        if(vm.secondary_layer_fragmentmain){
+          vm.secondary_layer_fragmentmain.restoreState('void main() { emitRGBA(vec4(0., toNormalized(getDataValue()), 0., ' + vm.overlayOpacity.toFixed(2) + '));}')
+        }
+        _timeout = null
+      }, 16)
+    }
+
     function setPosition(pos){
       vm.viewer.setPosition(pos.map(function(value){
         return value*1e6;
@@ -178,10 +207,6 @@
 
     vm.resetRotation = function(){
 
-      // $timeout(function(){
-      //   setOrientation([0,0,0,1])
-      // })
-      // return
       var prevOrientation = vm.orientation.slice();
       var anim = Animation(500);
       var getFraction = function(){

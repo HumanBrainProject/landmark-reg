@@ -46,6 +46,7 @@
     vm.updateTemplatePose = updateTemplatePose;
     vm.updateIncomingPose = updateIncomingPose;
     vm.displayResult = displayResult;
+    vm.clearResult = clearResult;
 
     /* patching NG url hash binding */
     var nehubaUrlHashBinding = exportNehubaFn.getNgPatchableObj();
@@ -267,13 +268,11 @@
           return  value;
         });
       });
-
-      // $scope.$apply();
     }
 
     function displayResult(){
       var incoming_src, incoming_transformation_matrix, shader;
-      shader = 'void main() { emitRGB(vec3(0., toNormalized(getDataValue()), 0.));}';
+      shader = 'void main() { emitRGBA(vec4(0., toNormalized(getDataValue()), 0., 0.5));}';
       incoming_transformation_matrix = vm.registration_result.transformation_matrix;
 
       incoming_transformation_matrix[0][3] *= 1e6;
@@ -287,6 +286,10 @@
         transform : incoming_transformation_matrix,
         shader : shader
       };
+    }
+
+    function clearResult(){
+      vm.secondary_ng_layer = null
     }
 
     function select_incoming() {

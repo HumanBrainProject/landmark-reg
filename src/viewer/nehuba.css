@@ -77,9 +77,16 @@ div.nehuba-controller-btns
   top: 5px;
 }
 
-div.nehuba-controller-btns > .btn-group
+div.nehuba-controller-btns > .btn-group,
+div.nehuba-controller-btns > .input-group
 {
   pointer-events: all;
+}
+
+
+div.nehuba-controller-btns > .input-group
+{
+  background-color:white;
 }
 
 #statusContainer

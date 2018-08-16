@@ -8,17 +8,13 @@ RUN pip install --no-cache-dir gunicorn
 
 WORKDIR /usr/src/app
 
-COPY requirements.txt ./
+COPY ./requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ./landmark-reg-backend.tar.gz .
-RUN tar -zxf landmark-reg-backend.tar.gz && rm landmark-reg-backend.tar.gz
+COPY ./backend backend
 
-COPY ./landmark-reg-frontend.tar.gz .
-RUN tar -zxf landmark-reg-frontend.tar.gz && rm landmark-reg-frontend.tar.gz
-RUN ln -sn /zoomer-data/ frontend/zoomer-data
-
-VOLUME /zoomer-data
+COPY ./frontend frontend
+COPY ./node_modules/@bower_components node_modules/@bower_components
 
 ###########################################################
 # 2. Create an unprivileged user that will run the server #

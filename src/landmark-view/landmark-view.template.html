@@ -143,11 +143,20 @@
         Synchronize cursors
       </label>
     </p>
-    <a class="btn btn-primary" ng-disabled="!$ctrl.transformationAvailable()"
-       target="_blank"
-       ng-click = "$ctrl.displayResult()"
-       >
+    <a 
+      class="btn btn-primary" 
+      ng-disabled="!$ctrl.transformationAvailable()" 
+      ng-click = "$ctrl.displayResult()">
+
       Display result
     </a>
+    <a 
+      class = "btn btn-primary" 
+      ng-disabled="!$ctrl.transformationAvailable() || !$ctrl.secondary_ng_layer"
+      ng-click = "$ctrl.clearResult()">
+
+      Clear overlay
+    </a>
+      
   </div>
 </div>
