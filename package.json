@@ -1,11 +1,10 @@
 {
   "name": "landmark-reg",
-  "private": true,
-  "version": "0.4.0-dev",
+  "version": "0.4.0",
   "description": "Interactive tool for landmark-based spatial alignment of volumetric images",
   "bugs": "https://github.com/HumanBrainProject/landmark-reg/issues",
   "repository": "https://github.com/HumanBrainProject/landmark-reg",
-  "license": "UNLICENSED",
+  "license": "AGPL-3.0",
   "contributors": [
     "Yann Leprince <y.leprince@fz-juelich.de>",
     "Gergely Csúcs <gergely.csucs@medisin.uio.no>",
