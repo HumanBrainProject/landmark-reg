@@ -21,6 +21,25 @@ import neuroglancer_scripts.precomputed_io
 from neuroglancer_scripts.utils import ceil_div
 
 
+# TODO deal with input_min... handle signed dtypes?
+def get_chunk_scaler_to_uint8(input_dtype):
+    if np.issubdtype(input_dtype, np.integer):
+        input_min = np.iinfo(input_dtype).min
+        input_max = np.iinfo(input_dtype).max
+    else:
+        input_min = 0.0
+        input_max = 1.0
+
+    scaling_factor = 255.0 / input_max
+
+    post_scaling_converter = neuroglancer_scripts.data_types.get_chunk_dtype_transformer(np.float32, np.uint8)
+
+    def chunk_scaler(chunk):
+        return post_scaling_converter(scaling_factor * chunk.astype("float32"))
+
+    return chunk_scaler
+
+
 TILE_SIZE = 256
 TILE_PATTERN = "{level:d}/{slice_axis}/{slice_number:04d}/{0}{1:02d}_{2}{3:02d}.png"
 
@@ -36,7 +55,7 @@ def convert_scale(pyramid_io, level, zoomer_accessor):
     num_channels = pyramid_io.info["num_channels"]
     assert num_channels == 1
 
-    scale_chunk_to_uint8 = neuroglancer_scripts.data_types.get_chunk_scaler_to_uint8(dtype)
+    scale_chunk_to_uint8 = get_chunk_scaler_to_uint8(dtype)
 
     def load_tilechunk(xmin, xmax, ymin, ymax, zmin, zmax):
         ret = np.empty(
