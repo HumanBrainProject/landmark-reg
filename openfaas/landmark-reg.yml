@@ -1,0 +1,8 @@
+provider:
+  name: faas
+  gateway: http://127.0.0.1:8080
+functions:
+  landmark-reg:
+    lang: python3
+    handler: ./landmark-reg
+    image: landmark-reg:latest
