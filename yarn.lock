@@ -26,7 +26,7 @@
   version "0.1.0"
   resolved "https://codeload.github.com/HumanBrainProject/hbp-collaboratory-theme/tar.gz/2962f07e06c2e9b22f3e7ace61db21b0a286b021"
 
-"@bower_components/jquery@jquery/jquery-dist#^3.2.1", jquery@jquery/jquery-dist#^3.2.1:
+"@bower_components/jquery@jquery/jquery-dist#^3.2.1":
   version "3.3.1"
   resolved "https://codeload.github.com/jquery/jquery-dist/tar.gz/9e8ec3d10fad04748176144f108d7355662ae75e"
 
@@ -948,7 +948,7 @@ event-emitter@^0.3.5:
 
 event-stream@*, event-stream@3.3.4:
   version "3.3.4"
-  resolved "http://registry.npmjs.org/event-stream/-/event-stream-3.3.4.tgz#4ab4c9a0f5a54db9338b4c34d86bfce8f4b35571"
+  resolved "https://registry.npmjs.org/event-stream/-/event-stream-3.3.4.tgz#4ab4c9a0f5a54db9338b4c34d86bfce8f4b35571"
   dependencies:
     duplexer "~0.1.1"
     from "~0"
@@ -1880,6 +1880,11 @@ isobject@^3.0.0, isobject@^3.0.1:
 jasmine-core@^2.4.1:
   version "2.99.1"
   resolved "https://registry.yarnpkg.com/jasmine-core/-/jasmine-core-2.99.1.tgz#e6400df1e6b56e130b61c4bcd093daa7f6e8ca15"
+
+jquery@jquery/jquery-dist#^3.4.0:
+  version "3.4.1"
+  uid "15bc73803f76bc53b654b9fdbbbc096f56d7c03d"
+  resolved "https://codeload.github.com/jquery/jquery-dist/tar.gz/15bc73803f76bc53b654b9fdbbbc096f56d7c03d"
 
 jsesc@2.5.1:
   version "2.5.1"
