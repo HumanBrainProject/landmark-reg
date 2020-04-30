@@ -2,6 +2,18 @@
 
 Interactive tool for landmark-based spatial alignment of volumetric images
 
+# Retired project
+
+This code base is now retired, it has served its purpose as a prototype and has been refactored and renamed to **Voluba**:
+
+- the front-end [has been rewritten from scratch](https://github.com/FZJ-INM1-BDA/landmark-reg/) using the Vue.js framework and Neuroglancer as a viewer component;
+
+- the back-end has been extracted and is maintained in [a separate repository](https://github.com/HumanBrainProject/voluba-linear-backend).
+
+A production deployment of **Voluba** is available at https://voluba.apps.hbp.eu/.
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
 # Developement set-up
 
 Prerequisites:
