@@ -55,7 +55,7 @@
     "angular-route": "angular/bower-angular-route#^1.6.4",
     "angular-ui-bootstrap": "angular-ui/bootstrap-bower#^2.5.0",
     "collaboratory-theme": "HumanBrainProject/hbp-collaboratory-theme#^0.1.0",
-    "jquery": "jquery/jquery-dist#^3.2.1"
+    "jquery": "jquery/jquery-dist#^3.5.0"
   },
   "engines": {
     "yarn": ">= 1.0.0"
